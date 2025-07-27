@@ -1,0 +1,56 @@
+{
+  "name": "interstellar-dex",
+  "version": "0.0.0",
+  "description": "Interstellar 1inch DEX UI",
+  "author": {
+    "name": "Georgii Plotnikov",
+    "email": "accembler@gmail.com",
+    "url": "https://inferara.com"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "7.2.0",
+    "@mui/material": "^7.2.0",
+    "@mui/x-charts": "8.9.0",
+    "@mui/x-data-grid": "8.9.1",
+    "@mui/x-date-pickers": "8.9.0",
+    "@noble/secp256k1": "2.3.0",
+    "@reduxjs/toolkit": "2.8.2",
+    "axios": "^1.11.0",
+    "buffer": "^6.0.3",
+    "eciesjs": "0.4.15",
+    "ethers": "6.15.0",
+    "lz-string": "^1.5.0",
+    "mui-color-input": "7.0.0",
+    "mui-file-input": "7.0.0",
+    "random-words": "^2.0.1",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-idle-timer": "^5.7.2",
+    "react-qr-code": "2.0.18",
+    "react-redux": "9.2.0",
+    "react-router-dom": "^7.7.1",
+    "vite-plugin-node-polyfills": "0.24.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "@typescript-eslint/eslint-plugin": "8.38.0",
+    "@typescript-eslint/parser": "8.38.0",
+    "@vitejs/plugin-react": "4.7.0",
+    "eslint": "9.32.0",
+    "eslint-plugin-react-hooks": "5.2.0",
+    "eslint-plugin-react-refresh": "0.4.20",
+    "typescript": "5.8.3",
+    "vite": "7.0.6"
+  }
+}
