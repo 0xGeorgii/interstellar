@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react(), nodePolyfills()],
   resolve: {
     alias: {
+      // Ensure that ethers resolves to the correct path
       'ethers': 'ethers',
     },
   },

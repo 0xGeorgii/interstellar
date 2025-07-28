@@ -61,7 +61,7 @@ export const MainWindow: FC = () => {
             </Grid>
           </Grid>
             <Typography variant="h5" noWrap component="div" sx={{ textAlign: 'center', flexGrow: 1 }}>
-            InterStellar 1-inch DEX
+            Interstellar 1inch DEX
             </Typography>
         </Toolbar>
       </AppBar>
