@@ -15,9 +15,6 @@ import ErrorDialog from './error-dialog';
 import { Swap } from '../pages/swap/swap';
 
 
-const drawerWidth = 240;
-const drawerMarginLeft = 24;
-
 interface AppBarProps extends MuiAppBarProps {
 }
 
@@ -61,11 +58,11 @@ export const MainWindow: FC = () => {
             </Grid>
           </Grid>
             <Typography variant="h5" noWrap component="div" sx={{ textAlign: 'center', flexGrow: 1 }}>
-            Interstellar 1inch DEX
+            InterStellar 1Inch DEX
             </Typography>
         </Toolbar>
       </AppBar>
-      <Main sx={{ marginLeft: `${drawerWidth + drawerMarginLeft}px` }}>
+      <Main>
         <DrawerHeader />
         <Routes>
           <Route path="/" element={<Swap />} />
