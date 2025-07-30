@@ -13,6 +13,10 @@ dependencies = [
     "rich.logging>=0.0.1",
     "dotenv>=0.9.9",
     "stellar-sdk[aiohttp]>=12.3.0",
+    "fastapi>=0.116.1",
+    "uvicorn>=0.33.0",
+    "python_multipart>=0.0.20",
+    "setuptools>=80.9.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

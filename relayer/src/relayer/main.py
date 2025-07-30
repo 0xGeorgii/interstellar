@@ -1,19 +1,38 @@
+from contextlib import asynccontextmanager
 import asyncio, logging, os
 import dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from rich.logging import RichHandler
+import uvicorn
+from pydantic import BaseModel
 
 from .ethereum_watcher import EthereumWatcher
 from .stellar_watcher import StellarWatcher
 from .state_machine import SwapStateMachine
 
-dotenv.load_dotenv()
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
-    handlers=[RichHandler(rich_tracebacks=True)],
-)
-log = logging.getLogger("relayer")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+            handlers=[RichHandler(rich_tracebacks=True)],
+        )
+        dotenv.load_dotenv()
+        log = logging.getLogger("relayer")
+        try:
+            # Initialize watchers asynchronously
+            await initialize_watchers(log)
+        except Exception as _:
+            pass
+        yield
+        print("Shutting down the application")
+    except Exception as _:
+        pass
+    finally:
+        pass
 
 
 async def produce(watcher, queue):
@@ -21,8 +40,7 @@ async def produce(watcher, queue):
         await queue.put(ev)
 
 
-async def main():
-
+async def initialize_watchers(log: logging.Logger):
     mode = os.getenv("MODE", "D").upper()
     ethereum_watcher = None
     stellar_watcher = None
@@ -78,6 +96,43 @@ async def main():
         for p in producers:
             p.cancel()
 
+app = FastAPI(lifespan=lifespan)
+origins = [
+    "*",
+]
+
+class OrderData(BaseModel):
+    maker_pk: str
+    salt: str
+    src_chain: int
+    dst_chain: int
+    make_amount: str
+    take_amount: str
+
+class Order(BaseModel):
+    order_data: OrderData
+    signature: str
+
+@app.post("/order")
+async def create_order(order: Order):
+    # Handle order creation
+    return {"status": "success", "order": order}
+
+class Secret(BaseModel):
+    value: str
+
+@app.post("/secret")
+async def create_secret(secret: Secret):
+    # Handle secret creation
+    return {"status": "success", "secret": secret}
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    uvicorn.run("src.relayer.main:app", host="0.0.0.0", port=8000, reload=True)
