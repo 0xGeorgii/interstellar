@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from rich.logging import RichHandler
 import uvicorn
 from pydantic import BaseModel
+import requests
 
 from .ethereum_watcher import EthereumWatcher
 from .stellar_watcher import StellarWatcher
@@ -22,10 +23,28 @@ async def lifespan(app: FastAPI):
         )
         dotenv.load_dotenv()
         log = logging.getLogger("relayer")
+        # Discover and ping resolvers from environment
+        resolvers_env = os.getenv("RESOLVERS", "")
+        healthy = []
+        for addr in resolvers_env.split(","):  # ping each resolver health endpoint
+            addr = addr.strip()
+            if not addr:
+                continue
+            try:
+                resp = requests.get(f"{addr}/health", timeout=5)
+                if resp.status_code == 200:
+                    healthy.append(addr)
+                    log.info(f"Resolver {addr} is healthy")
+                else:
+                    log.warning(f"Resolver {addr} unhealthy status {resp.status_code}")
+            except Exception as err:
+                log.warning(f"Unable to reach resolver {addr}: {err}")
+        app.state.resolvers = healthy
+        log.info(f"Using {len(healthy)} healthy resolver(s): {healthy}")
         try:
             # Initialize watchers asynchronously
             await initialize_watchers(log)
-        except Exception as _:
+        except Exception:
             pass
         yield
         print("Shutting down the application")

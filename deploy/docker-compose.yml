@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  relayer:
+    build:
+      context: ../relayer
+    environment:
+      - MODE=S
+      - ETHEREUM_RPC=${ETHEREUM_RPC}
+      - ETHEREUM_ESCROW_ABI=${ETHEREUM_ESCROW_ABI}
+      - ETHEREUM_ESCROW_ADDRESS=${ETHEREUM_ESCROW_ADDRESS}
+      - STELLAR_RPC=https://soroban-testnet.stellar.org:443
+      - STELLAR_CONTRACT_ID=${STELLAR_CONTRACT_ID}
+      - RESOLVERS=http://resolver:4000
+    ports:
+      - "5000:5000"
+    depends_on:
+      resolver:
+        condition: service_healthy
+    networks:
+      - default
+
+  resolver:
+    build:
+      context: ../resolver
+    environment:
+      - EVM_SECRET=${EVM_SECRET}
+      - STELLAR_SECRET=${STELLAR_SECRET}
+      - PORT=4000
+    ports:
+      - "4000:4000"
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  default:
+    driver: bridge

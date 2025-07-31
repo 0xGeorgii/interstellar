@@ -5,7 +5,19 @@ description = "Add your description here"
 authors = [
     { name = "Georgii Plotnikov", email = "accembler@gmail.com" }
 ]
-dependencies = []
+dependencies = [
+    "asyncio>=3.4.3",
+    "web3>=7.12.1",
+    "stellar_sdk>=12.3.0",
+    "rich>=12.5.1",
+    "rich.logging>=0.0.1",
+    "dotenv>=0.9.9",
+    "stellar-sdk[aiohttp]>=12.3.0",
+    "fastapi>=0.116.1",
+    "uvicorn>=0.33.0",
+    "python_multipart>=0.0.20",
+    "setuptools>=80.9.0",
+]
 readme = "README.md"
 requires-python = ">= 3.8"
 

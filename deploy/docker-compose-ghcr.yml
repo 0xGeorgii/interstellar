@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  resolver:
+    image: ghcr.io/0xgeorgii/interstellar/resolver:latest
+    environment:
+      - EVM_SECRET=${EVM_SECRET}
+      - STELLAR_SECRET=${STELLAR_SECRET}
+      - PORT=4000
+    ports:
+      - "4000:4000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  relayer:
+    image: ghcr.io/0xgeorgii/interstellar/relayer:latest
+    environment:
+      - MODE=${MODE:-S}
+      - ETHEREUM_RPC=${ETHEREUM_RPC}
+      - ETHEREUM_ESCROW_ABI=${ETHEREUM_ESCROW_ABI}
+      - ETHEREUM_ESCROW_ADDRESS=${ETHEREUM_ESCROW_ADDRESS}
+      - STELLAR_RPC=${STELLAR_RPC}
+      - STELLAR_CONTRACT_ID=${STELLAR_CONTRACT_ID}
+      - RESOLVERS=http://resolver:4000
+    ports:
+      - "5000:5000"
+    depends_on:
+      resolver:
+        condition: service_healthy
+
+  ui:
+    image: ghcr.io/0xgeorgii/interstellar/ui:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - resolver
+      - relayer
+
+networks:
+  default:
+    driver: bridge
