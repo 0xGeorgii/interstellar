@@ -33,6 +33,8 @@ services:
 
   ui:
     image: ghcr.io/0xgeorgii/interstellar/ui:latest
+    environment:
+      - API_URL=http://relayer:5000
     ports:
       - "80:80"
     depends_on:

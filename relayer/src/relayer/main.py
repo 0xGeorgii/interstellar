@@ -15,6 +15,7 @@ from .state_machine import SwapStateMachine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    log = logging.getLogger("relayer")
     try:
         logging.basicConfig(
             level=logging.INFO,
@@ -22,11 +23,11 @@ async def lifespan(app: FastAPI):
             handlers=[RichHandler(rich_tracebacks=True)],
         )
         dotenv.load_dotenv()
-        log = logging.getLogger("relayer")
+
         # Discover and ping resolvers from environment
         resolvers_env = os.getenv("RESOLVERS", "")
         healthy = []
-        for addr in resolvers_env.split(","):  # ping each resolver health endpoint
+        for addr in resolvers_env.split(","):
             addr = addr.strip()
             if not addr:
                 continue
@@ -41,17 +42,19 @@ async def lifespan(app: FastAPI):
                 log.warning(f"Unable to reach resolver {addr}: {err}")
         app.state.resolvers = healthy
         log.info(f"Using {len(healthy)} healthy resolver(s): {healthy}")
+
+        # Run watchers in the background
+        watchers_task = asyncio.create_task(initialize_watchers(log))
+
         try:
-            # Initialize watchers asynchronously
-            await initialize_watchers(log)
-        except Exception:
-            pass
-        yield
-        print("Shutting down the application")
-    except Exception as _:
-        pass
-    finally:
-        pass
+            yield
+        finally:
+            # Ensure background tasks are cancelled on shutdown
+            watchers_task.cancel()
+            await watchers_task
+            print("Shutting down the application")
+    except Exception as e:
+        log.error(f"Lifespan error: {e}")
 
 
 async def produce(watcher, queue):
@@ -121,16 +124,19 @@ origins = [
 ]
 
 class OrderData(BaseModel):
-    maker_pk: str
     salt: str
     src_chain: int
     dst_chain: int
     make_amount: str
     take_amount: str
 
+class Signature(BaseModel):
+    signed_message: str
+    signer_address: str
+
 class Order(BaseModel):
     order_data: OrderData
-    signature: str
+    signature: Signature
 
 @app.post("/order")
 async def create_order(order: Order):

@@ -17,6 +17,8 @@ import {
     FreighterModule, FREIGHTER_ID
 } from '@creit.tech/stellar-wallets-kit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { postOrder, postSecret } from '../../../api/interstellar/interstellar-api';
+import { OrderData, Order, Signature } from '../../../api/interstellar/models/order';
 import { ethers } from 'ethers';
 
 // Extend the Window interface to include the ethereum property
@@ -99,6 +101,56 @@ export const Swap: React.FC = () => {
             setFromAmount(xlmBalance.toString());
         } else if (tokensPair === 'ETHXLM' && ethBalance != null) {
             setFromAmount(ethBalance.toString());
+        }
+    };
+
+    const submitOrder = async () => {
+        const orderData: OrderData = {
+            salt: Math.random().toString(36).substring(2, 15),
+            src_chain: tokensPair === 'XLMETH' ? 1 : 2,
+            dst_chain: tokensPair === 'XLMETH' ? 2 : 1,
+            make_amount: fromAmount,
+            take_amount: (parseFloat(fromAmount) * 0.95).toString(),
+        };
+        let signature: Signature;
+
+        if (tokensPair === 'ETHXLM') {
+            if (!window.ethereum) {
+                alert('MetaMask not installed');
+                return;
+            }
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const signatureData = await signer.signMessage(JSON.stringify(orderData));
+            signature = {
+                signed_message: signatureData,
+                signer_address: evmAddress || ''
+            };
+        } else if (tokensPair === 'XLMETH') {
+            if (!freighterConnected || !stellarAddress) {
+                alert('Freighter not connected');
+                return;
+            }
+            const signatureData = await kit.signMessage(JSON.stringify(orderData));
+            signature = {
+                signed_message: signatureData.signedMessage,
+                signer_address: signatureData.signerAddress || stellarAddress || ''
+            };
+        }
+
+        const payload: Order = {
+            order_data: orderData,
+            signature: signature
+        };
+
+        try {
+            const success = await postOrder(payload); // Send payload directly
+            if (!!!success) {
+                alert('Failed to submit order');
+            }
+        } catch (error) {
+            console.error('Error submitting order:', error);
+            alert('Error submitting order');
         }
     };
 
@@ -201,7 +253,8 @@ export const Swap: React.FC = () => {
                                         <Button
                                             variant="contained"
                                             fullWidth
-                                            disabled={!freighterConnected}
+                                            disabled={!freighterConnected && fromAmount !== ''}
+                                            onClick={submitOrder}
                                         >
                                             Submit Swap
                                         </Button>
@@ -270,7 +323,8 @@ export const Swap: React.FC = () => {
                                     <Button
                                         variant="contained"
                                         fullWidth
-                                        disabled={!metamaskConnected}
+                                        disabled={!metamaskConnected && fromAmount !== ''}
+                                        onClick={submitOrder}
                                     >
                                         Submit Swap
                                     </Button>
