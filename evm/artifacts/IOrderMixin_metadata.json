@@ -1,0 +1,990 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "BadSignature",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "EpochManagerAndBitInvalidatorsAreIncompatible",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidPermit2Transfer",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidatedOrder",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "MakingAmountTooLow",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "MismatchArraysLengths",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "OrderExpired",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "OrderIsNotSuitableForMassInvalidation",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "PartialFillNotAllowed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "PredicateIsNotTrue",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "PrivateOrder",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ReentrancyDetected",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "success",
+						"type": "bool"
+					},
+					{
+						"internalType": "bytes",
+						"name": "res",
+						"type": "bytes"
+					}
+				],
+				"name": "SimulationResults",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "SwapWithZeroAmount",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TakingAmountExceeded",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TakingAmountTooHigh",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TransferFromMakerToTakerFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TransferFromTakerToMakerFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "WrongSeriesNonce",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "maker",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "slotIndex",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "slotValue",
+						"type": "uint256"
+					}
+				],
+				"name": "BitInvalidatorUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "OrderCancelled",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "remainingAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "OrderFilled",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "maker",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "slot",
+						"type": "uint256"
+					}
+				],
+				"name": "bitInvalidatorForOrder",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "result",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "MakerTraits",
+						"name": "makerTraits",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "additionalMask",
+						"type": "uint256"
+					}
+				],
+				"name": "bitsInvalidateForOrder",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "MakerTraits",
+						"name": "makerTraits",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "cancelOrder",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "MakerTraits[]",
+						"name": "makerTraits",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "bytes32[]",
+						"name": "orderHashes",
+						"type": "bytes32[]"
+					}
+				],
+				"name": "cancelOrders",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "salt",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "receiver",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "makerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "takerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "makingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "takingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "MakerTraits",
+								"name": "makerTraits",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IOrderMixin.Order",
+						"name": "order",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bytes",
+						"name": "signature",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "TakerTraits",
+						"name": "takerTraits",
+						"type": "uint256"
+					}
+				],
+				"name": "fillContractOrder",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "makingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "salt",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "receiver",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "makerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "takerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "makingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "takingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "MakerTraits",
+								"name": "makerTraits",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IOrderMixin.Order",
+						"name": "order",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bytes",
+						"name": "signature",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "TakerTraits",
+						"name": "takerTraits",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "args",
+						"type": "bytes"
+					}
+				],
+				"name": "fillContractOrderArgs",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "makingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "salt",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "receiver",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "makerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "takerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "makingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "takingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "MakerTraits",
+								"name": "makerTraits",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IOrderMixin.Order",
+						"name": "order",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "vs",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "TakerTraits",
+						"name": "takerTraits",
+						"type": "uint256"
+					}
+				],
+				"name": "fillOrder",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "makingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "salt",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "receiver",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "makerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "takerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "makingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "takingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "MakerTraits",
+								"name": "makerTraits",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IOrderMixin.Order",
+						"name": "order",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "vs",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "TakerTraits",
+						"name": "takerTraits",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "args",
+						"type": "bytes"
+					}
+				],
+				"name": "fillOrderArgs",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "makingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "salt",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "receiver",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "makerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "takerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "makingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "takingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "MakerTraits",
+								"name": "makerTraits",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IOrderMixin.Order",
+						"name": "order",
+						"type": "tuple"
+					}
+				],
+				"name": "hashOrder",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "maker",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "rawRemainingInvalidatorForOrder",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "remainingRaw",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "maker",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "remainingInvalidatorForOrder",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "remaining",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "target",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "simulate",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"events": {
+				"BitInvalidatorUpdated(address,uint256,uint256)": {
+					"params": {
+						"maker": "Maker address",
+						"slotIndex": "Slot index that was updated",
+						"slotValue": "New slot value"
+					}
+				},
+				"OrderCancelled(bytes32)": {
+					"params": {
+						"orderHash": "Hash of the order"
+					}
+				},
+				"OrderFilled(bytes32,uint256)": {
+					"params": {
+						"orderHash": "Hash of the order",
+						"remainingAmount": "Amount of the maker asset that remains to be filled"
+					}
+				}
+			},
+			"kind": "dev",
+			"methods": {
+				"bitInvalidatorForOrder(address,uint256)": {
+					"params": {
+						"maker": "Maker address",
+						"slot": "Slot number to return bitmask for"
+					},
+					"returns": {
+						"result": "Each bit represents whether corresponding was already invalidated"
+					}
+				},
+				"bitsInvalidateForOrder(uint256,uint256)": {
+					"params": {
+						"additionalMask": "Additional bitmask to invalidate orders",
+						"makerTraits": "Order makerTraits"
+					}
+				},
+				"cancelOrder(uint256,bytes32)": {
+					"params": {
+						"makerTraits": "Order makerTraits",
+						"orderHash": "Hash of the order to cancel"
+					}
+				},
+				"cancelOrders(uint256[],bytes32[])": {
+					"params": {
+						"makerTraits": "Orders makerTraits",
+						"orderHashes": "Hashes of the orders to cancel"
+					}
+				},
+				"fillContractOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256)": {
+					"details": "See tests for examples",
+					"params": {
+						"amount": "Taker amount to fill",
+						"order": "Order quote to fill",
+						"signature": "Signature to confirm quote ownership",
+						"takerTraits": "Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit."
+					},
+					"returns": {
+						"makingAmount": "Actual amount transferred from maker to taker",
+						"orderHash": "Hash of the filled order",
+						"takingAmount": "Actual amount transferred from taker to maker"
+					}
+				},
+				"fillContractOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256,bytes)": {
+					"details": "See tests for examples",
+					"params": {
+						"amount": "Taker amount to fill",
+						"args": "Arguments that are used by the taker (target, extension, interaction, permit)",
+						"order": "Order quote to fill",
+						"signature": "Signature to confirm quote ownership",
+						"takerTraits": "Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit."
+					},
+					"returns": {
+						"makingAmount": "Actual amount transferred from maker to taker",
+						"orderHash": "Hash of the filled order",
+						"takingAmount": "Actual amount transferred from taker to maker"
+					}
+				},
+				"fillOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256)": {
+					"params": {
+						"amount": "Taker amount to fill",
+						"order": "Order quote to fill",
+						"r": "R component of signature",
+						"takerTraits": "Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.",
+						"vs": "VS component of signature"
+					},
+					"returns": {
+						"makingAmount": "Actual amount transferred from maker to taker",
+						"orderHash": "Hash of the filled order",
+						"takingAmount": "Actual amount transferred from taker to maker"
+					}
+				},
+				"fillOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256,bytes)": {
+					"params": {
+						"amount": "Taker amount to fill",
+						"args": "Arguments that are used by the taker (target, extension, interaction, permit)",
+						"order": "Order quote to fill",
+						"r": "R component of signature",
+						"takerTraits": "Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.",
+						"vs": "VS component of signature"
+					},
+					"returns": {
+						"makingAmount": "Actual amount transferred from maker to taker",
+						"orderHash": "Hash of the filled order",
+						"takingAmount": "Actual amount transferred from taker to maker"
+					}
+				},
+				"hashOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))": {
+					"params": {
+						"order": "Order"
+					},
+					"returns": {
+						"orderHash": "Hash of the order"
+					}
+				},
+				"rawRemainingInvalidatorForOrder(address,bytes32)": {
+					"params": {
+						"orderHash": "Hash of the order"
+					},
+					"returns": {
+						"remainingRaw": "Inverse of the remaining amount of the order if order was filled at least once, otherwise 0"
+					}
+				},
+				"remainingInvalidatorForOrder(address,bytes32)": {
+					"params": {
+						"orderHash": "Hash of the order"
+					},
+					"returns": {
+						"remaining": "Remaining amount of the order"
+					}
+				},
+				"simulate(address,bytes)": {
+					"details": "The function always reverts and returns the simulation results in revert data.",
+					"params": {
+						"data": "Data that will be passed to delegatee",
+						"target": "Addresses that will be delegated"
+					}
+				}
+			},
+			"title": "IOrderMixin",
+			"version": 1
+		},
+		"userdoc": {
+			"events": {
+				"BitInvalidatorUpdated(address,uint256,uint256)": {
+					"notice": "Emitted when order with `useBitInvalidator` gets cancelled"
+				},
+				"OrderCancelled(bytes32)": {
+					"notice": "Emitted when order without `useBitInvalidator` gets cancelled"
+				},
+				"OrderFilled(bytes32,uint256)": {
+					"notice": "Emitted when order gets filled"
+				}
+			},
+			"kind": "user",
+			"methods": {
+				"bitInvalidatorForOrder(address,uint256)": {
+					"notice": "Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes"
+				},
+				"bitsInvalidateForOrder(uint256,uint256)": {
+					"notice": "Cancels all quotes of the maker (works for bit-invalidating orders only)"
+				},
+				"cancelOrder(uint256,bytes32)": {
+					"notice": "Cancels order's quote"
+				},
+				"cancelOrders(uint256[],bytes32[])": {
+					"notice": "Cancels orders' quotes"
+				},
+				"fillContractOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256)": {
+					"notice": "Same as `fillOrder` but uses contract-based signatures."
+				},
+				"fillContractOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256,bytes)": {
+					"notice": "Same as `fillContractOrder` but allows to specify arguments that are used by the taker."
+				},
+				"fillOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256)": {
+					"notice": "Fills order's quote, fully or partially (whichever is possible)."
+				},
+				"fillOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256,bytes)": {
+					"notice": "Same as `fillOrder` but allows to specify arguments that are used by the taker."
+				},
+				"hashOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))": {
+					"notice": "Returns order hash, hashed with limit order protocol contract EIP712"
+				},
+				"rawRemainingInvalidatorForOrder(address,bytes32)": {
+					"notice": "Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes"
+				},
+				"remainingInvalidatorForOrder(address,bytes32)": {
+					"notice": "Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes"
+				},
+				"simulate(address,bytes)": {
+					"notice": "Delegates execution to custom implementation. Could be used to validate if `transferFrom` works properly"
+				}
+			},
+			"notice": "Interface for order processing logic in the 1inch Limit Order Protocol.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/IOrderMixin.sol": "IOrderMixin"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/AddressLib.sol": {
+			"keccak256": "0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586",
+				"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR"
+			]
+		},
+		"contracts/IOrderMixin.sol": {
+			"keccak256": "0x34ead0b58bd2640652ad6366b4c4ea1370b66d2dd21ffb5d5b831ed54fc9cc71",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://65b82f8298ed8d9cb9eb3604af3c15129cffa009c5b0150f7f42154093d9ce96",
+				"dweb:/ipfs/QmaQoQNVTiJPKB6MVwtemAWrwyKEKR5fLqy7vyfm8oqBEx"
+			]
+		},
+		"contracts/MakerTraitsLib.sol": {
+			"keccak256": "0x2077d7a827c3ba2fa53c92b87bc586385c1310c3fe67edffe09c31a22900cbf9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://49f7294dcb82d3acd8b7e2f95546cc85e24ceb7e3564a21ebf852544887cda3b",
+				"dweb:/ipfs/QmPgzEiFpUHmGYfXF4EEdpCnb9TPnCpoF48bNMGw74vk1b"
+			]
+		},
+		"contracts/TakerTraitsLib.sol": {
+			"keccak256": "0x25d36a3b3645561fc5b3f35c1e93fe60220bd15f9af896b0c6263a3269710fcc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://45597b42af6b436271ac8e6577255137557ff72d45883ef4bce01198016d4bb5",
+				"dweb:/ipfs/QmamEQ6c5ffZqanpuX52PUf88wPu6Gp4T8LCVVzonAo1uS"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,299 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "salt",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "receiver",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "makerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "takerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "makingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "takingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "MakerTraits",
+								"name": "makerTraits",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IOrderMixin.Order",
+						"name": "order",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extension",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "taker",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "remainingMakingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extraData",
+						"type": "bytes"
+					}
+				],
+				"name": "getMakingAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "salt",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "receiver",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "makerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "takerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "makingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "takingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "MakerTraits",
+								"name": "makerTraits",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IOrderMixin.Order",
+						"name": "order",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extension",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "taker",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "makingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "remainingMakingAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extraData",
+						"type": "bytes"
+					}
+				],
+				"name": "getTakingAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"getMakingAmount((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,bytes32,address,uint256,uint256,bytes)": {
+					"params": {
+						"extension": "Order extension data",
+						"extraData": "Extra data",
+						"order": "Order being processed",
+						"orderHash": "Hash of the order being processed",
+						"remainingMakingAmount": "Order remaining making amount",
+						"taker": "Taker address",
+						"takingAmount": "Actual taking amount"
+					},
+					"returns": {
+						"_0": "makingAmount Actual making amount that should be used for the order"
+					}
+				},
+				"getTakingAmount((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,bytes32,address,uint256,uint256,bytes)": {
+					"params": {
+						"extension": "Order extension data",
+						"extraData": "Extra data",
+						"makingAmount": "Actual taking amount",
+						"order": "Order being processed",
+						"orderHash": "Hash of the order being processed",
+						"remainingMakingAmount": "Order remaining making amount",
+						"taker": "Taker address"
+					},
+					"returns": {
+						"_0": "takingAmount Actual taking amount that should be used for the order"
+					}
+				}
+			},
+			"title": "IAmountGetter",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"getMakingAmount((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,bytes32,address,uint256,uint256,bytes)": {
+					"notice": "View method that gets called to determine the actual making amount"
+				},
+				"getTakingAmount((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,bytes32,address,uint256,uint256,bytes)": {
+					"notice": "View method that gets called to determine the actual taking amount"
+				}
+			},
+			"notice": "Interface for external logic to determine actual making and taking amounts for orders.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/IAmountGetter.sol": "IAmountGetter"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/AddressLib.sol": {
+			"keccak256": "0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586",
+				"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR"
+			]
+		},
+		"contracts/IAmountGetter.sol": {
+			"keccak256": "0x877aa31c7903e60289a1ba750e583113b1f317a9dfaeefcbf7fd19b4c62dbd98",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d7bbeceff66893fba29928459f2afa4546d19aaacdc3e6450ca51fb216874a86",
+				"dweb:/ipfs/QmYny4mRyuGRoRGNmoqYnpU6um3KhoTmfWs1xvLnLLEs3f"
+			]
+		},
+		"contracts/IOrderMixin.sol": {
+			"keccak256": "0x34ead0b58bd2640652ad6366b4c4ea1370b66d2dd21ffb5d5b831ed54fc9cc71",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://65b82f8298ed8d9cb9eb3604af3c15129cffa009c5b0150f7f42154093d9ce96",
+				"dweb:/ipfs/QmaQoQNVTiJPKB6MVwtemAWrwyKEKR5fLqy7vyfm8oqBEx"
+			]
+		},
+		"contracts/MakerTraitsLib.sol": {
+			"keccak256": "0x2077d7a827c3ba2fa53c92b87bc586385c1310c3fe67edffe09c31a22900cbf9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://49f7294dcb82d3acd8b7e2f95546cc85e24ceb7e3564a21ebf852544887cda3b",
+				"dweb:/ipfs/QmPgzEiFpUHmGYfXF4EEdpCnb9TPnCpoF48bNMGw74vk1b"
+			]
+		},
+		"contracts/TakerTraitsLib.sol": {
+			"keccak256": "0x25d36a3b3645561fc5b3f35c1e93fe60220bd15f9af896b0c6263a3269710fcc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://45597b42af6b436271ac8e6577255137557ff72d45883ef4bce01198016d4bb5",
+				"dweb:/ipfs/QmamEQ6c5ffZqanpuX52PUf88wPu6Gp4T8LCVVzonAo1uS"
+			]
+		}
+	},
+	"version": 1
+}

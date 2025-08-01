@@ -1,0 +1,308 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "limitOrderProtocol",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "AccessDenied",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidProof",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "key",
+						"type": "bytes32"
+					}
+				],
+				"name": "lastValidated",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "leaf",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "salt",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "receiver",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "makerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "takerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "makingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "takingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "MakerTraits",
+								"name": "makerTraits",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IOrderMixin.Order",
+						"name": "",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extension",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "orderHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extraData",
+						"type": "bytes"
+					}
+				],
+				"name": "takerInteraction",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"custom:security-contact": "security@1inch.io",
+			"kind": "dev",
+			"methods": {
+				"takerInteraction((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,bytes32,address,uint256,uint256,uint256,bytes)": {
+					"details": "Verifies the proof and stores the last validated index and hashed secret. Only Limit Order Protocol can call this function."
+				}
+			},
+			"title": "Merkle Storage Invalidator contract",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"lastValidated(bytes32)": {
+					"notice": "See {IMerkleStorageInvalidator-lastValidated}."
+				},
+				"takerInteraction((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,bytes32,address,uint256,uint256,uint256,bytes)": {
+					"notice": "See {ITakerInteraction-takerInteraction}."
+				}
+			},
+			"notice": "Contract to invalidate hashed secrets from an order that supports multiple fills.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/MerkleStorageInvalidator.sol": "MerkleStorageInvalidator"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/AddressLib.sol": {
+			"keccak256": "0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586",
+				"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR"
+			]
+		},
+		"contracts/ExtensionLib.sol": {
+			"keccak256": "0x054ca2ebc73bc4dd62816bd9a3d384b89454e5e65d9d83c66637c578789d96ca",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9dc6a0163be726abd9732ac63c31f2b99a8f9505ae6280e9d2fa13150990d113",
+				"dweb:/ipfs/Qmd6CCRPTWE13WPEMTZZqisDkMQXdWm99P5N66CcT4uGaj"
+			]
+		},
+		"contracts/IOrderMixin.sol": {
+			"keccak256": "0x34ead0b58bd2640652ad6366b4c4ea1370b66d2dd21ffb5d5b831ed54fc9cc71",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://65b82f8298ed8d9cb9eb3604af3c15129cffa009c5b0150f7f42154093d9ce96",
+				"dweb:/ipfs/QmaQoQNVTiJPKB6MVwtemAWrwyKEKR5fLqy7vyfm8oqBEx"
+			]
+		},
+		"contracts/ITakerInteraction.sol": {
+			"keccak256": "0xc6c79fdf0d75b02c9ebc50a12c274c2fe8418fcbcdd49359ae58b6115859c5fc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c73fc4a6102e51ced68750cf515daff7d7a4b9f4b380c92c66fc4a086dd4bb07",
+				"dweb:/ipfs/QmbNmr96WaNzrvbiz6YZwQGLiCck5u4ujWx8LfRfK9wCY1"
+			]
+		},
+		"contracts/MakerTraitsLib.sol": {
+			"keccak256": "0x2077d7a827c3ba2fa53c92b87bc586385c1310c3fe67edffe09c31a22900cbf9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://49f7294dcb82d3acd8b7e2f95546cc85e24ceb7e3564a21ebf852544887cda3b",
+				"dweb:/ipfs/QmPgzEiFpUHmGYfXF4EEdpCnb9TPnCpoF48bNMGw74vk1b"
+			]
+		},
+		"contracts/OffsetsLib.sol": {
+			"keccak256": "0xd8218c3b9241501b41fc0f0b579dce00a0b81603582e11f3da28881ed00801a1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://039b36fea4d1d12fe0d02ac26bdefd959c6fe447bd73ea0599a49e08f1712999",
+				"dweb:/ipfs/QmcyPNSDc2RjksmwYPY3jGAjD9bEhBAWi3qKYWNvtHHZT6"
+			]
+		},
+		"contracts/TakerTraitsLib.sol": {
+			"keccak256": "0x25d36a3b3645561fc5b3f35c1e93fe60220bd15f9af896b0c6263a3269710fcc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://45597b42af6b436271ac8e6577255137557ff72d45883ef4bce01198016d4bb5",
+				"dweb:/ipfs/QmamEQ6c5ffZqanpuX52PUf88wPu6Gp4T8LCVVzonAo1uS"
+			]
+		},
+		"contracts/escrow/EscrowFactoryContext.sol": {
+			"keccak256": "0xb7555886ff3c177bb87e17ba925fe3d09aa800a72b5ccb3407190ef71a839258",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://03642340181eb69d360e0f068edaa7b79b9d974588aae5527c653ea52528cbe1",
+				"dweb:/ipfs/QmeX9kwjQoJoSvjyv6KWP1UVpfSk3zDexm6oxzbZcGaTqm"
+			]
+		},
+		"contracts/escrow/Hashes.sol": {
+			"keccak256": "0x89c4d3509df3e1387752bf07f04bdf967ddb424d8917808bc9e6e4bc7995db0e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2909c1aa5cc0ef4288e88c361fc114838aeb2c9396f83886ab9c52b39baf602f",
+				"dweb:/ipfs/QmS246CQ6JN1dH3khhZvURLFEgfJ1DiV7J1VYxisfqLVnm"
+			]
+		},
+		"contracts/escrow/MerkleProof.sol": {
+			"keccak256": "0x2fe0f666490bd88fa762c0c49cbba17e847e45cf259d744d6797636392beee41",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1ad7a55cdd08f0c336167e50e2fd172142de995409a81ffc0602792262f2e86c",
+				"dweb:/ipfs/QmY7g2r17jJ6ZGoJ3DzSa7abQzvUXJATGy4sd8SEPt7oA3"
+			]
+		},
+		"contracts/escrow/MerkleStorageInvalidator.sol": {
+			"keccak256": "0x251a5ee28e19f3e262c01d7d98f7de2a66590c7ecf226a080a37222c4172a2b9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9438656187363cc9db67789e0844cbdaebe94ed4360a9b8323ad38f94aa958d2",
+				"dweb:/ipfs/QmNiPyMauM3jMVLw6ZFNUa9F4UdsLWoqqWMofRrqraWWyk"
+			]
+		},
+		"contracts/escrow/interfaces/IBaseEscrow.sol": {
+			"keccak256": "0xe04d997a41e2fb0df08f6eee1519944d7e226d9d816115cc2a6977860c863724",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ef01bf4cb93bc9f2ccb0ada3780ae8aae98c59300e1fa40efd1a1211bf2dabe4",
+				"dweb:/ipfs/QmSY8bq7C9ZVqHmtuC8kQPAMsg3o2bB2y688JPCGoohZhX"
+			]
+		},
+		"contracts/escrow/interfaces/IEscrowFactory.sol": {
+			"keccak256": "0xfb3454f375ee259573cc102d40196fcfeca01b9efe9cda5e0ca70904953098d6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a55845ead5ca7c285655db00d4496d69b5bf827cb5879def98747086928c1f93",
+				"dweb:/ipfs/QmbMCjNg9fVYwjeC9u9jp6JEZVVBaevu2ExraPAHotX6BX"
+			]
+		},
+		"contracts/escrow/interfaces/IMerkleStorageInvalidator.sol": {
+			"keccak256": "0xd17224d668d000818ff16b0546939c025230579122c5ff06ca39c2b11f0d6501",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d335075a4479906c6bd9fe6c86a7fa41b04cf2af7b561a31bee24219341b4ff3",
+				"dweb:/ipfs/QmSocpVTFVioeKAGecjETXNzHNCQpHuGY5py47W8kHiHRv"
+			]
+		},
+		"contracts/escrow/libraries/TimelocksLib.sol": {
+			"keccak256": "0xd6ad5f65d792a1bc4c40328afed51281b7855ebf69696125cbbec42b695e9379",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://db449fb7a9bd6d334ed5aeb4e14297a729e2a97fbf20b22821e18446b67bbaf2",
+				"dweb:/ipfs/QmXUUBE2dyAF922kCaxhqDr1yL1s7t44di44ewWzEoKG3d"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,47 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"title": "Timelocks library for compact storage of timelocks in a uint256.",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/libraries/TimelocksLib.sol": "TimelocksLib"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/escrow/libraries/TimelocksLib.sol": {
+			"keccak256": "0xd6ad5f65d792a1bc4c40328afed51281b7855ebf69696125cbbec42b695e9379",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://db449fb7a9bd6d334ed5aeb4e14297a729e2a97fbf20b22821e18446b67bbaf2",
+				"dweb:/ipfs/QmXUUBE2dyAF922kCaxhqDr1yL1s7t44di44ewWzEoKG3d"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,47 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"title": "The helper library to calculate linearly taker amount from maker amount and vice versa.",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/AmountCalculatorLib.sol": "AmountCalculatorLib"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/AmountCalculatorLib.sol": {
+			"keccak256": "0xb1fbc0d0951abce2e6d07b021ab03af781de5fa6b5002422d183ce81d9f2ef32",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://dc4475dfc44f050aa4ee8b7335aa512a02669055639a0dbf267f81376a54cd89",
+				"dweb:/ipfs/QmSVm5eyL8sPJGxc3oZmmZCeK5aonjr1M7qHUdtpAGHX4G"
+			]
+		}
+	},
+	"version": 1
+}

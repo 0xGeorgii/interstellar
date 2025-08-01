@@ -1,0 +1,622 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint32",
+						"name": "rescueDelay",
+						"type": "uint32"
+					},
+					{
+						"internalType": "contract IERC20",
+						"name": "accessToken",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidCaller",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidImmutables",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidSecret",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidTime",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "NativeTokenSendingFailure",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "SafeTransferFailed",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [],
+				"name": "EscrowCancelled",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "secret",
+						"type": "bytes32"
+					}
+				],
+				"name": "EscrowWithdrawal",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "FundsRescued",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "FACTORY",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "PROXY_BYTECODE_HASH",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "RESCUE_DELAY",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "orderHash",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "hashlock",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "taker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "token",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "safetyDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Timelocks",
+								"name": "timelocks",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IBaseEscrow.Immutables",
+						"name": "immutables",
+						"type": "tuple"
+					}
+				],
+				"name": "cancel",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "secret",
+						"type": "bytes32"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "orderHash",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "hashlock",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "taker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "token",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "safetyDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Timelocks",
+								"name": "timelocks",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IBaseEscrow.Immutables",
+						"name": "immutables",
+						"type": "tuple"
+					}
+				],
+				"name": "publicWithdraw",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "orderHash",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "hashlock",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "taker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "token",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "safetyDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Timelocks",
+								"name": "timelocks",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IBaseEscrow.Immutables",
+						"name": "immutables",
+						"type": "tuple"
+					}
+				],
+				"name": "rescueFunds",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "secret",
+						"type": "bytes32"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "orderHash",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "hashlock",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "taker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "token",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "safetyDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Timelocks",
+								"name": "timelocks",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IBaseEscrow.Immutables",
+						"name": "immutables",
+						"type": "tuple"
+					}
+				],
+				"name": "withdraw",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"custom:security-contact": "security@1inch.io",
+			"details": "Funds are locked in at the time of contract deployment. For this taker calls the `EscrowFactory.createDstEscrow` function. To perform any action, the caller must provide the same Immutables values used to deploy the clone contract.",
+			"events": {
+				"EscrowWithdrawal(bytes32)": {
+					"params": {
+						"secret": "The secret that unlocks the escrow."
+					}
+				},
+				"FundsRescued(address,uint256)": {
+					"params": {
+						"amount": "The amount of tokens rescued.",
+						"token": "The address of the token rescued. Zero address for native token."
+					}
+				}
+			},
+			"kind": "dev",
+			"methods": {
+				"cancel((bytes32,bytes32,uint256,uint256,uint256,uint256,uint256,uint256))": {
+					"details": "The function works on the time interval highlighted with capital letters: ---- contract deployed --/-- finality --/-- private withdrawal --/-- public withdrawal --/-- PRIVATE CANCELLATION ----"
+				},
+				"publicWithdraw(bytes32,(bytes32,bytes32,uint256,uint256,uint256,uint256,uint256,uint256))": {
+					"details": "The function works on the time intervals highlighted with capital letters: ---- contract deployed --/-- finality --/-- private withdrawal --/-- PUBLIC WITHDRAWAL --/-- private cancellation ----"
+				},
+				"withdraw(bytes32,(bytes32,bytes32,uint256,uint256,uint256,uint256,uint256,uint256))": {
+					"details": "The function works on the time intervals highlighted with capital letters: ---- contract deployed --/-- finality --/-- PRIVATE WITHDRAWAL --/-- PUBLIC WITHDRAWAL --/-- private cancellation ----"
+				}
+			},
+			"title": "Destination Escrow contract for cross-chain atomic swap.",
+			"version": 1
+		},
+		"userdoc": {
+			"events": {
+				"EscrowCancelled()": {
+					"notice": "Emitted on escrow cancellation."
+				},
+				"EscrowWithdrawal(bytes32)": {
+					"notice": "Emitted on successful withdrawal."
+				},
+				"FundsRescued(address,uint256)": {
+					"notice": "Emitted when funds are rescued."
+				}
+			},
+			"kind": "user",
+			"methods": {
+				"FACTORY()": {
+					"notice": "See {IBaseEscrow-FACTORY}."
+				},
+				"PROXY_BYTECODE_HASH()": {
+					"notice": "See {IEscrow-PROXY_BYTECODE_HASH}."
+				},
+				"RESCUE_DELAY()": {
+					"notice": "See {IBaseEscrow-RESCUE_DELAY}."
+				},
+				"cancel((bytes32,bytes32,uint256,uint256,uint256,uint256,uint256,uint256))": {
+					"notice": "See {IBaseEscrow-cancel}."
+				},
+				"publicWithdraw(bytes32,(bytes32,bytes32,uint256,uint256,uint256,uint256,uint256,uint256))": {
+					"notice": "See {IBaseEscrow-publicWithdraw}."
+				},
+				"rescueFunds(address,uint256,(bytes32,bytes32,uint256,uint256,uint256,uint256,uint256,uint256))": {
+					"notice": "See {IBaseEscrow-rescueFunds}."
+				},
+				"withdraw(bytes32,(bytes32,bytes32,uint256,uint256,uint256,uint256,uint256,uint256))": {
+					"notice": "See {IBaseEscrow-withdraw}."
+				}
+			},
+			"notice": "Contract to initially lock funds and then unlock them with verification of the secret presented.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/EscrowDst.sol": "EscrowDst"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/AddressLib.sol": {
+			"keccak256": "0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586",
+				"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR"
+			]
+		},
+		"contracts/Errors.sol": {
+			"keccak256": "0x1b0625096e82d06abdcf1844172ef78ef54a5e878761f4d905fda07eaf098424",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5cd99f1a4836c07461cb3ea023ae2f6d1d01e80694b764a87623aa7252754756",
+				"dweb:/ipfs/QmNPNDuiNU6TJatZcdBcrwixBoo5MSXNDq4kaXhpJLWGpB"
+			]
+		},
+		"contracts/IDaiLikePermit.sol": {
+			"keccak256": "0x0bcc9c886acb32f5664e3bfd0640e6fc1de6525b8f6103f25906d040d054ce07",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://551e3b7d18d5e83727491f6749643a9a1e9a2e253a1a9be56eeb44e4c1b13876",
+				"dweb:/ipfs/QmSpGRSD3DDP1EbBbXDPqAbSP58roEvCsosMQCDtSDnEBa"
+			]
+		},
+		"contracts/IERC20.sol": {
+			"keccak256": "0x91104f4bcc877f2506e4485b871efe0a6beb5c1ef7de9c374d99d75289905905",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://57a7ecbec5ff542c117d36c7487386b5653ad21d0a83414e859d4202e069b36f",
+				"dweb:/ipfs/QmaPocSUaysdjd1Ksa5kttxRHxhA7XWd6HrQ9teLFRyR6W"
+			]
+		},
+		"contracts/IERC20Permit.sol": {
+			"keccak256": "0x08d82b52e80c1a83f792c519388ca1ae86ae441bdfbd7d84addc82ef9c499a9e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a5449dde3b5541f3f653b352bfa0aa4f3e91ab24a110106319baa83940f540a5",
+				"dweb:/ipfs/QmUuadcLdSPtqMuuhBgkdAZHrE3tx5rdQ7HCXCsa8RDaTU"
+			]
+		},
+		"contracts/IERC7597Permit.sol": {
+			"keccak256": "0x550ff037524afe9ef46d2c54ed59f4048c4216122e80da3b17872e05c163a74e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://40df00df81d4a4d2a78105bf5b86694037d885abf30e1e47e286b6e3310bdf48",
+				"dweb:/ipfs/QmVqmS8BpSMV8PeiUme1tNDq48zfn71XYxWhb6fLtxCT6f"
+			]
+		},
+		"contracts/IPermit2.sol": {
+			"keccak256": "0x79e985eddaf616078cde10431fb615b577ba83b96ca5f4161cb82939a787a195",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a1d3243656736b7e4422a6eb7bbac982760f99674b9d80286e5bf45f1fe04376",
+				"dweb:/ipfs/QmacX52RVqLnUgWxji9FkfFSZeGnV6qdxkkX5kMxakYRyW"
+			]
+		},
+		"contracts/IWETH.sol": {
+			"keccak256": "0x2dc6d61d66f1881a6c273b5f30f9a82e6eda4988c7aeaf0b26549a5e10c9fcb9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1695d9fd49960e732d2228a304fe9bc221439293e940fdcb9c17419ccafdcfc1",
+				"dweb:/ipfs/QmPZrdz4icyWQeR5Yf1zDQnpH8MmYiHyKofVcwvwNADjRh"
+			]
+		},
+		"contracts/RevertReasonForwarder.sol": {
+			"keccak256": "0x00dbd12fec0c2696dd0862143457d8a23c998dcabd5d038fc85512ba93467417",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2fa738dc80ff7027762294869f2b181177a5c122fe04ceea08c619c544c820aa",
+				"dweb:/ipfs/QmUzrDWe6k6Hhfdd5MxUhnW34B8mGJ5pwx65NM9EBLkLCU"
+			]
+		},
+		"contracts/SafeERC20.sol": {
+			"keccak256": "0x2cdc46994aa3302bf2026f5a2ba0650398aaf41278354075544bf42350ee947e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a65e24d410030f7b192d59a0096213bee88b963822052502572cdb9ee55e9d9",
+				"dweb:/ipfs/QmcQH7uVFhTLGxTuqUsiEsc7qH9HE7xGgSQTXijoVUcKUn"
+			]
+		},
+		"contracts/escrow/BaseEscrow.sol": {
+			"keccak256": "0x1436c940fcfbeb3c3248055e1b50184f41df8108362ff40db0183814c6311d89",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://635dbe2acc93061e09b7db75dafe8bb9ae6f72dd6901cd304015869f1cdbe4b8",
+				"dweb:/ipfs/QmZ6jF22Liy5tERu5faTNdhXgsUSTdv5xsB3bmaDZiHJiK"
+			]
+		},
+		"contracts/escrow/Create2.sol": {
+			"keccak256": "0x02f0faa500d9ca42186fd2f4d7f381777cd2970bfa2fd7fb542c309361aae81c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d5f45127145cf2abd405d732ccaeaf467d853a3779bc85e090133e6005d197a4",
+				"dweb:/ipfs/Qmdg1VaKkAWQ1qcVWYr9cRuoeGhg2QvrJPyDukyR7dwf8d"
+			]
+		},
+		"contracts/escrow/Escrow.sol": {
+			"keccak256": "0x718d6ffede1758a543b6d76f329130015f8af696e17178d5661c81b35d9f9839",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8e910017a35b6888d255e2791790c192a588b41c6d2b9c239199c0c2317add84",
+				"dweb:/ipfs/QmXKnin4x6MPWeyTgxiLzvWj11NxxAEcu7JGzjUoGETb1g"
+			]
+		},
+		"contracts/escrow/EscrowDst.sol": {
+			"keccak256": "0xfe3c0b2e00dd1361d98f55415f69a0523596a524117e9f54020013244330bdd0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d7987fc602bd31f8ebe9d1e6d44c1a71210873345e12a72702ae06d1228ca1f3",
+				"dweb:/ipfs/QmaU8aN8dpaBnDPQRxJHpfPfpa8paUg1jzsUpXJQu2FJvb"
+			]
+		},
+		"contracts/escrow/interfaces/IBaseEscrow.sol": {
+			"keccak256": "0xe04d997a41e2fb0df08f6eee1519944d7e226d9d816115cc2a6977860c863724",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ef01bf4cb93bc9f2ccb0ada3780ae8aae98c59300e1fa40efd1a1211bf2dabe4",
+				"dweb:/ipfs/QmSY8bq7C9ZVqHmtuC8kQPAMsg3o2bB2y688JPCGoohZhX"
+			]
+		},
+		"contracts/escrow/interfaces/IEscrow.sol": {
+			"keccak256": "0x8b0063cd06290dfc5d4bb20a9bdddff356f3100bd63d5a0c3f1b8d30d028fc10",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://78e81dc1ba169a0f328efc4824192f8906189e3cb2ed263543ecd1f9a61b7ac6",
+				"dweb:/ipfs/QmeaB5ymsLYZhUXrt4TFW6qYBPgLgUMEoAhggqAscZ2pNq"
+			]
+		},
+		"contracts/escrow/interfaces/IEscrowDst.sol": {
+			"keccak256": "0x47e7f223fb5d3f14e66b42601ef0140be43168f8735ec685a63d5743267bd89f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://361250ff019f86ca38b972e3ce8a93d04d5bc29458ab90fa8e8e6dc27908d355",
+				"dweb:/ipfs/QmcUKvij9ygLt3XPXCmc9xTTpJ5HJw86YdJxeGYfBHMD4Z"
+			]
+		},
+		"contracts/escrow/libraries/ImmutablesLib.sol": {
+			"keccak256": "0x61b4a772ba17cbb1e52d09c71903d694a6f032c7c3bff76ba109a2d2b606fcca",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fdb8ddefa42e86bc8456c01bada27d8d68e52a64c1f117fc939df6052ca9f93b",
+				"dweb:/ipfs/QmciZYyGkJHxsoDQHGnXYCf9R6eKpHz88L161MMiozTvwH"
+			]
+		},
+		"contracts/escrow/libraries/ProxyHashLib.sol": {
+			"keccak256": "0x9e899d11aa1548e1f30a61ad87668b0dfd2b3464fbc1abef8ec95352c8c34c0d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://69ec0c4598b490cb0146872af15dd06e490db823efb3e60c6d500e62deb49689",
+				"dweb:/ipfs/QmdfEwW8nzfHN9HpDRh8DKR2LrVWLXpJrig28aHhFkNUp3"
+			]
+		},
+		"contracts/escrow/libraries/TimelocksLib.sol": {
+			"keccak256": "0xd6ad5f65d792a1bc4c40328afed51281b7855ebf69696125cbbec42b695e9379",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://db449fb7a9bd6d334ed5aeb4e14297a729e2a97fbf20b22821e18446b67bbaf2",
+				"dweb:/ipfs/QmXUUBE2dyAF922kCaxhqDr1yL1s7t44di44ewWzEoKG3d"
+			]
+		}
+	},
+	"version": 1
+}

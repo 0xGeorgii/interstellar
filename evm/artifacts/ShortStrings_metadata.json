@@ -1,0 +1,72 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "InvalidShortString",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "str",
+						"type": "string"
+					}
+				],
+				"name": "StringTooLong",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"details": "This library provides functions to convert short memory strings into a `ShortString` type that can be used as an immutable variable. Strings of arbitrary length can be optimized using this library if they are short enough (up to 31 bytes) by packing them with their length (1 byte) in a single EVM word (32 bytes). Additionally, a fallback mechanism can be used for every other case. Usage example: ```solidity contract Named {     using ShortStrings for *;     ShortString private immutable _name;     string private _nameFallback;     constructor(string memory contractName) {         _name = contractName.toShortStringWithFallback(_nameFallback);     }     function name() external view returns (string memory) {         return _name.toStringWithFallback(_nameFallback);     } } ```",
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/ShortStrings.sol": "ShortStrings"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/ShortStrings.sol": {
+			"keccak256": "0xbfad9b3a40cba77c2f86c308175ac65e06b10e76159d635b018171c67846da69",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e3b4406389834f36341fc1c87d4e8ab26d902a40b887a17689a238e5a97ef0b2",
+				"dweb:/ipfs/QmQtUoQLw3NjKrAutrXqepURfrb4pvoZ6mXp4AcUuosH4D"
+			]
+		},
+		"contracts/StorageSlot.sol": {
+			"keccak256": "0x2373cbbdccacc6777b2a7b459aa35b7629b0f7aa63566cd9afe45be9f256645c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f4d674a1520bc8b6888ff3c5e663a45b5da00bc20ddc82e8351f6bc28d6f23db",
+				"dweb:/ipfs/QmWG1RkHw5AtGdQZQpk4CZZc4HXp9bJVSf1xiR2yF9yAtP"
+			]
+		}
+	},
+	"version": 1
+}

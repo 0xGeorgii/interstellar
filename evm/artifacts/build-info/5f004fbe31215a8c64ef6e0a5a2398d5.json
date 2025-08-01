@@ -1,0 +1,80 @@
+{
+	"id": "5f004fbe31215a8c64ef6e0a5a2398d5",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/escrow/StringUtil.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\n/**\n * @title StringUtil\n * @dev Library with gas-efficient string operations.\n */\nlibrary StringUtil {\n    /**\n     * @notice Converts a uint256 value to its hexadecimal string representation.\n     * @param value The uint256 value to convert.\n     * @return The hexadecimal string representation of the input value.\n     */\n    function toHex(uint256 value) internal pure returns (string memory) {\n        return toHex(abi.encodePacked(value));\n    }\n\n    /**\n     * @notice Converts an address to its hexadecimal string representation.\n     * @param value The address to convert.\n     * @return The hexadecimal string representation of the input address.\n     */\n    function toHex(address value) internal pure returns (string memory) {\n        return toHex(abi.encodePacked(value));\n    }\n\n    /**\n     * @dev Converts arbitrary bytes to their hexadecimal string representation.\n     * This is an assembly adaptation of highly optimized toHex16 code by Mikhail Vladimirov.\n     * Reference: https://stackoverflow.com/a/69266989\n     * @param data The bytes to be converted to hexadecimal string.\n     * @return result The hexadecimal string representation of the input bytes.\n     */\n    function toHex(bytes memory data) internal pure returns (string memory result) {\n        assembly (\"memory-safe\") { // solhint-disable-line no-inline-assembly\n            function _toHex16(input) -> output {\n                output := or(\n                    and(input, 0xFFFFFFFFFFFFFFFF000000000000000000000000000000000000000000000000),\n                    shr(64, and(input, 0x0000000000000000FFFFFFFFFFFFFFFF00000000000000000000000000000000))\n                )\n                output := or(\n                    and(output, 0xFFFFFFFF000000000000000000000000FFFFFFFF000000000000000000000000),\n                    shr(32, and(output, 0x00000000FFFFFFFF000000000000000000000000FFFFFFFF0000000000000000))\n                )\n                output := or(\n                    and(output, 0xFFFF000000000000FFFF000000000000FFFF000000000000FFFF000000000000),\n                    shr(16, and(output, 0x0000FFFF000000000000FFFF000000000000FFFF000000000000FFFF00000000))\n                )\n                output := or(\n                    and(output, 0xFF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000),\n                    shr(8, and(output, 0x00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000))\n                )\n                output := or(\n                    shr(4, and(output, 0xF000F000F000F000F000F000F000F000F000F000F000F000F000F000F000F000)),\n                    shr(8, and(output, 0x0F000F000F000F000F000F000F000F000F000F000F000F000F000F000F000F00))\n                )\n                output := add(\n                    add(0x3030303030303030303030303030303030303030303030303030303030303030, output),\n                    mul(\n                        and(\n                            shr(4, add(output, 0x0606060606060606060606060606060606060606060606060606060606060606)),\n                            0x0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F\n                        ),\n                        7 // Change 7 to 39 for lower case output\n                    )\n                )\n            }\n\n            result := mload(0x40)\n            let length := mload(data)\n            let resultLength := shl(1, length)\n            let toPtr := add(result, 0x22) // 32 bytes for length + 2 bytes for '0x'\n            mstore(0x40, add(toPtr, resultLength)) // move free memory pointer\n            mstore(add(result, 2), 0x3078) // 0x3078 is right aligned so we write to `result + 2`\n            // to store the last 2 bytes in the beginning of the string\n            mstore(result, add(resultLength, 2)) // extra 2 bytes for '0x'\n\n            for {\n                let fromPtr := add(data, 0x20)\n                let endPtr := add(fromPtr, length)\n            } lt(fromPtr, endPtr) {\n                fromPtr := add(fromPtr, 0x20)\n            } {\n                let rawData := mload(fromPtr)\n                let hexData := _toHex16(rawData)\n                mstore(toPtr, hexData)\n                toPtr := add(toPtr, 0x20)\n                hexData := _toHex16(shl(128, rawData))\n                mstore(toPtr, hexData)\n                toPtr := add(toPtr, 0x20)\n            }\n        }\n    }\n}\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/escrow/StringUtil.sol": {
+				"StringUtil": {
+					"abi": [],
+					"devdoc": {
+						"details": "Library with gas-efficient string operations.",
+						"kind": "dev",
+						"methods": {},
+						"title": "StringUtil",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220fc43d20855c784f54074e74ecf37e32a9a1c3a243f9255cfd3534c1b51614f8e64736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xFC NUMBER 0xD2 ADDMOD SSTORE 0xC7 DUP5 CREATE2 BLOCKHASH PUSH21 0xE74ECF37E32A9A1C3A243F9255CFD3534C1B51614F DUP15 PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "141:4242:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea2646970667358221220fc43d20855c784f54074e74ecf37e32a9a1c3a243f9255cfd3534c1b51614f8e64736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xFC NUMBER 0xD2 ADDMOD SSTORE 0xC7 DUP5 CREATE2 BLOCKHASH PUSH21 0xE74ECF37E32A9A1C3A243F9255CFD3534C1B51614F DUP15 PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "141:4242:0:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"Library with gas-efficient string operations.\",\"kind\":\"dev\",\"methods\":{},\"title\":\"StringUtil\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/escrow/StringUtil.sol\":\"StringUtil\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/escrow/StringUtil.sol\":{\"keccak256\":\"0xb05bff1a3a5461b1f16248220067a2bd52e5c7e41c14be0aebb6520985b67ccb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://03495f22f0128969aef7dd46f65e215851cbd52cfa4d87eac0c930c5cd84826d\",\"dweb:/ipfs/QmekA9rM82XXPKdHpCwAYhirtSCB5AJo16TUvyBYVWhKhZ\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/escrow/StringUtil.sol": {
+				"id": 0
+			}
+		}
+	}
+}

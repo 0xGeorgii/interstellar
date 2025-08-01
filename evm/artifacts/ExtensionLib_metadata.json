@@ -1,0 +1,48 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"title": "Extension Library",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"notice": "Library to retrieve data from the bitmap.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/ExtensionLib.sol": "ExtensionLib"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/escrow/ExtensionLib.sol": {
+			"keccak256": "0xaa8ce41f4681d88b4bc2f109c538031248b3a6d384a959777383ab33f5ef4696",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://248bd4ad5a0abb76f435f360d4017851b55ce300662ea0c6a86b17b3175a947c",
+				"dweb:/ipfs/QmbmMiZBmFh6Xc7vPe87oviq6wL57P2akdN2U5YRcT6x6e"
+			]
+		}
+	},
+	"version": 1
+}

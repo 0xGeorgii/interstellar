@@ -1,0 +1,62 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "RemainingInvalidatedOrder",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"details": "The remaining amount is used as a nonce to invalidate the order. When order is created, the remaining invalidator is 0. When order is filled, the remaining invalidator is the inverse of the remaining amount.",
+			"errors": {
+				"RemainingInvalidatedOrder()": [
+					{
+						"details": "The error is thrown when an attempt is made to invalidate an already invalidated entity."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {},
+			"title": "RemainingInvalidatorLib",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"notice": "The library provides a mechanism to invalidate order based on the remaining amount of the order.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/RemainingInvalidatorLib.sol": "RemainingInvalidatorLib"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/RemainingInvalidatorLib.sol": {
+			"keccak256": "0x192440c67bd53e14ab492c5bf4d65ce44055272cf4e80950d601a5af0db567fc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8389ea1731fbb20c5b5f19da828c1e4f4146b8a94d033df70bc34f2674b484ea",
+				"dweb:/ipfs/QmXacGH2xWNnN3SrS27QKykd7rUKpmMCrffNwQtq6L8ZG5"
+			]
+		}
+	},
+	"version": 1
+}

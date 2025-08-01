@@ -1,0 +1,80 @@
+{
+	"id": "011ce01949362510d36ea1da577217e4",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/escrow/ExtensionLib.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\n/**\n * @title Extension Library\n * @notice Library to retrieve data from the bitmap.\n */\nlibrary ExtensionLib {\n    bytes1 private constant _RESOLVER_FEE_FLAG = 0x01;\n    bytes1 private constant _INTEGRATOR_FEE_FLAG = 0x02;\n    bytes1 private constant _CUSTOM_RECEIVER_FLAG = 0x04;\n    uint256 private constant _WHITELIST_SHIFT = 3;\n\n    /**\n     * @notice Checks if the resolver fee is enabled\n     * @param extraData Data to be processed in the extension\n     * @return True if the resolver fee is enabled\n     */\n    function resolverFeeEnabled(bytes calldata extraData) internal pure returns (bool) {\n        return extraData[extraData.length - 1] & _RESOLVER_FEE_FLAG == _RESOLVER_FEE_FLAG;\n    }\n\n    /**\n     * @notice Checks if the integrator fee is enabled\n     * @param extraData Data to be processed in the extension\n     * @return True if the integrator fee is enabled\n     */\n    function integratorFeeEnabled(bytes calldata extraData) internal pure returns (bool) {\n        return extraData[extraData.length - 1] & _INTEGRATOR_FEE_FLAG == _INTEGRATOR_FEE_FLAG;\n    }\n\n    /**\n     * @notice Checks if the custom receiver is enabled\n     * @param extraData Data to be processed in the extension\n     * @return True if the custom receiver is specified\n     */\n    function hasCustomReceiver(bytes calldata extraData) internal pure returns (bool) {\n        return extraData[extraData.length - 1] & _CUSTOM_RECEIVER_FLAG == _CUSTOM_RECEIVER_FLAG;\n    }\n\n    /**\n     * @notice Gets the number of resolvers in the whitelist\n     * @param extraData Data to be processed in the extension\n     * @return The number of resolvers in the whitelist\n     */\n    function resolversCount(bytes calldata extraData) internal pure returns (uint256) {\n        return uint8(extraData[extraData.length - 1]) >> _WHITELIST_SHIFT;\n    }\n}\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/escrow/ExtensionLib.sol": {
+				"ExtensionLib": {
+					"abi": [],
+					"devdoc": {
+						"kind": "dev",
+						"methods": {},
+						"title": "Extension Library",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220a5b89dfa2c78b267a56617d709ad16531d273b1637fd8215be21b055c28caf1764736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xA5 0xB8 SWAP14 STATICCALL 0x2C PUSH25 0xB267A56617D709AD16531D273B1637FD8215BE21B055C28CAF OR PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "147:1740:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea2646970667358221220a5b89dfa2c78b267a56617d709ad16531d273b1637fd8215be21b055c28caf1764736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xA5 0xB8 SWAP14 STATICCALL 0x2C PUSH25 0xB267A56617D709AD16531D273B1637FD8215BE21B055C28CAF OR PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "147:1740:0:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"title\":\"Extension Library\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"Library to retrieve data from the bitmap.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/escrow/ExtensionLib.sol\":\"ExtensionLib\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/escrow/ExtensionLib.sol\":{\"keccak256\":\"0xaa8ce41f4681d88b4bc2f109c538031248b3a6d384a959777383ab33f5ef4696\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://248bd4ad5a0abb76f435f360d4017851b55ce300662ea0c6a86b17b3175a947c\",\"dweb:/ipfs/QmbmMiZBmFh6Xc7vPe87oviq6wL57P2akdN2U5YRcT6x6e\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"notice": "Library to retrieve data from the bitmap.",
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/escrow/ExtensionLib.sol": {
+				"id": 0
+			}
+		}
+	}
+}

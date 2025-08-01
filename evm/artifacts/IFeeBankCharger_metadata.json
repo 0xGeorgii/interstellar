@@ -1,0 +1,180 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "FEE_BANK",
+				"outputs": [
+					{
+						"internalType": "contract IFeeBank",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "availableCredit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "decreaseAvailableCredit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "allowance",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "increaseAvailableCredit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "allowance",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"FEE_BANK()": {
+					"returns": {
+						"_0": "The instance of the FeeBank contract."
+					}
+				},
+				"availableCredit(address)": {
+					"params": {
+						"account": "The address of the account for which the available credit is being queried."
+					},
+					"returns": {
+						"_0": "The available credit of the queried account."
+					}
+				},
+				"decreaseAvailableCredit(address,uint256)": {
+					"params": {
+						"account": "The address of the account for which the available credit is being decreased.",
+						"amount": "The amount by which the available credit will be decreased."
+					},
+					"returns": {
+						"allowance": "The updated available credit of the specified account."
+					}
+				},
+				"increaseAvailableCredit(address,uint256)": {
+					"params": {
+						"account": "The address of the account for which the available credit is being increased.",
+						"amount": "The amount by which the available credit will be increased."
+					},
+					"returns": {
+						"allowance": "The updated available credit of the specified account."
+					}
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"FEE_BANK()": {
+					"notice": "Returns the instance of the FeeBank contract."
+				},
+				"availableCredit(address)": {
+					"notice": "Returns the available credit for a given account."
+				},
+				"decreaseAvailableCredit(address,uint256)": {
+					"notice": "Decreases the available credit of a given account by a specified amount."
+				},
+				"increaseAvailableCredit(address,uint256)": {
+					"notice": "Increases the available credit of a given account by a specified amount."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/IFeeBankCharger.sol": "IFeeBankCharger"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/escrow/IFeeBank.sol": {
+			"keccak256": "0x2d03d415bbaac2c6b26bd33899adc942a3d59ef50e46f035b89eab2bddb98d58",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5c7b806a040a59a41cdd50f60a0d74325a4610da64444ae0e51a7481649016f0",
+				"dweb:/ipfs/QmQ3aWgMc74QGPT8aYMtTaMM32qcRwVcwTU5M2kcpaCQYK"
+			]
+		},
+		"contracts/escrow/IFeeBankCharger.sol": {
+			"keccak256": "0xef4750e40bf2488873716b2e2f9315e69ac9e9c65bb5de2a16e39be6f3b483ea",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://640bcc74edee9d439ef412e782cd0ea889efd024486879cf5bad0242d831afda",
+				"dweb:/ipfs/QmRQg6dCgA7z4vQgn3sGZhNtJ4pLTDbvBbkTfw77sr11GE"
+			]
+		}
+	},
+	"version": 1
+}

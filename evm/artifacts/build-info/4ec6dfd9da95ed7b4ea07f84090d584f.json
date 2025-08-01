@@ -1,0 +1,125 @@
+{
+	"id": "4ec6dfd9da95ed7b4ea07f84090d584f",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/escrow/IERC20MetadataUppercase.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\n/**\n * @title IERC20MetadataUppercase\n * @dev Interface for ERC20 token metadata with uppercase naming convention.\n */\ninterface IERC20MetadataUppercase {\n    /**\n     * @notice Gets the token name.\n     * @return Token name.\n     */\n    function NAME() external view returns (string memory); // solhint-disable-line func-name-mixedcase\n\n    /**\n     * @notice Gets the token symbol.\n     * @return Token symbol.\n     */\n    function SYMBOL() external view returns (string memory); // solhint-disable-line func-name-mixedcase\n}\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/escrow/IERC20MetadataUppercase.sol": {
+				"IERC20MetadataUppercase": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "NAME",
+							"outputs": [
+								{
+									"internalType": "string",
+									"name": "",
+									"type": "string"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [],
+							"name": "SYMBOL",
+							"outputs": [
+								{
+									"internalType": "string",
+									"name": "",
+									"type": "string"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"details": "Interface for ERC20 token metadata with uppercase naming convention.",
+						"kind": "dev",
+						"methods": {
+							"NAME()": {
+								"returns": {
+									"_0": "Token name."
+								}
+							},
+							"SYMBOL()": {
+								"returns": {
+									"_0": "Token symbol."
+								}
+							}
+						},
+						"title": "IERC20MetadataUppercase",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"NAME\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"SYMBOL\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for ERC20 token metadata with uppercase naming convention.\",\"kind\":\"dev\",\"methods\":{\"NAME()\":{\"returns\":{\"_0\":\"Token name.\"}},\"SYMBOL()\":{\"returns\":{\"_0\":\"Token symbol.\"}}},\"title\":\"IERC20MetadataUppercase\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"NAME()\":{\"notice\":\"Gets the token name.\"},\"SYMBOL()\":{\"notice\":\"Gets the token symbol.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/escrow/IERC20MetadataUppercase.sol\":\"IERC20MetadataUppercase\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/escrow/IERC20MetadataUppercase.sol\":{\"keccak256\":\"0x7d97ae2903bd1ee8f24ab7bbf099d075f2bbd451b0f755366479d249780d0c68\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://dc9fa6bc781aa748e35b1c45d3072e6c49eb6d61b954327ef135f67093d75339\",\"dweb:/ipfs/Qmc8e1g1c18b7J4m1DqFYvgpeuA7Pabk2Sz59mJgCBwSRB\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"NAME()": {
+								"notice": "Gets the token name."
+							},
+							"SYMBOL()": {
+								"notice": "Gets the token symbol."
+							}
+						},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/escrow/IERC20MetadataUppercase.sol": {
+				"id": 0
+			}
+		}
+	}
+}

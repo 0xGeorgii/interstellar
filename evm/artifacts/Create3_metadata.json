@@ -1,0 +1,69 @@
+{
+	"compiler": {
+		"version": "0.8.19+commit.7dd6d404"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "ErrorCreatingContract",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ErrorCreatingProxy",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TargetAlreadyExists",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"author": "Agustin Aguilar <aa@horizon.io>",
+			"kind": "dev",
+			"methods": {},
+			"stateVariables": {
+				"_PROXY_CHILD_BYTECODE": {
+					"details": "If this code is deployed using CREATE2 it can be used to decouple `creationCode` from the child contract address 0x67363d3d37363d34f0ff3d5260086017f3: 0x00  0x68  0x68XXXXXXXXXXXXXXXXXX  PUSH9 bytecode  0x363d3d37363d34f0ff 0x01  0x3d  0x3d                    RETURNDATASIZE  0 0x363d3d37363d34f0ff 0x02  0x52  0x52                    MSTORE 0x03  0x60  0x6009                  PUSH1 09        9 0x04  0x60  0x6017                  PUSH1 17        23 9 0x05  0xf3  0xf3                    RETURN 0x363d3d37363d34f0: 0x00  0x36  0x36                    CALLDATASIZE    cds 0x01  0x3d  0x3d                    RETURNDATASIZE  0 cds 0x02  0x3d  0x3d                    RETURNDATASIZE  0 0 cds 0x03  0x37  0x37                    CALLDATACOPY 0x04  0x36  0x36                    CALLDATASIZE    cds 0x05  0x3d  0x3d                    RETURNDATASIZE  0 cds 0x06  0x34  0x34                    CALLVALUE       val 0 cds 0x07  0xf0  0xf0                    CREATE          addr 0x08  0xff  0xff                    SELFDESTRUCT"
+				}
+			},
+			"title": "A library for deploying contracts EIP-3171 style.",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/deployer/Create3.sol": "Create3"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/deployer/Create3.sol": {
+			"keccak256": "0x2d0a8dde0d541e759a1ab99f583a949d996953e425cfdd9e99f36df09d46243f",
+			"license": "Unlicense",
+			"urls": [
+				"bzz-raw://ae5338ff822239fc3a9165750ae429d874201d2d086a082746d440481a86fd70",
+				"dweb:/ipfs/QmcU2PY89hh9VZ8egihXhbq7s93DXAyQeayWceRRBZZyKF"
+			]
+		}
+	},
+	"version": 1
+}

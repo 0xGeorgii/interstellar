@@ -1,0 +1,112 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "holder",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "nonce",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expiry",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "allowed",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					}
+				],
+				"name": "permit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Interface for Dai-like permit function allowing token spending via signatures.",
+			"kind": "dev",
+			"methods": {
+				"permit(address,address,uint256,uint256,bool,uint8,bytes32,bytes32)": {
+					"params": {
+						"allowed": "True to allow, false to disallow spending.",
+						"expiry": "Time when the permit expires.",
+						"holder": "Token holder's address.",
+						"nonce": "Current nonce of the holder.",
+						"spender": "Spender's address.",
+						"v": ", r, s Signature components."
+					}
+				}
+			},
+			"title": "IDaiLikePermit",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"permit(address,address,uint256,uint256,bool,uint8,bytes32,bytes32)": {
+					"notice": "Approves spending of tokens via off-chain signatures."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/IDaiLikePermit.sol": "IDaiLikePermit"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/IDaiLikePermit.sol": {
+			"keccak256": "0x0bcc9c886acb32f5664e3bfd0640e6fc1de6525b8f6103f25906d040d054ce07",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://551e3b7d18d5e83727491f6749643a9a1e9a2e253a1a9be56eeb44e4c1b13876",
+				"dweb:/ipfs/QmSpGRSD3DDP1EbBbXDPqAbSP58roEvCsosMQCDtSDnEBa"
+			]
+		}
+	},
+	"version": 1
+}

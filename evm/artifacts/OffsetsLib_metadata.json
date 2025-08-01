@@ -1,0 +1,61 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "OffsetOutOfBounds",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"details": "A library for retrieving values by offsets from a concatenated calldata.",
+			"errors": {
+				"OffsetOutOfBounds()": [
+					{
+						"details": "Error to be thrown when the offset is out of bounds."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {},
+			"title": "OffsetsLib",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/OffsetsLib.sol": "OffsetsLib"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/OffsetsLib.sol": {
+			"keccak256": "0xd8218c3b9241501b41fc0f0b579dce00a0b81603582e11f3da28881ed00801a1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://039b36fea4d1d12fe0d02ac26bdefd959c6fe447bd73ea0599a49e08f1712999",
+				"dweb:/ipfs/QmcyPNSDc2RjksmwYPY3jGAjD9bEhBAWi3qKYWNvtHHZT6"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,88 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea26469706673582212203eb2c095b16948e2d5b1f29424dfe257bf5a994bcfa0663a349159d8b1cf12cd64736f6c63430008170033",
+			"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 RETURNDATACOPY 0xB2 0xC0 SWAP6 0xB1 PUSH10 0x48E2D5B1F29424DFE257 0xBF GAS SWAP10 0x4B 0xCF LOG0 PUSH7 0x3A349159D8B1CF SLT 0xCD PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+			"sourceMap": "629:26209:7:-:0;;;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "5f80fdfea26469706673582212203eb2c095b16948e2d5b1f29424dfe257bf5a994bcfa0663a349159d8b1cf12cd64736f6c63430008170033",
+			"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 RETURNDATACOPY 0xB2 0xC0 SWAP6 0xB1 PUSH10 0x48E2D5B1F29424DFE257 0xBF GAS SWAP10 0x4B 0xCF LOG0 PUSH7 0x3A349159D8B1CF SLT 0xCD PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+			"sourceMap": "629:26209:7:-:0;;"
+		}
+	},
+	"abi": [
+		{
+			"inputs": [],
+			"name": "ForceApproveFailed",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "Permit2TransferAmountTooHigh",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "SafeDecreaseAllowanceFailed",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "SafeIncreaseAllowanceFailed",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "SafePermitBadLength",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "SafeTransferFailed",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "SafeTransferFromFailed",
+			"type": "error"
+		}
+	]
+}

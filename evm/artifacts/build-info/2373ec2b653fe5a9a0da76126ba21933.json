@@ -1,0 +1,1227 @@
+{
+	"id": "2373ec2b653fe5a9a0da76126ba21933",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/ExtensionLib.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\nimport \"./IOrderMixin.sol\";\nimport \"./OffsetsLib.sol\";\n\n/**\n * @title ExtensionLib\n * @notice Library for retrieving extensions information for the IOrderMixin Interface.\n */\nlibrary ExtensionLib {\n    using AddressLib for Address;\n    using OffsetsLib for Offsets;\n\n    enum DynamicField {\n        MakerAssetSuffix,\n        TakerAssetSuffix,\n        MakingAmountData,\n        TakingAmountData,\n        Predicate,\n        MakerPermit,\n        PreInteractionData,\n        PostInteractionData,\n        CustomData\n    }\n\n    /**\n     * @notice Returns the MakerAssetSuffix from the provided extension calldata.\n     * @param extension The calldata from which the MakerAssetSuffix is to be retrieved.\n     * @return calldata Bytes representing the MakerAssetSuffix.\n     */\n    function makerAssetSuffix(bytes calldata extension) internal pure returns(bytes calldata) {\n        return _get(extension, DynamicField.MakerAssetSuffix);\n    }\n\n    /**\n     * @notice Returns the TakerAssetSuffix from the provided extension calldata.\n     * @param extension The calldata from which the TakerAssetSuffix is to be retrieved.\n     * @return calldata Bytes representing the TakerAssetSuffix.\n     */\n    function takerAssetSuffix(bytes calldata extension) internal pure returns(bytes calldata) {\n        return _get(extension, DynamicField.TakerAssetSuffix);\n    }\n\n    /**\n     * @notice Returns the MakingAmountData from the provided extension calldata.\n     * @param extension The calldata from which the MakingAmountData is to be retrieved.\n     * @return calldata Bytes representing the MakingAmountData.\n     */\n    function makingAmountData(bytes calldata extension) internal pure returns(bytes calldata) {\n        return _get(extension, DynamicField.MakingAmountData);\n    }\n\n    /**\n     * @notice Returns the TakingAmountData from the provided extension calldata.\n     * @param extension The calldata from which the TakingAmountData is to be retrieved.\n     * @return calldata Bytes representing the TakingAmountData.\n     */\n    function takingAmountData(bytes calldata extension) internal pure returns(bytes calldata) {\n        return _get(extension, DynamicField.TakingAmountData);\n    }\n\n    /**\n     * @notice Returns the order's predicate from the provided extension calldata.\n     * @param extension The calldata from which the predicate is to be retrieved.\n     * @return calldata Bytes representing the predicate.\n     */\n    function predicate(bytes calldata extension) internal pure returns(bytes calldata) {\n        return _get(extension, DynamicField.Predicate);\n    }\n\n    /**\n     * @notice Returns the maker's permit from the provided extension calldata.\n     * @param extension The calldata from which the maker's permit is to be retrieved.\n     * @return calldata Bytes representing the maker's permit.\n     */\n    function makerPermit(bytes calldata extension) internal pure returns(bytes calldata) {\n        return _get(extension, DynamicField.MakerPermit);\n    }\n\n\n    /**\n     * @notice Returns the pre-interaction from the provided extension calldata.\n     * @param extension The calldata from which the pre-interaction is to be retrieved.\n     * @return calldata Bytes representing the pre-interaction.\n     */\n    function preInteractionTargetAndData(bytes calldata extension) internal pure returns(bytes calldata) {\n        return _get(extension, DynamicField.PreInteractionData);\n    }\n\n    /**\n     * @notice Returns the post-interaction from the provided extension calldata.\n     * @param extension The calldata from which the post-interaction is to be retrieved.\n     * @return calldata Bytes representing the post-interaction.\n     */\n    function postInteractionTargetAndData(bytes calldata extension) internal pure returns(bytes calldata) {\n        return _get(extension, DynamicField.PostInteractionData);\n    }\n\n    /**\n     * @notice Returns extra suffix data from the provided extension calldata.\n     * @param extension The calldata from which the extra suffix data is to be retrieved.\n     * @return calldata Bytes representing the extra suffix data.\n     */\n    function customData(bytes calldata extension) internal pure returns(bytes calldata) {\n        if (extension.length < 0x20) return msg.data[:0];\n        uint256 offsets = uint256(bytes32(extension));\n        unchecked {\n            return extension[0x20 + (offsets >> 224):];\n        }\n    }\n\n    /**\n     * @notice Retrieves a specific field from the provided extension calldata.\n     * @dev The first 32 bytes of an extension calldata contain offsets to the end of each field within the calldata.\n     * @param extension The calldata from which the field is to be retrieved.\n     * @param field The specific dynamic field to retrieve from the extension.\n     * @return calldata Bytes representing the requested field.\n     */\n    function _get(bytes calldata extension, DynamicField field) private pure returns(bytes calldata) {\n        if (extension.length < 0x20) return msg.data[:0];\n\n        Offsets offsets;\n        bytes calldata concat;\n        assembly (\"memory-safe\") {  // solhint-disable-line no-inline-assembly\n            offsets := calldataload(extension.offset)\n            concat.offset := add(extension.offset, 0x20)\n            concat.length := sub(extension.length, 0x20)\n        }\n\n        return offsets.get(concat, uint256(field));\n    }\n}"
+			},
+			"contracts/OffsetsLib.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\ntype Offsets is uint256;\n\n/// @title OffsetsLib\n/// @dev A library for retrieving values by offsets from a concatenated calldata.\nlibrary OffsetsLib {\n\n    /// @dev Error to be thrown when the offset is out of bounds.\n    error OffsetOutOfBounds();\n\n    /**\n     * @notice Retrieves the field value calldata corresponding to the provided field index from the concatenated calldata.\n     * @dev \n     * The function performs the following steps:\n     * 1. Retrieve the start and end of the segment corresponding to the provided index from the offsets array.\n     * 2. Get the value from segment using offset and length calculated based on the start and end of the segment.\n     * 3. Throw `OffsetOutOfBounds` error if the length of the segment is greater than the length of the concatenated data.\n     * @param offsets The offsets encoding the start and end of each segment within the concatenated calldata.\n     * @param concat The concatenated calldata.\n     * @param index The index of the segment to retrieve. The field index 0 corresponds to the lowest bytes of the offsets array.\n     * @return result The calldata from a segment of the concatenated calldata corresponding to the provided index.\n     */\n    function get(Offsets offsets, bytes calldata concat, uint256 index) internal pure returns(bytes calldata result) {\n        bytes4 exception = OffsetOutOfBounds.selector;\n        assembly (\"memory-safe\") {  // solhint-disable-line no-inline-assembly\n            let bitShift := shl(5, index)                                   // bitShift = index * 32\n            let begin := and(0xffffffff, shr(bitShift, shl(32, offsets)))   // begin = offsets[ bitShift : bitShift + 32 ]\n            let end := and(0xffffffff, shr(bitShift, offsets))              // end   = offsets[ bitShift + 32 : bitShift + 64 ]\n            result.offset := add(concat.offset, begin)\n            result.length := sub(end, begin)\n            if gt(end, concat.length) {\n                mstore(0, exception)\n                revert(0, 4)\n            }\n        }\n    }\n}"
+			},
+			"contracts/IOrderMixin.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\nimport \"./AddressLib.sol\";\nimport \"./MakerTraitsLib.sol\";\nimport \"./TakerTraitsLib.sol\";\n\n/**\n * @title IOrderMixin\n * @notice Interface for order processing logic in the 1inch Limit Order Protocol.\n */\ninterface IOrderMixin {\n    struct Order {\n        uint256 salt;\n        Address maker;\n        Address receiver;\n        Address makerAsset;\n        Address takerAsset;\n        uint256 makingAmount;\n        uint256 takingAmount;\n        MakerTraits makerTraits;\n    }\n\n    error InvalidatedOrder();\n    error TakingAmountExceeded();\n    error PrivateOrder();\n    error BadSignature();\n    error OrderExpired();\n    error WrongSeriesNonce();\n    error SwapWithZeroAmount();\n    error PartialFillNotAllowed();\n    error OrderIsNotSuitableForMassInvalidation();\n    error EpochManagerAndBitInvalidatorsAreIncompatible();\n    error ReentrancyDetected();\n    error PredicateIsNotTrue();\n    error TakingAmountTooHigh();\n    error MakingAmountTooLow();\n    error TransferFromMakerToTakerFailed();\n    error TransferFromTakerToMakerFailed();\n    error MismatchArraysLengths();\n    error InvalidPermit2Transfer();\n    error SimulationResults(bool success, bytes res);\n\n    /**\n     * @notice Emitted when order gets filled\n     * @param orderHash Hash of the order\n     * @param remainingAmount Amount of the maker asset that remains to be filled\n     */\n    event OrderFilled(\n        bytes32 orderHash,\n        uint256 remainingAmount\n    );\n\n    /**\n     * @notice Emitted when order without `useBitInvalidator` gets cancelled\n     * @param orderHash Hash of the order\n     */\n    event OrderCancelled(\n        bytes32 orderHash\n    );\n\n    /**\n     * @notice Emitted when order with `useBitInvalidator` gets cancelled\n     * @param maker Maker address\n     * @param slotIndex Slot index that was updated\n     * @param slotValue New slot value\n     */\n    event BitInvalidatorUpdated(\n        address indexed maker,\n        uint256 slotIndex,\n        uint256 slotValue\n    );\n\n    /**\n     * @notice Delegates execution to custom implementation. Could be used to validate if `transferFrom` works properly\n     * @dev The function always reverts and returns the simulation results in revert data.\n     * @param target Addresses that will be delegated\n     * @param data Data that will be passed to delegatee\n     */\n    function simulate(address target, bytes calldata data) external;\n\n    /**\n     * @notice Cancels order's quote\n     * @param makerTraits Order makerTraits\n     * @param orderHash Hash of the order to cancel\n     */\n    function cancelOrder(MakerTraits makerTraits, bytes32 orderHash) external;\n\n    /**\n     * @notice Cancels orders' quotes\n     * @param makerTraits Orders makerTraits\n     * @param orderHashes Hashes of the orders to cancel\n     */\n    function cancelOrders(MakerTraits[] calldata makerTraits, bytes32[] calldata orderHashes) external;\n\n    /**\n     * @notice Cancels all quotes of the maker (works for bit-invalidating orders only)\n     * @param makerTraits Order makerTraits\n     * @param additionalMask Additional bitmask to invalidate orders\n     */\n    function bitsInvalidateForOrder(MakerTraits makerTraits, uint256 additionalMask) external;\n\n    /**\n     * @notice Fills order's quote, fully or partially (whichever is possible).\n     * @param order Order quote to fill\n     * @param r R component of signature\n     * @param vs VS component of signature\n     * @param amount Taker amount to fill\n     * @param takerTraits Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies\n     * minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.\n     * @return makingAmount Actual amount transferred from maker to taker\n     * @return takingAmount Actual amount transferred from taker to maker\n     * @return orderHash Hash of the filled order\n     */\n    function fillOrder(\n        Order calldata order,\n        bytes32 r,\n        bytes32 vs,\n        uint256 amount,\n        TakerTraits takerTraits\n    ) external payable returns(uint256 makingAmount, uint256 takingAmount, bytes32 orderHash);\n\n    /**\n     * @notice Same as `fillOrder` but allows to specify arguments that are used by the taker.\n     * @param order Order quote to fill\n     * @param r R component of signature\n     * @param vs VS component of signature\n     * @param amount Taker amount to fill\n     * @param takerTraits Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies\n     * minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.\n     * @param args Arguments that are used by the taker (target, extension, interaction, permit)\n     * @return makingAmount Actual amount transferred from maker to taker\n     * @return takingAmount Actual amount transferred from taker to maker\n     * @return orderHash Hash of the filled order\n     */\n    function fillOrderArgs(\n        IOrderMixin.Order calldata order,\n        bytes32 r,\n        bytes32 vs,\n        uint256 amount,\n        TakerTraits takerTraits,\n        bytes calldata args\n    ) external payable returns(uint256 makingAmount, uint256 takingAmount, bytes32 orderHash);\n\n    /**\n     * @notice Same as `fillOrder` but uses contract-based signatures.\n     * @param order Order quote to fill\n     * @param signature Signature to confirm quote ownership\n     * @param amount Taker amount to fill\n     * @param takerTraits Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies\n     * minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.\n     * @return makingAmount Actual amount transferred from maker to taker\n     * @return takingAmount Actual amount transferred from taker to maker\n     * @return orderHash Hash of the filled order\n     * @dev See tests for examples\n     */\n    function fillContractOrder(\n        Order calldata order,\n        bytes calldata signature,\n        uint256 amount,\n        TakerTraits takerTraits\n    ) external returns(uint256 makingAmount, uint256 takingAmount, bytes32 orderHash);\n\n    /**\n     * @notice Same as `fillContractOrder` but allows to specify arguments that are used by the taker.\n     * @param order Order quote to fill\n     * @param signature Signature to confirm quote ownership\n     * @param amount Taker amount to fill\n     * @param takerTraits Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies\n     * minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.\n     * @param args Arguments that are used by the taker (target, extension, interaction, permit)\n     * @return makingAmount Actual amount transferred from maker to taker\n     * @return takingAmount Actual amount transferred from taker to maker\n     * @return orderHash Hash of the filled order\n     * @dev See tests for examples\n     */\n    function fillContractOrderArgs(\n        Order calldata order,\n        bytes calldata signature,\n        uint256 amount,\n        TakerTraits takerTraits,\n        bytes calldata args\n    ) external returns(uint256 makingAmount, uint256 takingAmount, bytes32 orderHash);\n\n    /**\n     * @notice Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes\n     * @param maker Maker address\n     * @param slot Slot number to return bitmask for\n     * @return result Each bit represents whether corresponding was already invalidated\n     */\n    function bitInvalidatorForOrder(address maker, uint256 slot) external view returns(uint256 result);\n\n    /**\n     * @notice Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes\n     * @param orderHash Hash of the order\n     * @return remaining Remaining amount of the order\n     */\n    function remainingInvalidatorForOrder(address maker, bytes32 orderHash) external view returns(uint256 remaining);\n\n    /**\n     * @notice Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes\n     * @param orderHash Hash of the order\n     * @return remainingRaw Inverse of the remaining amount of the order if order was filled at least once, otherwise 0\n     */\n    function rawRemainingInvalidatorForOrder(address maker, bytes32 orderHash) external view returns(uint256 remainingRaw);\n\n    /**\n     * @notice Returns order hash, hashed with limit order protocol contract EIP712\n     * @param order Order\n     * @return orderHash Hash of the order\n     */\n    function hashOrder(IOrderMixin.Order calldata order) external view returns(bytes32 orderHash);\n}"
+			},
+			"contracts/TakerTraitsLib.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\ntype TakerTraits is uint256;\n\n/**\n * @title TakerTraitsLib\n * @notice This library to manage and check TakerTraits, which are used to encode the taker's preferences for an order in a single uint256.\n * @dev The TakerTraits are structured as follows:\n * High bits are used for flags\n * 255 bit `_MAKER_AMOUNT_FLAG`           - If set, the taking amount is calculated based on making amount, otherwise making amount is calculated based on taking amount.\n * 254 bit `_UNWRAP_WETH_FLAG`            - If set, the WETH will be unwrapped into ETH before sending to taker.\n * 253 bit `_SKIP_ORDER_PERMIT_FLAG`      - If set, the order skips maker's permit execution.\n * 252 bit `_USE_PERMIT2_FLAG`            - If set, the order uses the permit2 function for authorization.\n * 251 bit `_ARGS_HAS_TARGET`             - If set, then first 20 bytes of args are treated as target address for maker’s funds transfer.\n * 224-247 bits `ARGS_EXTENSION_LENGTH`   - The length of the extension calldata in the args.\n * 200-223 bits `ARGS_INTERACTION_LENGTH` - The length of the interaction calldata in the args.\n * 0-184 bits                             - The threshold amount (the maximum amount a taker agrees to give in exchange for a making amount).\n */\nlibrary TakerTraitsLib {\n    uint256 private constant _MAKER_AMOUNT_FLAG = 1 << 255;\n    uint256 private constant _UNWRAP_WETH_FLAG = 1 << 254;\n    uint256 private constant _SKIP_ORDER_PERMIT_FLAG = 1 << 253;\n    uint256 private constant _USE_PERMIT2_FLAG = 1 << 252;\n    uint256 private constant _ARGS_HAS_TARGET = 1 << 251;\n\n    uint256 private constant _ARGS_EXTENSION_LENGTH_OFFSET = 224;\n    uint256 private constant _ARGS_EXTENSION_LENGTH_MASK = 0xffffff;\n    uint256 private constant _ARGS_INTERACTION_LENGTH_OFFSET = 200;\n    uint256 private constant _ARGS_INTERACTION_LENGTH_MASK = 0xffffff;\n\n    uint256 private constant _AMOUNT_MASK = 0x000000000000000000ffffffffffffffffffffffffffffffffffffffffffffff;\n\n    /**\n     * @notice Checks if the args should contain target address.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the args should contain target address.\n     */\n    function argsHasTarget(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _ARGS_HAS_TARGET) != 0;\n    }\n\n    /**\n     * @notice Retrieves the length of the extension calldata from the takerTraits.\n     * @param takerTraits The traits of the taker.\n     * @return result The length of the extension calldata encoded in the takerTraits.\n     */\n    function argsExtensionLength(TakerTraits takerTraits) internal pure returns (uint256) {\n        return (TakerTraits.unwrap(takerTraits) >> _ARGS_EXTENSION_LENGTH_OFFSET) & _ARGS_EXTENSION_LENGTH_MASK;\n    }\n\n    /**\n     * @notice Retrieves the length of the interaction calldata from the takerTraits.\n     * @param takerTraits The traits of the taker.\n     * @return result The length of the interaction calldata encoded in the takerTraits.\n     */\n    function argsInteractionLength(TakerTraits takerTraits) internal pure returns (uint256) {\n        return (TakerTraits.unwrap(takerTraits) >> _ARGS_INTERACTION_LENGTH_OFFSET) & _ARGS_INTERACTION_LENGTH_MASK;\n    }\n\n    /**\n     * @notice Checks if the taking amount should be calculated based on making amount.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the taking amount should be calculated based on making amount.\n     */\n    function isMakingAmount(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _MAKER_AMOUNT_FLAG) != 0;\n    }\n\n    /**\n     * @notice Checks if the order should unwrap WETH and send ETH to taker.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the order should unwrap WETH.\n     */\n    function unwrapWeth(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _UNWRAP_WETH_FLAG) != 0;\n    }\n\n    /**\n     * @notice Checks if the order should skip maker's permit execution.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the order don't apply permit.\n     */\n    function skipMakerPermit(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _SKIP_ORDER_PERMIT_FLAG) != 0;\n    }\n\n    /**\n     * @notice Checks if the order uses the permit2 instead of permit.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the order uses the permit2.\n     */\n    function usePermit2(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _USE_PERMIT2_FLAG) != 0;\n    }\n\n    /**\n     * @notice Retrieves the threshold amount from the takerTraits.\n     * The maximum amount a taker agrees to give in exchange for a making amount.\n     * @param takerTraits The traits of the taker.\n     * @return result The threshold amount encoded in the takerTraits.\n     */\n    function threshold(TakerTraits takerTraits) internal pure returns (uint256) {\n        return TakerTraits.unwrap(takerTraits) & _AMOUNT_MASK;\n    }\n}"
+			},
+			"contracts/MakerTraitsLib.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\ntype MakerTraits is uint256;\n\n/**\n * @title MakerTraitsLib\n * @notice A library to manage and check MakerTraits, which are used to encode the maker's preferences for an order in a single uint256.\n * @dev\n * The MakerTraits type is a uint256 and different parts of the number are used to encode different traits.\n * High bits are used for flags\n * 255 bit `NO_PARTIAL_FILLS_FLAG`          - if set, the order does not allow partial fills\n * 254 bit `ALLOW_MULTIPLE_FILLS_FLAG`      - if set, the order permits multiple fills\n * 253 bit                                  - unused\n * 252 bit `PRE_INTERACTION_CALL_FLAG`      - if set, the order requires pre-interaction call\n * 251 bit `POST_INTERACTION_CALL_FLAG`     - if set, the order requires post-interaction call\n * 250 bit `NEED_CHECK_EPOCH_MANAGER_FLAG`  - if set, the order requires to check the epoch manager\n * 249 bit `HAS_EXTENSION_FLAG`             - if set, the order has extension(s)\n * 248 bit `USE_PERMIT2_FLAG`               - if set, the order uses permit2\n * 247 bit `UNWRAP_WETH_FLAG`               - if set, the order requires to unwrap WETH\n\n * Low 200 bits are used for allowed sender, expiration, nonceOrEpoch, and series\n * uint80 last 10 bytes of allowed sender address (0 if any)\n * uint40 expiration timestamp (0 if none)\n * uint40 nonce or epoch\n * uint40 series\n */\nlibrary MakerTraitsLib {\n    // Low 200 bits are used for allowed sender, expiration, nonceOrEpoch, and series\n    uint256 private constant _ALLOWED_SENDER_MASK = type(uint80).max;\n    uint256 private constant _EXPIRATION_OFFSET = 80;\n    uint256 private constant _EXPIRATION_MASK = type(uint40).max;\n    uint256 private constant _NONCE_OR_EPOCH_OFFSET = 120;\n    uint256 private constant _NONCE_OR_EPOCH_MASK = type(uint40).max;\n    uint256 private constant _SERIES_OFFSET = 160;\n    uint256 private constant _SERIES_MASK = type(uint40).max;\n\n    uint256 private constant _NO_PARTIAL_FILLS_FLAG = 1 << 255;\n    uint256 private constant _ALLOW_MULTIPLE_FILLS_FLAG = 1 << 254;\n    uint256 private constant _PRE_INTERACTION_CALL_FLAG = 1 << 252;\n    uint256 private constant _POST_INTERACTION_CALL_FLAG = 1 << 251;\n    uint256 private constant _NEED_CHECK_EPOCH_MANAGER_FLAG = 1 << 250;\n    uint256 private constant _HAS_EXTENSION_FLAG = 1 << 249;\n    uint256 private constant _USE_PERMIT2_FLAG = 1 << 248;\n    uint256 private constant _UNWRAP_WETH_FLAG = 1 << 247;\n\n    /**\n     * @notice Checks if the order has the extension flag set.\n     * @dev If the `HAS_EXTENSION_FLAG` is set in the makerTraits, then the protocol expects that the order has extension(s).\n     * @param makerTraits The traits of the maker.\n     * @return result A boolean indicating whether the flag is set.\n     */\n    function hasExtension(MakerTraits makerTraits) internal pure returns (bool) {\n        return (MakerTraits.unwrap(makerTraits) & _HAS_EXTENSION_FLAG) != 0;\n    }\n\n    /**\n     * @notice Checks if the maker allows a specific taker to fill the order.\n     * @param makerTraits The traits of the maker.\n     * @param sender The address of the taker to be checked.\n     * @return result A boolean indicating whether the taker is allowed.\n     */\n    function isAllowedSender(MakerTraits makerTraits, address sender) internal pure returns (bool) {\n        uint160 allowedSender = uint160(MakerTraits.unwrap(makerTraits) & _ALLOWED_SENDER_MASK);\n        return allowedSender == 0 || allowedSender == uint160(sender) & _ALLOWED_SENDER_MASK;\n    }\n\n    /**\n     * @notice Returns the expiration time of the order.\n     * @param makerTraits The traits of the maker.\n     * @return result The expiration timestamp of the order.\n     */\n    function getExpirationTime(MakerTraits makerTraits) internal pure returns (uint256) {\n        return (MakerTraits.unwrap(makerTraits) >> _EXPIRATION_OFFSET) & _EXPIRATION_MASK;\n    }\n\n    /**\n     * @notice Checks if the order has expired.\n     * @param makerTraits The traits of the maker.\n     * @return result A boolean indicating whether the order has expired.\n     */\n    function isExpired(MakerTraits makerTraits) internal view returns (bool) {\n        uint256 expiration = getExpirationTime(makerTraits);\n        return expiration != 0 && expiration < block.timestamp;  // solhint-disable-line not-rely-on-time\n    }\n\n    /**\n     * @notice Returns the nonce or epoch of the order.\n     * @param makerTraits The traits of the maker.\n     * @return result The nonce or epoch of the order.\n     */\n    function nonceOrEpoch(MakerTraits makerTraits) internal pure returns (uint256) {\n        return (MakerTraits.unwrap(makerTraits) >> _NONCE_OR_EPOCH_OFFSET) & _NONCE_OR_EPOCH_MASK;\n    }\n\n    /**\n     * @notice Returns the series of the order.\n     * @param makerTraits The traits of the maker.\n     * @return result The series of the order.\n     */\n    function series(MakerTraits makerTraits) internal pure returns (uint256) {\n        return (MakerTraits.unwrap(makerTraits) >> _SERIES_OFFSET) & _SERIES_MASK;\n    }\n\n    /**\n      * @notice Determines if the order allows partial fills.\n      * @dev If the _NO_PARTIAL_FILLS_FLAG is not set in the makerTraits, then the order allows partial fills.\n      * @param makerTraits The traits of the maker, determining their preferences for the order.\n      * @return result A boolean indicating whether the maker allows partial fills.\n      */\n    function allowPartialFills(MakerTraits makerTraits) internal pure returns (bool) {\n        return (MakerTraits.unwrap(makerTraits) & _NO_PARTIAL_FILLS_FLAG) == 0;\n    }\n\n    /**\n     * @notice Checks if the maker needs pre-interaction call.\n     * @param makerTraits The traits of the maker.\n     * @return result A boolean indicating whether the maker needs a pre-interaction call.\n     */\n    function needPreInteractionCall(MakerTraits makerTraits) internal pure returns (bool) {\n        return (MakerTraits.unwrap(makerTraits) & _PRE_INTERACTION_CALL_FLAG) != 0;\n    }\n\n    /**\n     * @notice Checks if the maker needs post-interaction call.\n     * @param makerTraits The traits of the maker.\n     * @return result A boolean indicating whether the maker needs a post-interaction call.\n     */\n    function needPostInteractionCall(MakerTraits makerTraits) internal pure returns (bool) {\n        return (MakerTraits.unwrap(makerTraits) & _POST_INTERACTION_CALL_FLAG) != 0;\n    }\n\n    /**\n      * @notice Determines if the order allows multiple fills.\n      * @dev If the _ALLOW_MULTIPLE_FILLS_FLAG is set in the makerTraits, then the maker allows multiple fills.\n      * @param makerTraits The traits of the maker, determining their preferences for the order.\n      * @return result A boolean indicating whether the maker allows multiple fills.\n      */\n    function allowMultipleFills(MakerTraits makerTraits) internal pure returns (bool) {\n        return (MakerTraits.unwrap(makerTraits) & _ALLOW_MULTIPLE_FILLS_FLAG) != 0;\n    }\n\n    /**\n      * @notice Determines if an order should use the bit invalidator or remaining amount validator.\n      * @dev The bit invalidator can be used if the order does not allow partial or multiple fills.\n      * @param makerTraits The traits of the maker, determining their preferences for the order.\n      * @return result A boolean indicating whether the bit invalidator should be used.\n      * True if the order requires the use of the bit invalidator.\n      */\n    function useBitInvalidator(MakerTraits makerTraits) internal pure returns (bool) {\n        return !allowPartialFills(makerTraits) || !allowMultipleFills(makerTraits);\n    }\n\n    /**\n     * @notice Checks if the maker needs to check the epoch.\n     * @param makerTraits The traits of the maker.\n     * @return result A boolean indicating whether the maker needs to check the epoch manager.\n     */\n    function needCheckEpochManager(MakerTraits makerTraits) internal pure returns (bool) {\n        return (MakerTraits.unwrap(makerTraits) & _NEED_CHECK_EPOCH_MANAGER_FLAG) != 0;\n    }\n\n    /**\n     * @notice Checks if the maker uses permit2.\n     * @param makerTraits The traits of the maker.\n     * @return result A boolean indicating whether the maker uses permit2.\n     */\n    function usePermit2(MakerTraits makerTraits) internal pure returns (bool) {\n        return MakerTraits.unwrap(makerTraits) & _USE_PERMIT2_FLAG != 0;\n    }\n\n    /**\n     * @notice Checks if the maker needs to unwraps WETH.\n     * @param makerTraits The traits of the maker.\n     * @return result A boolean indicating whether the maker needs to unwrap WETH.\n     */\n    function unwrapWeth(MakerTraits makerTraits) internal pure returns (bool) {\n        return MakerTraits.unwrap(makerTraits) & _UNWRAP_WETH_FLAG != 0;\n    }\n}"
+			},
+			"contracts/AddressLib.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\ntype Address is uint256;\n\n/**\n* @notice AddressLib\n* @notice Library for working with addresses encoded as uint256 values, which can include flags in the highest bits.\n*/\nlibrary AddressLib {\n    uint256 private constant _LOW_160_BIT_MASK = (1 << 160) - 1;\n\n    /**\n    * @notice Returns the address representation of a uint256.\n    * @param a The uint256 value to convert to an address.\n    * @return The address representation of the provided uint256 value.\n    */\n    function get(Address a) internal pure returns (address) {\n        return address(uint160(Address.unwrap(a) & _LOW_160_BIT_MASK));\n    }\n\n    /**\n    * @notice Checks if a given flag is set for the provided address.\n    * @param a The address to check for the flag.\n    * @param flag The flag to check for in the provided address.\n    * @return True if the provided flag is set in the address, false otherwise.\n    */\n    function getFlag(Address a, uint256 flag) internal pure returns (bool) {\n        return (Address.unwrap(a) & flag) != 0;\n    }\n\n    /**\n    * @notice Returns a uint32 value stored at a specific bit offset in the provided address.\n    * @param a The address containing the uint32 value.\n    * @param offset The bit offset at which the uint32 value is stored.\n    * @return The uint32 value stored in the address at the specified bit offset.\n    */\n    function getUint32(Address a, uint256 offset) internal pure returns (uint32) {\n        return uint32(Address.unwrap(a) >> offset);\n    }\n\n    /**\n    * @notice Returns a uint64 value stored at a specific bit offset in the provided address.\n    * @param a The address containing the uint64 value.\n    * @param offset The bit offset at which the uint64 value is stored.\n    * @return The uint64 value stored in the address at the specified bit offset.\n    */\n    function getUint64(Address a, uint256 offset) internal pure returns (uint64) {\n        return uint64(Address.unwrap(a) >> offset);\n    }\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/AddressLib.sol": {
+				"AddressLib": {
+					"abi": [],
+					"devdoc": {
+						"kind": "dev",
+						"methods": {},
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea26469706673582212200b66fab8a5026a63a0b15f033e8dd4cd45dc3c312a4babf612f876c3816240e264736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 SIGNEXTEND PUSH7 0xFAB8A5026A63A0 0xB1 PUSH0 SUB RETURNDATACOPY DUP14 0xD4 0xCD GASLIMIT 0xDC EXTCODECOPY BALANCE 0x2A 0x4B 0xAB 0xF6 SLT 0xF8 PUSH23 0xC3816240E264736F6C6343000817003300000000000000 ",
+							"sourceMap": "229:1771:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea26469706673582212200b66fab8a5026a63a0b15f033e8dd4cd45dc3c312a4babf612f876c3816240e264736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 SIGNEXTEND PUSH7 0xFAB8A5026A63A0 0xB1 PUSH0 SUB RETURNDATACOPY DUP14 0xD4 0xCD GASLIMIT 0xDC EXTCODECOPY BALANCE 0x2A 0x4B 0xAB 0xF6 SLT 0xF8 PUSH23 0xC3816240E264736F6C6343000817003300000000000000 ",
+							"sourceMap": "229:1771:0:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"AddressLibLibrary for working with addresses encoded as uint256 values, which can include flags in the highest bits.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/AddressLib.sol\":\"AddressLib\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/AddressLib.sol\":{\"keccak256\":\"0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586\",\"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"notice": "AddressLibLibrary for working with addresses encoded as uint256 values, which can include flags in the highest bits.",
+						"version": 1
+					}
+				}
+			},
+			"contracts/ExtensionLib.sol": {
+				"ExtensionLib": {
+					"abi": [],
+					"devdoc": {
+						"kind": "dev",
+						"methods": {},
+						"title": "ExtensionLib",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea26469706673582212202c793b7ef13fa54ad2c2bd198e7fb9b830b62acc1b54034bd1df29878695991364736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0x2C PUSH26 0x3B7EF13FA54AD2C2BD198E7FB9B830B62ACC1B54034BD1DF2987 DUP7 SWAP6 SWAP10 SGT PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "233:5187:1:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea26469706673582212202c793b7ef13fa54ad2c2bd198e7fb9b830b62acc1b54034bd1df29878695991364736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0x2C PUSH26 0x3B7EF13FA54AD2C2BD198E7FB9B830B62ACC1B54034BD1DF2987 DUP7 SWAP6 SWAP10 SGT PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "233:5187:1:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"title\":\"ExtensionLib\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"Library for retrieving extensions information for the IOrderMixin Interface.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/ExtensionLib.sol\":\"ExtensionLib\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/AddressLib.sol\":{\"keccak256\":\"0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586\",\"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR\"]},\"contracts/ExtensionLib.sol\":{\"keccak256\":\"0x054ca2ebc73bc4dd62816bd9a3d384b89454e5e65d9d83c66637c578789d96ca\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9dc6a0163be726abd9732ac63c31f2b99a8f9505ae6280e9d2fa13150990d113\",\"dweb:/ipfs/Qmd6CCRPTWE13WPEMTZZqisDkMQXdWm99P5N66CcT4uGaj\"]},\"contracts/IOrderMixin.sol\":{\"keccak256\":\"0x34ead0b58bd2640652ad6366b4c4ea1370b66d2dd21ffb5d5b831ed54fc9cc71\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://65b82f8298ed8d9cb9eb3604af3c15129cffa009c5b0150f7f42154093d9ce96\",\"dweb:/ipfs/QmaQoQNVTiJPKB6MVwtemAWrwyKEKR5fLqy7vyfm8oqBEx\"]},\"contracts/MakerTraitsLib.sol\":{\"keccak256\":\"0x2077d7a827c3ba2fa53c92b87bc586385c1310c3fe67edffe09c31a22900cbf9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://49f7294dcb82d3acd8b7e2f95546cc85e24ceb7e3564a21ebf852544887cda3b\",\"dweb:/ipfs/QmPgzEiFpUHmGYfXF4EEdpCnb9TPnCpoF48bNMGw74vk1b\"]},\"contracts/OffsetsLib.sol\":{\"keccak256\":\"0xd8218c3b9241501b41fc0f0b579dce00a0b81603582e11f3da28881ed00801a1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://039b36fea4d1d12fe0d02ac26bdefd959c6fe447bd73ea0599a49e08f1712999\",\"dweb:/ipfs/QmcyPNSDc2RjksmwYPY3jGAjD9bEhBAWi3qKYWNvtHHZT6\"]},\"contracts/TakerTraitsLib.sol\":{\"keccak256\":\"0x25d36a3b3645561fc5b3f35c1e93fe60220bd15f9af896b0c6263a3269710fcc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://45597b42af6b436271ac8e6577255137557ff72d45883ef4bce01198016d4bb5\",\"dweb:/ipfs/QmamEQ6c5ffZqanpuX52PUf88wPu6Gp4T8LCVVzonAo1uS\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"notice": "Library for retrieving extensions information for the IOrderMixin Interface.",
+						"version": 1
+					}
+				}
+			},
+			"contracts/IOrderMixin.sol": {
+				"IOrderMixin": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "BadSignature",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "EpochManagerAndBitInvalidatorsAreIncompatible",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "InvalidPermit2Transfer",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "InvalidatedOrder",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "MakingAmountTooLow",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "MismatchArraysLengths",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "OrderExpired",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "OrderIsNotSuitableForMassInvalidation",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "PartialFillNotAllowed",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "PredicateIsNotTrue",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "PrivateOrder",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "ReentrancyDetected",
+							"type": "error"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "bool",
+									"name": "success",
+									"type": "bool"
+								},
+								{
+									"internalType": "bytes",
+									"name": "res",
+									"type": "bytes"
+								}
+							],
+							"name": "SimulationResults",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "SwapWithZeroAmount",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "TakingAmountExceeded",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "TakingAmountTooHigh",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "TransferFromMakerToTakerFailed",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "TransferFromTakerToMakerFailed",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "WrongSeriesNonce",
+							"type": "error"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": true,
+									"internalType": "address",
+									"name": "maker",
+									"type": "address"
+								},
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "slotIndex",
+									"type": "uint256"
+								},
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "slotValue",
+									"type": "uint256"
+								}
+							],
+							"name": "BitInvalidatorUpdated",
+							"type": "event"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": false,
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								}
+							],
+							"name": "OrderCancelled",
+							"type": "event"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": false,
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								},
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "remainingAmount",
+									"type": "uint256"
+								}
+							],
+							"name": "OrderFilled",
+							"type": "event"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "maker",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "slot",
+									"type": "uint256"
+								}
+							],
+							"name": "bitInvalidatorForOrder",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "result",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "MakerTraits",
+									"name": "makerTraits",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "additionalMask",
+									"type": "uint256"
+								}
+							],
+							"name": "bitsInvalidateForOrder",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "MakerTraits",
+									"name": "makerTraits",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								}
+							],
+							"name": "cancelOrder",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "MakerTraits[]",
+									"name": "makerTraits",
+									"type": "uint256[]"
+								},
+								{
+									"internalType": "bytes32[]",
+									"name": "orderHashes",
+									"type": "bytes32[]"
+								}
+							],
+							"name": "cancelOrders",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"components": [
+										{
+											"internalType": "uint256",
+											"name": "salt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "maker",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "receiver",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "makerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "takerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "makingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "takingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "MakerTraits",
+											"name": "makerTraits",
+											"type": "uint256"
+										}
+									],
+									"internalType": "struct IOrderMixin.Order",
+									"name": "order",
+									"type": "tuple"
+								},
+								{
+									"internalType": "bytes",
+									"name": "signature",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "TakerTraits",
+									"name": "takerTraits",
+									"type": "uint256"
+								}
+							],
+							"name": "fillContractOrder",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "makingAmount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "takingAmount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"components": [
+										{
+											"internalType": "uint256",
+											"name": "salt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "maker",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "receiver",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "makerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "takerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "makingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "takingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "MakerTraits",
+											"name": "makerTraits",
+											"type": "uint256"
+										}
+									],
+									"internalType": "struct IOrderMixin.Order",
+									"name": "order",
+									"type": "tuple"
+								},
+								{
+									"internalType": "bytes",
+									"name": "signature",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "TakerTraits",
+									"name": "takerTraits",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "args",
+									"type": "bytes"
+								}
+							],
+							"name": "fillContractOrderArgs",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "makingAmount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "takingAmount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"components": [
+										{
+											"internalType": "uint256",
+											"name": "salt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "maker",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "receiver",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "makerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "takerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "makingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "takingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "MakerTraits",
+											"name": "makerTraits",
+											"type": "uint256"
+										}
+									],
+									"internalType": "struct IOrderMixin.Order",
+									"name": "order",
+									"type": "tuple"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "r",
+									"type": "bytes32"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "vs",
+									"type": "bytes32"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "TakerTraits",
+									"name": "takerTraits",
+									"type": "uint256"
+								}
+							],
+							"name": "fillOrder",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "makingAmount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "takingAmount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								}
+							],
+							"stateMutability": "payable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"components": [
+										{
+											"internalType": "uint256",
+											"name": "salt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "maker",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "receiver",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "makerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "takerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "makingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "takingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "MakerTraits",
+											"name": "makerTraits",
+											"type": "uint256"
+										}
+									],
+									"internalType": "struct IOrderMixin.Order",
+									"name": "order",
+									"type": "tuple"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "r",
+									"type": "bytes32"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "vs",
+									"type": "bytes32"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "TakerTraits",
+									"name": "takerTraits",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "args",
+									"type": "bytes"
+								}
+							],
+							"name": "fillOrderArgs",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "makingAmount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "takingAmount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								}
+							],
+							"stateMutability": "payable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"components": [
+										{
+											"internalType": "uint256",
+											"name": "salt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "maker",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "receiver",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "makerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "Address",
+											"name": "takerAsset",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "makingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "takingAmount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "MakerTraits",
+											"name": "makerTraits",
+											"type": "uint256"
+										}
+									],
+									"internalType": "struct IOrderMixin.Order",
+									"name": "order",
+									"type": "tuple"
+								}
+							],
+							"name": "hashOrder",
+							"outputs": [
+								{
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "maker",
+									"type": "address"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								}
+							],
+							"name": "rawRemainingInvalidatorForOrder",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "remainingRaw",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "maker",
+									"type": "address"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "orderHash",
+									"type": "bytes32"
+								}
+							],
+							"name": "remainingInvalidatorForOrder",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "remaining",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "target",
+									"type": "address"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"name": "simulate",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"events": {
+							"BitInvalidatorUpdated(address,uint256,uint256)": {
+								"params": {
+									"maker": "Maker address",
+									"slotIndex": "Slot index that was updated",
+									"slotValue": "New slot value"
+								}
+							},
+							"OrderCancelled(bytes32)": {
+								"params": {
+									"orderHash": "Hash of the order"
+								}
+							},
+							"OrderFilled(bytes32,uint256)": {
+								"params": {
+									"orderHash": "Hash of the order",
+									"remainingAmount": "Amount of the maker asset that remains to be filled"
+								}
+							}
+						},
+						"kind": "dev",
+						"methods": {
+							"bitInvalidatorForOrder(address,uint256)": {
+								"params": {
+									"maker": "Maker address",
+									"slot": "Slot number to return bitmask for"
+								},
+								"returns": {
+									"result": "Each bit represents whether corresponding was already invalidated"
+								}
+							},
+							"bitsInvalidateForOrder(uint256,uint256)": {
+								"params": {
+									"additionalMask": "Additional bitmask to invalidate orders",
+									"makerTraits": "Order makerTraits"
+								}
+							},
+							"cancelOrder(uint256,bytes32)": {
+								"params": {
+									"makerTraits": "Order makerTraits",
+									"orderHash": "Hash of the order to cancel"
+								}
+							},
+							"cancelOrders(uint256[],bytes32[])": {
+								"params": {
+									"makerTraits": "Orders makerTraits",
+									"orderHashes": "Hashes of the orders to cancel"
+								}
+							},
+							"fillContractOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256)": {
+								"details": "See tests for examples",
+								"params": {
+									"amount": "Taker amount to fill",
+									"order": "Order quote to fill",
+									"signature": "Signature to confirm quote ownership",
+									"takerTraits": "Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit."
+								},
+								"returns": {
+									"makingAmount": "Actual amount transferred from maker to taker",
+									"orderHash": "Hash of the filled order",
+									"takingAmount": "Actual amount transferred from taker to maker"
+								}
+							},
+							"fillContractOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256,bytes)": {
+								"details": "See tests for examples",
+								"params": {
+									"amount": "Taker amount to fill",
+									"args": "Arguments that are used by the taker (target, extension, interaction, permit)",
+									"order": "Order quote to fill",
+									"signature": "Signature to confirm quote ownership",
+									"takerTraits": "Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit."
+								},
+								"returns": {
+									"makingAmount": "Actual amount transferred from maker to taker",
+									"orderHash": "Hash of the filled order",
+									"takingAmount": "Actual amount transferred from taker to maker"
+								}
+							},
+							"fillOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256)": {
+								"params": {
+									"amount": "Taker amount to fill",
+									"order": "Order quote to fill",
+									"r": "R component of signature",
+									"takerTraits": "Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.",
+									"vs": "VS component of signature"
+								},
+								"returns": {
+									"makingAmount": "Actual amount transferred from maker to taker",
+									"orderHash": "Hash of the filled order",
+									"takingAmount": "Actual amount transferred from taker to maker"
+								}
+							},
+							"fillOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256,bytes)": {
+								"params": {
+									"amount": "Taker amount to fill",
+									"args": "Arguments that are used by the taker (target, extension, interaction, permit)",
+									"order": "Order quote to fill",
+									"r": "R component of signature",
+									"takerTraits": "Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.",
+									"vs": "VS component of signature"
+								},
+								"returns": {
+									"makingAmount": "Actual amount transferred from maker to taker",
+									"orderHash": "Hash of the filled order",
+									"takingAmount": "Actual amount transferred from taker to maker"
+								}
+							},
+							"hashOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))": {
+								"params": {
+									"order": "Order"
+								},
+								"returns": {
+									"orderHash": "Hash of the order"
+								}
+							},
+							"rawRemainingInvalidatorForOrder(address,bytes32)": {
+								"params": {
+									"orderHash": "Hash of the order"
+								},
+								"returns": {
+									"remainingRaw": "Inverse of the remaining amount of the order if order was filled at least once, otherwise 0"
+								}
+							},
+							"remainingInvalidatorForOrder(address,bytes32)": {
+								"params": {
+									"orderHash": "Hash of the order"
+								},
+								"returns": {
+									"remaining": "Remaining amount of the order"
+								}
+							},
+							"simulate(address,bytes)": {
+								"details": "The function always reverts and returns the simulation results in revert data.",
+								"params": {
+									"data": "Data that will be passed to delegatee",
+									"target": "Addresses that will be delegated"
+								}
+							}
+						},
+						"title": "IOrderMixin",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"BadSignature\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EpochManagerAndBitInvalidatorsAreIncompatible\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidPermit2Transfer\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidatedOrder\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"MakingAmountTooLow\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"MismatchArraysLengths\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OrderExpired\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OrderIsNotSuitableForMassInvalidation\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PartialFillNotAllowed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PredicateIsNotTrue\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PrivateOrder\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ReentrancyDetected\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"res\",\"type\":\"bytes\"}],\"name\":\"SimulationResults\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"SwapWithZeroAmount\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"TakingAmountExceeded\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"TakingAmountTooHigh\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"TransferFromMakerToTakerFailed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"TransferFromTakerToMakerFailed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"WrongSeriesNonce\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"maker\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"slotIndex\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"slotValue\",\"type\":\"uint256\"}],\"name\":\"BitInvalidatorUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"}],\"name\":\"OrderCancelled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"remainingAmount\",\"type\":\"uint256\"}],\"name\":\"OrderFilled\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"maker\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"slot\",\"type\":\"uint256\"}],\"name\":\"bitInvalidatorForOrder\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"result\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"MakerTraits\",\"name\":\"makerTraits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"additionalMask\",\"type\":\"uint256\"}],\"name\":\"bitsInvalidateForOrder\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"MakerTraits\",\"name\":\"makerTraits\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"}],\"name\":\"cancelOrder\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"MakerTraits[]\",\"name\":\"makerTraits\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes32[]\",\"name\":\"orderHashes\",\"type\":\"bytes32[]\"}],\"name\":\"cancelOrders\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"salt\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"maker\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"receiver\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"makerAsset\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"takerAsset\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"makingAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takingAmount\",\"type\":\"uint256\"},{\"internalType\":\"MakerTraits\",\"name\":\"makerTraits\",\"type\":\"uint256\"}],\"internalType\":\"struct IOrderMixin.Order\",\"name\":\"order\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"TakerTraits\",\"name\":\"takerTraits\",\"type\":\"uint256\"}],\"name\":\"fillContractOrder\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"makingAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takingAmount\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"salt\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"maker\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"receiver\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"makerAsset\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"takerAsset\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"makingAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takingAmount\",\"type\":\"uint256\"},{\"internalType\":\"MakerTraits\",\"name\":\"makerTraits\",\"type\":\"uint256\"}],\"internalType\":\"struct IOrderMixin.Order\",\"name\":\"order\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"TakerTraits\",\"name\":\"takerTraits\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"args\",\"type\":\"bytes\"}],\"name\":\"fillContractOrderArgs\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"makingAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takingAmount\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"salt\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"maker\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"receiver\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"makerAsset\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"takerAsset\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"makingAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takingAmount\",\"type\":\"uint256\"},{\"internalType\":\"MakerTraits\",\"name\":\"makerTraits\",\"type\":\"uint256\"}],\"internalType\":\"struct IOrderMixin.Order\",\"name\":\"order\",\"type\":\"tuple\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"vs\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"TakerTraits\",\"name\":\"takerTraits\",\"type\":\"uint256\"}],\"name\":\"fillOrder\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"makingAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takingAmount\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"salt\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"maker\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"receiver\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"makerAsset\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"takerAsset\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"makingAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takingAmount\",\"type\":\"uint256\"},{\"internalType\":\"MakerTraits\",\"name\":\"makerTraits\",\"type\":\"uint256\"}],\"internalType\":\"struct IOrderMixin.Order\",\"name\":\"order\",\"type\":\"tuple\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"vs\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"TakerTraits\",\"name\":\"takerTraits\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"args\",\"type\":\"bytes\"}],\"name\":\"fillOrderArgs\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"makingAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takingAmount\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"salt\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"maker\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"receiver\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"makerAsset\",\"type\":\"uint256\"},{\"internalType\":\"Address\",\"name\":\"takerAsset\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"makingAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takingAmount\",\"type\":\"uint256\"},{\"internalType\":\"MakerTraits\",\"name\":\"makerTraits\",\"type\":\"uint256\"}],\"internalType\":\"struct IOrderMixin.Order\",\"name\":\"order\",\"type\":\"tuple\"}],\"name\":\"hashOrder\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"maker\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"}],\"name\":\"rawRemainingInvalidatorForOrder\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"remainingRaw\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"maker\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"orderHash\",\"type\":\"bytes32\"}],\"name\":\"remainingInvalidatorForOrder\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"remaining\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"target\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"simulate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"events\":{\"BitInvalidatorUpdated(address,uint256,uint256)\":{\"params\":{\"maker\":\"Maker address\",\"slotIndex\":\"Slot index that was updated\",\"slotValue\":\"New slot value\"}},\"OrderCancelled(bytes32)\":{\"params\":{\"orderHash\":\"Hash of the order\"}},\"OrderFilled(bytes32,uint256)\":{\"params\":{\"orderHash\":\"Hash of the order\",\"remainingAmount\":\"Amount of the maker asset that remains to be filled\"}}},\"kind\":\"dev\",\"methods\":{\"bitInvalidatorForOrder(address,uint256)\":{\"params\":{\"maker\":\"Maker address\",\"slot\":\"Slot number to return bitmask for\"},\"returns\":{\"result\":\"Each bit represents whether corresponding was already invalidated\"}},\"bitsInvalidateForOrder(uint256,uint256)\":{\"params\":{\"additionalMask\":\"Additional bitmask to invalidate orders\",\"makerTraits\":\"Order makerTraits\"}},\"cancelOrder(uint256,bytes32)\":{\"params\":{\"makerTraits\":\"Order makerTraits\",\"orderHash\":\"Hash of the order to cancel\"}},\"cancelOrders(uint256[],bytes32[])\":{\"params\":{\"makerTraits\":\"Orders makerTraits\",\"orderHashes\":\"Hashes of the orders to cancel\"}},\"fillContractOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256)\":{\"details\":\"See tests for examples\",\"params\":{\"amount\":\"Taker amount to fill\",\"order\":\"Order quote to fill\",\"signature\":\"Signature to confirm quote ownership\",\"takerTraits\":\"Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.\"},\"returns\":{\"makingAmount\":\"Actual amount transferred from maker to taker\",\"orderHash\":\"Hash of the filled order\",\"takingAmount\":\"Actual amount transferred from taker to maker\"}},\"fillContractOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256,bytes)\":{\"details\":\"See tests for examples\",\"params\":{\"amount\":\"Taker amount to fill\",\"args\":\"Arguments that are used by the taker (target, extension, interaction, permit)\",\"order\":\"Order quote to fill\",\"signature\":\"Signature to confirm quote ownership\",\"takerTraits\":\"Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.\"},\"returns\":{\"makingAmount\":\"Actual amount transferred from maker to taker\",\"orderHash\":\"Hash of the filled order\",\"takingAmount\":\"Actual amount transferred from taker to maker\"}},\"fillOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256)\":{\"params\":{\"amount\":\"Taker amount to fill\",\"order\":\"Order quote to fill\",\"r\":\"R component of signature\",\"takerTraits\":\"Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.\",\"vs\":\"VS component of signature\"},\"returns\":{\"makingAmount\":\"Actual amount transferred from maker to taker\",\"orderHash\":\"Hash of the filled order\",\"takingAmount\":\"Actual amount transferred from taker to maker\"}},\"fillOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256,bytes)\":{\"params\":{\"amount\":\"Taker amount to fill\",\"args\":\"Arguments that are used by the taker (target, extension, interaction, permit)\",\"order\":\"Order quote to fill\",\"r\":\"R component of signature\",\"takerTraits\":\"Specifies threshold as maximum allowed takingAmount when takingAmount is zero, otherwise specifies minimum allowed makingAmount. The 2nd (0 based index) highest bit specifies whether taker wants to skip maker's permit.\",\"vs\":\"VS component of signature\"},\"returns\":{\"makingAmount\":\"Actual amount transferred from maker to taker\",\"orderHash\":\"Hash of the filled order\",\"takingAmount\":\"Actual amount transferred from taker to maker\"}},\"hashOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))\":{\"params\":{\"order\":\"Order\"},\"returns\":{\"orderHash\":\"Hash of the order\"}},\"rawRemainingInvalidatorForOrder(address,bytes32)\":{\"params\":{\"orderHash\":\"Hash of the order\"},\"returns\":{\"remainingRaw\":\"Inverse of the remaining amount of the order if order was filled at least once, otherwise 0\"}},\"remainingInvalidatorForOrder(address,bytes32)\":{\"params\":{\"orderHash\":\"Hash of the order\"},\"returns\":{\"remaining\":\"Remaining amount of the order\"}},\"simulate(address,bytes)\":{\"details\":\"The function always reverts and returns the simulation results in revert data.\",\"params\":{\"data\":\"Data that will be passed to delegatee\",\"target\":\"Addresses that will be delegated\"}}},\"title\":\"IOrderMixin\",\"version\":1},\"userdoc\":{\"events\":{\"BitInvalidatorUpdated(address,uint256,uint256)\":{\"notice\":\"Emitted when order with `useBitInvalidator` gets cancelled\"},\"OrderCancelled(bytes32)\":{\"notice\":\"Emitted when order without `useBitInvalidator` gets cancelled\"},\"OrderFilled(bytes32,uint256)\":{\"notice\":\"Emitted when order gets filled\"}},\"kind\":\"user\",\"methods\":{\"bitInvalidatorForOrder(address,uint256)\":{\"notice\":\"Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes\"},\"bitsInvalidateForOrder(uint256,uint256)\":{\"notice\":\"Cancels all quotes of the maker (works for bit-invalidating orders only)\"},\"cancelOrder(uint256,bytes32)\":{\"notice\":\"Cancels order's quote\"},\"cancelOrders(uint256[],bytes32[])\":{\"notice\":\"Cancels orders' quotes\"},\"fillContractOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256)\":{\"notice\":\"Same as `fillOrder` but uses contract-based signatures.\"},\"fillContractOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256,bytes)\":{\"notice\":\"Same as `fillContractOrder` but allows to specify arguments that are used by the taker.\"},\"fillOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256)\":{\"notice\":\"Fills order's quote, fully or partially (whichever is possible).\"},\"fillOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256,bytes)\":{\"notice\":\"Same as `fillOrder` but allows to specify arguments that are used by the taker.\"},\"hashOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))\":{\"notice\":\"Returns order hash, hashed with limit order protocol contract EIP712\"},\"rawRemainingInvalidatorForOrder(address,bytes32)\":{\"notice\":\"Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes\"},\"remainingInvalidatorForOrder(address,bytes32)\":{\"notice\":\"Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes\"},\"simulate(address,bytes)\":{\"notice\":\"Delegates execution to custom implementation. Could be used to validate if `transferFrom` works properly\"}},\"notice\":\"Interface for order processing logic in the 1inch Limit Order Protocol.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IOrderMixin.sol\":\"IOrderMixin\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/AddressLib.sol\":{\"keccak256\":\"0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586\",\"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR\"]},\"contracts/IOrderMixin.sol\":{\"keccak256\":\"0x34ead0b58bd2640652ad6366b4c4ea1370b66d2dd21ffb5d5b831ed54fc9cc71\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://65b82f8298ed8d9cb9eb3604af3c15129cffa009c5b0150f7f42154093d9ce96\",\"dweb:/ipfs/QmaQoQNVTiJPKB6MVwtemAWrwyKEKR5fLqy7vyfm8oqBEx\"]},\"contracts/MakerTraitsLib.sol\":{\"keccak256\":\"0x2077d7a827c3ba2fa53c92b87bc586385c1310c3fe67edffe09c31a22900cbf9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://49f7294dcb82d3acd8b7e2f95546cc85e24ceb7e3564a21ebf852544887cda3b\",\"dweb:/ipfs/QmPgzEiFpUHmGYfXF4EEdpCnb9TPnCpoF48bNMGw74vk1b\"]},\"contracts/TakerTraitsLib.sol\":{\"keccak256\":\"0x25d36a3b3645561fc5b3f35c1e93fe60220bd15f9af896b0c6263a3269710fcc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://45597b42af6b436271ac8e6577255137557ff72d45883ef4bce01198016d4bb5\",\"dweb:/ipfs/QmamEQ6c5ffZqanpuX52PUf88wPu6Gp4T8LCVVzonAo1uS\"]}},\"version\":1}",
+					"userdoc": {
+						"events": {
+							"BitInvalidatorUpdated(address,uint256,uint256)": {
+								"notice": "Emitted when order with `useBitInvalidator` gets cancelled"
+							},
+							"OrderCancelled(bytes32)": {
+								"notice": "Emitted when order without `useBitInvalidator` gets cancelled"
+							},
+							"OrderFilled(bytes32,uint256)": {
+								"notice": "Emitted when order gets filled"
+							}
+						},
+						"kind": "user",
+						"methods": {
+							"bitInvalidatorForOrder(address,uint256)": {
+								"notice": "Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes"
+							},
+							"bitsInvalidateForOrder(uint256,uint256)": {
+								"notice": "Cancels all quotes of the maker (works for bit-invalidating orders only)"
+							},
+							"cancelOrder(uint256,bytes32)": {
+								"notice": "Cancels order's quote"
+							},
+							"cancelOrders(uint256[],bytes32[])": {
+								"notice": "Cancels orders' quotes"
+							},
+							"fillContractOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256)": {
+								"notice": "Same as `fillOrder` but uses contract-based signatures."
+							},
+							"fillContractOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes,uint256,uint256,bytes)": {
+								"notice": "Same as `fillContractOrder` but allows to specify arguments that are used by the taker."
+							},
+							"fillOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256)": {
+								"notice": "Fills order's quote, fully or partially (whichever is possible)."
+							},
+							"fillOrderArgs((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256,bytes)": {
+								"notice": "Same as `fillOrder` but allows to specify arguments that are used by the taker."
+							},
+							"hashOrder((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))": {
+								"notice": "Returns order hash, hashed with limit order protocol contract EIP712"
+							},
+							"rawRemainingInvalidatorForOrder(address,bytes32)": {
+								"notice": "Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes"
+							},
+							"remainingInvalidatorForOrder(address,bytes32)": {
+								"notice": "Returns bitmask for double-spend invalidators based on lowest byte of order.info and filled quotes"
+							},
+							"simulate(address,bytes)": {
+								"notice": "Delegates execution to custom implementation. Could be used to validate if `transferFrom` works properly"
+							}
+						},
+						"notice": "Interface for order processing logic in the 1inch Limit Order Protocol.",
+						"version": 1
+					}
+				}
+			},
+			"contracts/MakerTraitsLib.sol": {
+				"MakerTraitsLib": {
+					"abi": [],
+					"devdoc": {
+						"details": "The MakerTraits type is a uint256 and different parts of the number are used to encode different traits. High bits are used for flags 255 bit `NO_PARTIAL_FILLS_FLAG`          - if set, the order does not allow partial fills 254 bit `ALLOW_MULTIPLE_FILLS_FLAG`      - if set, the order permits multiple fills 253 bit                                  - unused 252 bit `PRE_INTERACTION_CALL_FLAG`      - if set, the order requires pre-interaction call 251 bit `POST_INTERACTION_CALL_FLAG`     - if set, the order requires post-interaction call 250 bit `NEED_CHECK_EPOCH_MANAGER_FLAG`  - if set, the order requires to check the epoch manager 249 bit `HAS_EXTENSION_FLAG`             - if set, the order has extension(s) 248 bit `USE_PERMIT2_FLAG`               - if set, the order uses permit2 247 bit `UNWRAP_WETH_FLAG`               - if set, the order requires to unwrap WETH Low 200 bits are used for allowed sender, expiration, nonceOrEpoch, and series uint80 last 10 bytes of allowed sender address (0 if any) uint40 expiration timestamp (0 if none) uint40 nonce or epoch uint40 series",
+						"kind": "dev",
+						"methods": {},
+						"title": "MakerTraitsLib",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220df039d439fa51d7fb3cbf231eea12e0c9166e9563171631375156b69b4b2a12064736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xDF SUB SWAP14 NUMBER SWAP16 0xA5 SAR PUSH32 0xB3CBF231EEA12E0C9166E9563171631375156B69B4B2A12064736F6C63430008 OR STOP CALLER ",
+							"sourceMap": "1403:7334:3:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea2646970667358221220df039d439fa51d7fb3cbf231eea12e0c9166e9563171631375156b69b4b2a12064736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xDF SUB SWAP14 NUMBER SWAP16 0xA5 SAR PUSH32 0xB3CBF231EEA12E0C9166E9563171631375156B69B4B2A12064736F6C63430008 OR STOP CALLER ",
+							"sourceMap": "1403:7334:3:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"The MakerTraits type is a uint256 and different parts of the number are used to encode different traits. High bits are used for flags 255 bit `NO_PARTIAL_FILLS_FLAG`          - if set, the order does not allow partial fills 254 bit `ALLOW_MULTIPLE_FILLS_FLAG`      - if set, the order permits multiple fills 253 bit                                  - unused 252 bit `PRE_INTERACTION_CALL_FLAG`      - if set, the order requires pre-interaction call 251 bit `POST_INTERACTION_CALL_FLAG`     - if set, the order requires post-interaction call 250 bit `NEED_CHECK_EPOCH_MANAGER_FLAG`  - if set, the order requires to check the epoch manager 249 bit `HAS_EXTENSION_FLAG`             - if set, the order has extension(s) 248 bit `USE_PERMIT2_FLAG`               - if set, the order uses permit2 247 bit `UNWRAP_WETH_FLAG`               - if set, the order requires to unwrap WETH Low 200 bits are used for allowed sender, expiration, nonceOrEpoch, and series uint80 last 10 bytes of allowed sender address (0 if any) uint40 expiration timestamp (0 if none) uint40 nonce or epoch uint40 series\",\"kind\":\"dev\",\"methods\":{},\"title\":\"MakerTraitsLib\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"A library to manage and check MakerTraits, which are used to encode the maker's preferences for an order in a single uint256.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/MakerTraitsLib.sol\":\"MakerTraitsLib\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/MakerTraitsLib.sol\":{\"keccak256\":\"0x2077d7a827c3ba2fa53c92b87bc586385c1310c3fe67edffe09c31a22900cbf9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://49f7294dcb82d3acd8b7e2f95546cc85e24ceb7e3564a21ebf852544887cda3b\",\"dweb:/ipfs/QmPgzEiFpUHmGYfXF4EEdpCnb9TPnCpoF48bNMGw74vk1b\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"notice": "A library to manage and check MakerTraits, which are used to encode the maker's preferences for an order in a single uint256.",
+						"version": 1
+					}
+				}
+			},
+			"contracts/OffsetsLib.sol": {
+				"OffsetsLib": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "OffsetOutOfBounds",
+							"type": "error"
+						}
+					],
+					"devdoc": {
+						"details": "A library for retrieving values by offsets from a concatenated calldata.",
+						"errors": {
+							"OffsetOutOfBounds()": [
+								{
+									"details": "Error to be thrown when the offset is out of bounds."
+								}
+							]
+						},
+						"kind": "dev",
+						"methods": {},
+						"title": "OffsetsLib",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220de7a77d4718579f9687fbded0d5176e452c769ae0505574dac93a96b8f60f22364736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xDE PUSH27 0x77D4718579F9687FBDED0D5176E452C769AE0505574DAC93A96B8F PUSH1 0xF2 0x23 PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "188:1921:4:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea2646970667358221220de7a77d4718579f9687fbded0d5176e452c769ae0505574dac93a96b8f60f22364736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xDE PUSH27 0x77D4718579F9687FBDED0D5176E452C769AE0505574DAC93A96B8F PUSH1 0xF2 0x23 PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "188:1921:4:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"OffsetOutOfBounds\",\"type\":\"error\"}],\"devdoc\":{\"details\":\"A library for retrieving values by offsets from a concatenated calldata.\",\"errors\":{\"OffsetOutOfBounds()\":[{\"details\":\"Error to be thrown when the offset is out of bounds.\"}]},\"kind\":\"dev\",\"methods\":{},\"title\":\"OffsetsLib\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/OffsetsLib.sol\":\"OffsetsLib\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/OffsetsLib.sol\":{\"keccak256\":\"0xd8218c3b9241501b41fc0f0b579dce00a0b81603582e11f3da28881ed00801a1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://039b36fea4d1d12fe0d02ac26bdefd959c6fe447bd73ea0599a49e08f1712999\",\"dweb:/ipfs/QmcyPNSDc2RjksmwYPY3jGAjD9bEhBAWi3qKYWNvtHHZT6\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			},
+			"contracts/TakerTraitsLib.sol": {
+				"TakerTraitsLib": {
+					"abi": [],
+					"devdoc": {
+						"details": "The TakerTraits are structured as follows: High bits are used for flags 255 bit `_MAKER_AMOUNT_FLAG`           - If set, the taking amount is calculated based on making amount, otherwise making amount is calculated based on taking amount. 254 bit `_UNWRAP_WETH_FLAG`            - If set, the WETH will be unwrapped into ETH before sending to taker. 253 bit `_SKIP_ORDER_PERMIT_FLAG`      - If set, the order skips maker's permit execution. 252 bit `_USE_PERMIT2_FLAG`            - If set, the order uses the permit2 function for authorization. 251 bit `_ARGS_HAS_TARGET`             - If set, then first 20 bytes of args are treated as target address for maker’s funds transfer. 224-247 bits `ARGS_EXTENSION_LENGTH`   - The length of the extension calldata in the args. 200-223 bits `ARGS_INTERACTION_LENGTH` - The length of the interaction calldata in the args. 0-184 bits                             - The threshold amount (the maximum amount a taker agrees to give in exchange for a making amount).",
+						"kind": "dev",
+						"methods": {},
+						"title": "TakerTraitsLib",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea26469706673582212208a5dfdad24ed8fd386d605ae3ef4dd615f54d69ab99ce2c3dedd68936bc0f70e64736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 DUP11 0x5D REVERT 0xAD 0x24 0xED DUP16 0xD3 DUP7 0xD6 SDIV 0xAE RETURNDATACOPY DELEGATECALL 0xDD PUSH2 0x5F54 0xD6 SWAP11 0xB9 SWAP13 0xE2 0xC3 0xDE 0xDD PUSH9 0x936BC0F70E64736F6C PUSH4 0x43000817 STOP CALLER ",
+							"sourceMap": "1300:4048:5:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea26469706673582212208a5dfdad24ed8fd386d605ae3ef4dd615f54d69ab99ce2c3dedd68936bc0f70e64736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 DUP11 0x5D REVERT 0xAD 0x24 0xED DUP16 0xD3 DUP7 0xD6 SDIV 0xAE RETURNDATACOPY DELEGATECALL 0xDD PUSH2 0x5F54 0xD6 SWAP11 0xB9 SWAP13 0xE2 0xC3 0xDE 0xDD PUSH9 0x936BC0F70E64736F6C PUSH4 0x43000817 STOP CALLER ",
+							"sourceMap": "1300:4048:5:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"The TakerTraits are structured as follows: High bits are used for flags 255 bit `_MAKER_AMOUNT_FLAG`           - If set, the taking amount is calculated based on making amount, otherwise making amount is calculated based on taking amount. 254 bit `_UNWRAP_WETH_FLAG`            - If set, the WETH will be unwrapped into ETH before sending to taker. 253 bit `_SKIP_ORDER_PERMIT_FLAG`      - If set, the order skips maker's permit execution. 252 bit `_USE_PERMIT2_FLAG`            - If set, the order uses the permit2 function for authorization. 251 bit `_ARGS_HAS_TARGET`             - If set, then first 20 bytes of args are treated as target address for maker\\u2019s funds transfer. 224-247 bits `ARGS_EXTENSION_LENGTH`   - The length of the extension calldata in the args. 200-223 bits `ARGS_INTERACTION_LENGTH` - The length of the interaction calldata in the args. 0-184 bits                             - The threshold amount (the maximum amount a taker agrees to give in exchange for a making amount).\",\"kind\":\"dev\",\"methods\":{},\"title\":\"TakerTraitsLib\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"This library to manage and check TakerTraits, which are used to encode the taker's preferences for an order in a single uint256.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/TakerTraitsLib.sol\":\"TakerTraitsLib\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/TakerTraitsLib.sol\":{\"keccak256\":\"0x25d36a3b3645561fc5b3f35c1e93fe60220bd15f9af896b0c6263a3269710fcc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://45597b42af6b436271ac8e6577255137557ff72d45883ef4bce01198016d4bb5\",\"dweb:/ipfs/QmamEQ6c5ffZqanpuX52PUf88wPu6Gp4T8LCVVzonAo1uS\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"notice": "This library to manage and check TakerTraits, which are used to encode the taker's preferences for an order in a single uint256.",
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/AddressLib.sol": {
+				"id": 0
+			},
+			"contracts/ExtensionLib.sol": {
+				"id": 1
+			},
+			"contracts/IOrderMixin.sol": {
+				"id": 2
+			},
+			"contracts/MakerTraitsLib.sol": {
+				"id": 3
+			},
+			"contracts/OffsetsLib.sol": {
+				"id": 4
+			},
+			"contracts/TakerTraitsLib.sol": {
+				"id": 5
+			}
+		}
+	}
+}

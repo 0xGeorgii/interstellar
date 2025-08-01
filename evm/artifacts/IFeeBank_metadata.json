@@ -1,0 +1,289 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "availableCredit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "availableCredit",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "deposit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "totalAvailableCredit",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "depositFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "totalAvailableCredit",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "permit",
+						"type": "bytes"
+					}
+				],
+				"name": "depositForWithPermit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "totalAvailableCredit",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "permit",
+						"type": "bytes"
+					}
+				],
+				"name": "depositWithPermit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "totalAvailableCredit",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdraw",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "totalAvailableCredit",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawTo",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "totalAvailableCredit",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"availableCredit(address)": {
+					"params": {
+						"account": "The address of the account for which the available credit is being queried."
+					},
+					"returns": {
+						"availableCredit": "The available credit of the queried account."
+					}
+				},
+				"deposit(uint256)": {
+					"params": {
+						"amount": "The amount of credit to be added to the caller's account."
+					},
+					"returns": {
+						"totalAvailableCredit": "The updated available credit of the caller's account."
+					}
+				},
+				"depositFor(address,uint256)": {
+					"params": {
+						"account": "The address of the account for which the available credit is being increased.",
+						"amount": "The amount of credit to be added to the account."
+					},
+					"returns": {
+						"totalAvailableCredit": "The updated available credit of the specified account."
+					}
+				},
+				"depositForWithPermit(address,uint256,bytes)": {
+					"params": {
+						"account": "The address of the account for which the available credit is being increased.",
+						"amount": "The amount of credit to be added to the account.",
+						"permit": "The permit data authorizing the transaction."
+					},
+					"returns": {
+						"totalAvailableCredit": "The updated available credit of the specified account."
+					}
+				},
+				"depositWithPermit(uint256,bytes)": {
+					"params": {
+						"amount": "The amount of credit to be added to the caller's account.",
+						"permit": "The permit data authorizing the transaction."
+					},
+					"returns": {
+						"totalAvailableCredit": "The updated available credit of the caller's account."
+					}
+				},
+				"withdraw(uint256)": {
+					"params": {
+						"amount": "The amount of credit to be withdrawn from the caller's account."
+					},
+					"returns": {
+						"totalAvailableCredit": "The updated available credit of the caller's account."
+					}
+				},
+				"withdrawTo(address,uint256)": {
+					"params": {
+						"account": "The address of the account to which the credit is being withdrawn.",
+						"amount": "The amount of credit to be withdrawn."
+					},
+					"returns": {
+						"totalAvailableCredit": "The updated available credit of the caller's account."
+					}
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"availableCredit(address)": {
+					"notice": "Returns the available credit for a given account in the FeeBank contract."
+				},
+				"deposit(uint256)": {
+					"notice": "Increases the caller's available credit by the specified amount."
+				},
+				"depositFor(address,uint256)": {
+					"notice": "Increases the specified account's available credit by the specified amount."
+				},
+				"depositForWithPermit(address,uint256,bytes)": {
+					"notice": "Increases the specified account's available credit by a specified amount with permit."
+				},
+				"depositWithPermit(uint256,bytes)": {
+					"notice": "Increases the caller's available credit by a specified amount with permit."
+				},
+				"withdraw(uint256)": {
+					"notice": "Withdraws a specified amount of credit from the caller's account."
+				},
+				"withdrawTo(address,uint256)": {
+					"notice": "Withdraws a specified amount of credit to the specified account."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/IFeeBank.sol": "IFeeBank"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/escrow/IFeeBank.sol": {
+			"keccak256": "0x2d03d415bbaac2c6b26bd33899adc942a3d59ef50e46f035b89eab2bddb98d58",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5c7b806a040a59a41cdd50f60a0d74325a4610da64444ae0e51a7481649016f0",
+				"dweb:/ipfs/QmQ3aWgMc74QGPT8aYMtTaMM32qcRwVcwTU5M2kcpaCQYK"
+			]
+		}
+	},
+	"version": 1
+}

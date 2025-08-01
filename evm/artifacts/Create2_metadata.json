@@ -1,0 +1,68 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "Create2EmptyBytecode",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"details": "Helper to make usage of the `CREATE2` EVM opcode easier and safer. `CREATE2` can be used to compute in advance the address where a smart contract will be deployed, which allows for interesting new mechanisms known as 'counterfactual interactions'. See the https://eips.ethereum.org/EIPS/eip-1014#motivation[EIP] for more information.",
+			"errors": {
+				"Create2EmptyBytecode()": [
+					{
+						"details": "There's no code to deploy."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/Create2.sol": "Create2"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/Errors.sol": {
+			"keccak256": "0x1b0625096e82d06abdcf1844172ef78ef54a5e878761f4d905fda07eaf098424",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5cd99f1a4836c07461cb3ea023ae2f6d1d01e80694b764a87623aa7252754756",
+				"dweb:/ipfs/QmNPNDuiNU6TJatZcdBcrwixBoo5MSXNDq4kaXhpJLWGpB"
+			]
+		},
+		"contracts/escrow/Create2.sol": {
+			"keccak256": "0x02f0faa500d9ca42186fd2f4d7f381777cd2970bfa2fd7fb542c309361aae81c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d5f45127145cf2abd405d732ccaeaf467d853a3779bc85e090133e6005d197a4",
+				"dweb:/ipfs/Qmdg1VaKkAWQ1qcVWYr9cRuoeGhg2QvrJPyDukyR7dwf8d"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,41 @@
+{
+	"id": "a52487651d87cf5cdea1397d2b1ca3f5",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/escrow/EscrowFactoryContext.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity 0.8.23;\n\nuint256 constant SRC_IMMUTABLES_LENGTH = 160;\n"
+			}
+		}
+	},
+	"output": {
+		"sources": {
+			"contracts/escrow/EscrowFactoryContext.sol": {
+				"id": 0
+			}
+		}
+	}
+}

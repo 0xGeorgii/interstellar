@@ -1,0 +1,81 @@
+{
+	"id": "47217c52a9eb6b075c0a37190b704df1",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/TakerTraitsLib.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\ntype TakerTraits is uint256;\n\n/**\n * @title TakerTraitsLib\n * @notice This library to manage and check TakerTraits, which are used to encode the taker's preferences for an order in a single uint256.\n * @dev The TakerTraits are structured as follows:\n * High bits are used for flags\n * 255 bit `_MAKER_AMOUNT_FLAG`           - If set, the taking amount is calculated based on making amount, otherwise making amount is calculated based on taking amount.\n * 254 bit `_UNWRAP_WETH_FLAG`            - If set, the WETH will be unwrapped into ETH before sending to taker.\n * 253 bit `_SKIP_ORDER_PERMIT_FLAG`      - If set, the order skips maker's permit execution.\n * 252 bit `_USE_PERMIT2_FLAG`            - If set, the order uses the permit2 function for authorization.\n * 251 bit `_ARGS_HAS_TARGET`             - If set, then first 20 bytes of args are treated as target address for maker’s funds transfer.\n * 224-247 bits `ARGS_EXTENSION_LENGTH`   - The length of the extension calldata in the args.\n * 200-223 bits `ARGS_INTERACTION_LENGTH` - The length of the interaction calldata in the args.\n * 0-184 bits                             - The threshold amount (the maximum amount a taker agrees to give in exchange for a making amount).\n */\nlibrary TakerTraitsLib {\n    uint256 private constant _MAKER_AMOUNT_FLAG = 1 << 255;\n    uint256 private constant _UNWRAP_WETH_FLAG = 1 << 254;\n    uint256 private constant _SKIP_ORDER_PERMIT_FLAG = 1 << 253;\n    uint256 private constant _USE_PERMIT2_FLAG = 1 << 252;\n    uint256 private constant _ARGS_HAS_TARGET = 1 << 251;\n\n    uint256 private constant _ARGS_EXTENSION_LENGTH_OFFSET = 224;\n    uint256 private constant _ARGS_EXTENSION_LENGTH_MASK = 0xffffff;\n    uint256 private constant _ARGS_INTERACTION_LENGTH_OFFSET = 200;\n    uint256 private constant _ARGS_INTERACTION_LENGTH_MASK = 0xffffff;\n\n    uint256 private constant _AMOUNT_MASK = 0x000000000000000000ffffffffffffffffffffffffffffffffffffffffffffff;\n\n    /**\n     * @notice Checks if the args should contain target address.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the args should contain target address.\n     */\n    function argsHasTarget(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _ARGS_HAS_TARGET) != 0;\n    }\n\n    /**\n     * @notice Retrieves the length of the extension calldata from the takerTraits.\n     * @param takerTraits The traits of the taker.\n     * @return result The length of the extension calldata encoded in the takerTraits.\n     */\n    function argsExtensionLength(TakerTraits takerTraits) internal pure returns (uint256) {\n        return (TakerTraits.unwrap(takerTraits) >> _ARGS_EXTENSION_LENGTH_OFFSET) & _ARGS_EXTENSION_LENGTH_MASK;\n    }\n\n    /**\n     * @notice Retrieves the length of the interaction calldata from the takerTraits.\n     * @param takerTraits The traits of the taker.\n     * @return result The length of the interaction calldata encoded in the takerTraits.\n     */\n    function argsInteractionLength(TakerTraits takerTraits) internal pure returns (uint256) {\n        return (TakerTraits.unwrap(takerTraits) >> _ARGS_INTERACTION_LENGTH_OFFSET) & _ARGS_INTERACTION_LENGTH_MASK;\n    }\n\n    /**\n     * @notice Checks if the taking amount should be calculated based on making amount.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the taking amount should be calculated based on making amount.\n     */\n    function isMakingAmount(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _MAKER_AMOUNT_FLAG) != 0;\n    }\n\n    /**\n     * @notice Checks if the order should unwrap WETH and send ETH to taker.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the order should unwrap WETH.\n     */\n    function unwrapWeth(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _UNWRAP_WETH_FLAG) != 0;\n    }\n\n    /**\n     * @notice Checks if the order should skip maker's permit execution.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the order don't apply permit.\n     */\n    function skipMakerPermit(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _SKIP_ORDER_PERMIT_FLAG) != 0;\n    }\n\n    /**\n     * @notice Checks if the order uses the permit2 instead of permit.\n     * @param takerTraits The traits of the taker.\n     * @return result A boolean indicating whether the order uses the permit2.\n     */\n    function usePermit2(TakerTraits takerTraits) internal pure returns (bool) {\n        return (TakerTraits.unwrap(takerTraits) & _USE_PERMIT2_FLAG) != 0;\n    }\n\n    /**\n     * @notice Retrieves the threshold amount from the takerTraits.\n     * The maximum amount a taker agrees to give in exchange for a making amount.\n     * @param takerTraits The traits of the taker.\n     * @return result The threshold amount encoded in the takerTraits.\n     */\n    function threshold(TakerTraits takerTraits) internal pure returns (uint256) {\n        return TakerTraits.unwrap(takerTraits) & _AMOUNT_MASK;\n    }\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/TakerTraitsLib.sol": {
+				"TakerTraitsLib": {
+					"abi": [],
+					"devdoc": {
+						"details": "The TakerTraits are structured as follows: High bits are used for flags 255 bit `_MAKER_AMOUNT_FLAG`           - If set, the taking amount is calculated based on making amount, otherwise making amount is calculated based on taking amount. 254 bit `_UNWRAP_WETH_FLAG`            - If set, the WETH will be unwrapped into ETH before sending to taker. 253 bit `_SKIP_ORDER_PERMIT_FLAG`      - If set, the order skips maker's permit execution. 252 bit `_USE_PERMIT2_FLAG`            - If set, the order uses the permit2 function for authorization. 251 bit `_ARGS_HAS_TARGET`             - If set, then first 20 bytes of args are treated as target address for maker’s funds transfer. 224-247 bits `ARGS_EXTENSION_LENGTH`   - The length of the extension calldata in the args. 200-223 bits `ARGS_INTERACTION_LENGTH` - The length of the interaction calldata in the args. 0-184 bits                             - The threshold amount (the maximum amount a taker agrees to give in exchange for a making amount).",
+						"kind": "dev",
+						"methods": {},
+						"title": "TakerTraitsLib",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea26469706673582212208a5dfdad24ed8fd386d605ae3ef4dd615f54d69ab99ce2c3dedd68936bc0f70e64736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 DUP11 0x5D REVERT 0xAD 0x24 0xED DUP16 0xD3 DUP7 0xD6 SDIV 0xAE RETURNDATACOPY DELEGATECALL 0xDD PUSH2 0x5F54 0xD6 SWAP11 0xB9 SWAP13 0xE2 0xC3 0xDE 0xDD PUSH9 0x936BC0F70E64736F6C PUSH4 0x43000817 STOP CALLER ",
+							"sourceMap": "1300:4048:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea26469706673582212208a5dfdad24ed8fd386d605ae3ef4dd615f54d69ab99ce2c3dedd68936bc0f70e64736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 DUP11 0x5D REVERT 0xAD 0x24 0xED DUP16 0xD3 DUP7 0xD6 SDIV 0xAE RETURNDATACOPY DELEGATECALL 0xDD PUSH2 0x5F54 0xD6 SWAP11 0xB9 SWAP13 0xE2 0xC3 0xDE 0xDD PUSH9 0x936BC0F70E64736F6C PUSH4 0x43000817 STOP CALLER ",
+							"sourceMap": "1300:4048:0:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"The TakerTraits are structured as follows: High bits are used for flags 255 bit `_MAKER_AMOUNT_FLAG`           - If set, the taking amount is calculated based on making amount, otherwise making amount is calculated based on taking amount. 254 bit `_UNWRAP_WETH_FLAG`            - If set, the WETH will be unwrapped into ETH before sending to taker. 253 bit `_SKIP_ORDER_PERMIT_FLAG`      - If set, the order skips maker's permit execution. 252 bit `_USE_PERMIT2_FLAG`            - If set, the order uses the permit2 function for authorization. 251 bit `_ARGS_HAS_TARGET`             - If set, then first 20 bytes of args are treated as target address for maker\\u2019s funds transfer. 224-247 bits `ARGS_EXTENSION_LENGTH`   - The length of the extension calldata in the args. 200-223 bits `ARGS_INTERACTION_LENGTH` - The length of the interaction calldata in the args. 0-184 bits                             - The threshold amount (the maximum amount a taker agrees to give in exchange for a making amount).\",\"kind\":\"dev\",\"methods\":{},\"title\":\"TakerTraitsLib\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"This library to manage and check TakerTraits, which are used to encode the taker's preferences for an order in a single uint256.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/TakerTraitsLib.sol\":\"TakerTraitsLib\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/TakerTraitsLib.sol\":{\"keccak256\":\"0x25d36a3b3645561fc5b3f35c1e93fe60220bd15f9af896b0c6263a3269710fcc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://45597b42af6b436271ac8e6577255137557ff72d45883ef4bce01198016d4bb5\",\"dweb:/ipfs/QmamEQ6c5ffZqanpuX52PUf88wPu6Gp4T8LCVVzonAo1uS\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"notice": "This library to manage and check TakerTraits, which are used to encode the taker's preferences for an order in a single uint256.",
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/TakerTraitsLib.sol": {
+				"id": 0
+			}
+		}
+	}
+}

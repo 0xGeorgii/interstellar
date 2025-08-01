@@ -1,0 +1,488 @@
+{
+	"id": "9fd5d508428deb4a2527a864cf9c8608",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/escrow/IFeeBankCharger.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\nimport { IFeeBank } from \"./IFeeBank.sol\";\n\ninterface IFeeBankCharger {\n    /**\n     * @notice Returns the instance of the FeeBank contract.\n     * @return The instance of the FeeBank contract.\n     */\n    function FEE_BANK() external view returns (IFeeBank); // solhint-disable-line func-name-mixedcase\n\n    /**\n     * @notice Returns the available credit for a given account.\n     * @param account The address of the account for which the available credit is being queried.\n     * @return The available credit of the queried account.\n     */\n    function availableCredit(address account) external view returns (uint256);\n\n    /**\n     * @notice Increases the available credit of a given account by a specified amount.\n     * @param account The address of the account for which the available credit is being increased.\n     * @param amount The amount by which the available credit will be increased.\n     * @return allowance The updated available credit of the specified account.\n     */\n    function increaseAvailableCredit(address account, uint256 amount) external returns (uint256 allowance);\n\n    /**\n     * @notice Decreases the available credit of a given account by a specified amount.\n     * @param account The address of the account for which the available credit is being decreased.\n     * @param amount The amount by which the available credit will be decreased.\n     * @return allowance The updated available credit of the specified account.\n     */\n    function decreaseAvailableCredit(address account, uint256 amount) external returns (uint256 allowance);\n}\n"
+			},
+			"contracts/escrow/IFeeBank.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\ninterface IFeeBank {\n    /**\n     * @notice Returns the available credit for a given account in the FeeBank contract.\n     * @param account The address of the account for which the available credit is being queried.\n     * @return availableCredit The available credit of the queried account.\n     */\n    function availableCredit(address account) external view returns (uint256 availableCredit);\n\n    /**\n     * @notice Increases the caller's available credit by the specified amount.\n     * @param amount The amount of credit to be added to the caller's account.\n     * @return totalAvailableCredit The updated available credit of the caller's account.\n     */\n    function deposit(uint256 amount) external returns (uint256 totalAvailableCredit);\n\n    /**\n     * @notice Increases the specified account's available credit by the specified amount.\n     * @param account The address of the account for which the available credit is being increased.\n     * @param amount The amount of credit to be added to the account.\n     * @return totalAvailableCredit The updated available credit of the specified account.\n     */\n    function depositFor(address account, uint256 amount) external returns (uint256 totalAvailableCredit);\n\n    /**\n     * @notice Increases the caller's available credit by a specified amount with permit.\n     * @param amount The amount of credit to be added to the caller's account.\n     * @param permit The permit data authorizing the transaction.\n     * @return totalAvailableCredit The updated available credit of the caller's account.\n     */\n    function depositWithPermit(uint256 amount, bytes calldata permit) external returns (uint256 totalAvailableCredit);\n\n    /**\n     * @notice Increases the specified account's available credit by a specified amount with permit.\n     * @param account The address of the account for which the available credit is being increased.\n     * @param amount The amount of credit to be added to the account.\n     * @param permit The permit data authorizing the transaction.\n     * @return totalAvailableCredit The updated available credit of the specified account.\n     */\n    function depositForWithPermit(address account, uint256 amount, bytes calldata permit) external returns (uint256 totalAvailableCredit);\n\n    /**\n     * @notice Withdraws a specified amount of credit from the caller's account.\n     * @param amount The amount of credit to be withdrawn from the caller's account.\n     * @return totalAvailableCredit The updated available credit of the caller's account.\n     */\n    function withdraw(uint256 amount) external returns (uint256 totalAvailableCredit);\n\n    /**\n     * @notice Withdraws a specified amount of credit to the specified account.\n     * @param account The address of the account to which the credit is being withdrawn.\n     * @param amount The amount of credit to be withdrawn.\n     * @return totalAvailableCredit The updated available credit of the caller's account.\n     */\n    function withdrawTo(address account, uint256 amount) external returns (uint256 totalAvailableCredit);\n}\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/escrow/IFeeBank.sol": {
+				"IFeeBank": {
+					"abi": [
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "account",
+									"type": "address"
+								}
+							],
+							"name": "availableCredit",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "availableCredit",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "deposit",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "totalAvailableCredit",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "account",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "depositFor",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "totalAvailableCredit",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "account",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "permit",
+									"type": "bytes"
+								}
+							],
+							"name": "depositForWithPermit",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "totalAvailableCredit",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "permit",
+									"type": "bytes"
+								}
+							],
+							"name": "depositWithPermit",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "totalAvailableCredit",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "withdraw",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "totalAvailableCredit",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "account",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "withdrawTo",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "totalAvailableCredit",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"kind": "dev",
+						"methods": {
+							"availableCredit(address)": {
+								"params": {
+									"account": "The address of the account for which the available credit is being queried."
+								},
+								"returns": {
+									"availableCredit": "The available credit of the queried account."
+								}
+							},
+							"deposit(uint256)": {
+								"params": {
+									"amount": "The amount of credit to be added to the caller's account."
+								},
+								"returns": {
+									"totalAvailableCredit": "The updated available credit of the caller's account."
+								}
+							},
+							"depositFor(address,uint256)": {
+								"params": {
+									"account": "The address of the account for which the available credit is being increased.",
+									"amount": "The amount of credit to be added to the account."
+								},
+								"returns": {
+									"totalAvailableCredit": "The updated available credit of the specified account."
+								}
+							},
+							"depositForWithPermit(address,uint256,bytes)": {
+								"params": {
+									"account": "The address of the account for which the available credit is being increased.",
+									"amount": "The amount of credit to be added to the account.",
+									"permit": "The permit data authorizing the transaction."
+								},
+								"returns": {
+									"totalAvailableCredit": "The updated available credit of the specified account."
+								}
+							},
+							"depositWithPermit(uint256,bytes)": {
+								"params": {
+									"amount": "The amount of credit to be added to the caller's account.",
+									"permit": "The permit data authorizing the transaction."
+								},
+								"returns": {
+									"totalAvailableCredit": "The updated available credit of the caller's account."
+								}
+							},
+							"withdraw(uint256)": {
+								"params": {
+									"amount": "The amount of credit to be withdrawn from the caller's account."
+								},
+								"returns": {
+									"totalAvailableCredit": "The updated available credit of the caller's account."
+								}
+							},
+							"withdrawTo(address,uint256)": {
+								"params": {
+									"account": "The address of the account to which the credit is being withdrawn.",
+									"amount": "The amount of credit to be withdrawn."
+								},
+								"returns": {
+									"totalAvailableCredit": "The updated available credit of the caller's account."
+								}
+							}
+						},
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"availableCredit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"availableCredit\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"totalAvailableCredit\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"depositFor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"totalAvailableCredit\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"permit\",\"type\":\"bytes\"}],\"name\":\"depositForWithPermit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"totalAvailableCredit\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"permit\",\"type\":\"bytes\"}],\"name\":\"depositWithPermit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"totalAvailableCredit\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"totalAvailableCredit\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"withdrawTo\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"totalAvailableCredit\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"availableCredit(address)\":{\"params\":{\"account\":\"The address of the account for which the available credit is being queried.\"},\"returns\":{\"availableCredit\":\"The available credit of the queried account.\"}},\"deposit(uint256)\":{\"params\":{\"amount\":\"The amount of credit to be added to the caller's account.\"},\"returns\":{\"totalAvailableCredit\":\"The updated available credit of the caller's account.\"}},\"depositFor(address,uint256)\":{\"params\":{\"account\":\"The address of the account for which the available credit is being increased.\",\"amount\":\"The amount of credit to be added to the account.\"},\"returns\":{\"totalAvailableCredit\":\"The updated available credit of the specified account.\"}},\"depositForWithPermit(address,uint256,bytes)\":{\"params\":{\"account\":\"The address of the account for which the available credit is being increased.\",\"amount\":\"The amount of credit to be added to the account.\",\"permit\":\"The permit data authorizing the transaction.\"},\"returns\":{\"totalAvailableCredit\":\"The updated available credit of the specified account.\"}},\"depositWithPermit(uint256,bytes)\":{\"params\":{\"amount\":\"The amount of credit to be added to the caller's account.\",\"permit\":\"The permit data authorizing the transaction.\"},\"returns\":{\"totalAvailableCredit\":\"The updated available credit of the caller's account.\"}},\"withdraw(uint256)\":{\"params\":{\"amount\":\"The amount of credit to be withdrawn from the caller's account.\"},\"returns\":{\"totalAvailableCredit\":\"The updated available credit of the caller's account.\"}},\"withdrawTo(address,uint256)\":{\"params\":{\"account\":\"The address of the account to which the credit is being withdrawn.\",\"amount\":\"The amount of credit to be withdrawn.\"},\"returns\":{\"totalAvailableCredit\":\"The updated available credit of the caller's account.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"availableCredit(address)\":{\"notice\":\"Returns the available credit for a given account in the FeeBank contract.\"},\"deposit(uint256)\":{\"notice\":\"Increases the caller's available credit by the specified amount.\"},\"depositFor(address,uint256)\":{\"notice\":\"Increases the specified account's available credit by the specified amount.\"},\"depositForWithPermit(address,uint256,bytes)\":{\"notice\":\"Increases the specified account's available credit by a specified amount with permit.\"},\"depositWithPermit(uint256,bytes)\":{\"notice\":\"Increases the caller's available credit by a specified amount with permit.\"},\"withdraw(uint256)\":{\"notice\":\"Withdraws a specified amount of credit from the caller's account.\"},\"withdrawTo(address,uint256)\":{\"notice\":\"Withdraws a specified amount of credit to the specified account.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/escrow/IFeeBank.sol\":\"IFeeBank\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/escrow/IFeeBank.sol\":{\"keccak256\":\"0x2d03d415bbaac2c6b26bd33899adc942a3d59ef50e46f035b89eab2bddb98d58\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5c7b806a040a59a41cdd50f60a0d74325a4610da64444ae0e51a7481649016f0\",\"dweb:/ipfs/QmQ3aWgMc74QGPT8aYMtTaMM32qcRwVcwTU5M2kcpaCQYK\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"availableCredit(address)": {
+								"notice": "Returns the available credit for a given account in the FeeBank contract."
+							},
+							"deposit(uint256)": {
+								"notice": "Increases the caller's available credit by the specified amount."
+							},
+							"depositFor(address,uint256)": {
+								"notice": "Increases the specified account's available credit by the specified amount."
+							},
+							"depositForWithPermit(address,uint256,bytes)": {
+								"notice": "Increases the specified account's available credit by a specified amount with permit."
+							},
+							"depositWithPermit(uint256,bytes)": {
+								"notice": "Increases the caller's available credit by a specified amount with permit."
+							},
+							"withdraw(uint256)": {
+								"notice": "Withdraws a specified amount of credit from the caller's account."
+							},
+							"withdrawTo(address,uint256)": {
+								"notice": "Withdraws a specified amount of credit to the specified account."
+							}
+						},
+						"version": 1
+					}
+				}
+			},
+			"contracts/escrow/IFeeBankCharger.sol": {
+				"IFeeBankCharger": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "FEE_BANK",
+							"outputs": [
+								{
+									"internalType": "contract IFeeBank",
+									"name": "",
+									"type": "address"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "account",
+									"type": "address"
+								}
+							],
+							"name": "availableCredit",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "account",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "decreaseAvailableCredit",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "allowance",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "account",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "increaseAvailableCredit",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "allowance",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"kind": "dev",
+						"methods": {
+							"FEE_BANK()": {
+								"returns": {
+									"_0": "The instance of the FeeBank contract."
+								}
+							},
+							"availableCredit(address)": {
+								"params": {
+									"account": "The address of the account for which the available credit is being queried."
+								},
+								"returns": {
+									"_0": "The available credit of the queried account."
+								}
+							},
+							"decreaseAvailableCredit(address,uint256)": {
+								"params": {
+									"account": "The address of the account for which the available credit is being decreased.",
+									"amount": "The amount by which the available credit will be decreased."
+								},
+								"returns": {
+									"allowance": "The updated available credit of the specified account."
+								}
+							},
+							"increaseAvailableCredit(address,uint256)": {
+								"params": {
+									"account": "The address of the account for which the available credit is being increased.",
+									"amount": "The amount by which the available credit will be increased."
+								},
+								"returns": {
+									"allowance": "The updated available credit of the specified account."
+								}
+							}
+						},
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"FEE_BANK\",\"outputs\":[{\"internalType\":\"contract IFeeBank\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"availableCredit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"decreaseAvailableCredit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"allowance\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"increaseAvailableCredit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"allowance\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"FEE_BANK()\":{\"returns\":{\"_0\":\"The instance of the FeeBank contract.\"}},\"availableCredit(address)\":{\"params\":{\"account\":\"The address of the account for which the available credit is being queried.\"},\"returns\":{\"_0\":\"The available credit of the queried account.\"}},\"decreaseAvailableCredit(address,uint256)\":{\"params\":{\"account\":\"The address of the account for which the available credit is being decreased.\",\"amount\":\"The amount by which the available credit will be decreased.\"},\"returns\":{\"allowance\":\"The updated available credit of the specified account.\"}},\"increaseAvailableCredit(address,uint256)\":{\"params\":{\"account\":\"The address of the account for which the available credit is being increased.\",\"amount\":\"The amount by which the available credit will be increased.\"},\"returns\":{\"allowance\":\"The updated available credit of the specified account.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"FEE_BANK()\":{\"notice\":\"Returns the instance of the FeeBank contract.\"},\"availableCredit(address)\":{\"notice\":\"Returns the available credit for a given account.\"},\"decreaseAvailableCredit(address,uint256)\":{\"notice\":\"Decreases the available credit of a given account by a specified amount.\"},\"increaseAvailableCredit(address,uint256)\":{\"notice\":\"Increases the available credit of a given account by a specified amount.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/escrow/IFeeBankCharger.sol\":\"IFeeBankCharger\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/escrow/IFeeBank.sol\":{\"keccak256\":\"0x2d03d415bbaac2c6b26bd33899adc942a3d59ef50e46f035b89eab2bddb98d58\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5c7b806a040a59a41cdd50f60a0d74325a4610da64444ae0e51a7481649016f0\",\"dweb:/ipfs/QmQ3aWgMc74QGPT8aYMtTaMM32qcRwVcwTU5M2kcpaCQYK\"]},\"contracts/escrow/IFeeBankCharger.sol\":{\"keccak256\":\"0xef4750e40bf2488873716b2e2f9315e69ac9e9c65bb5de2a16e39be6f3b483ea\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://640bcc74edee9d439ef412e782cd0ea889efd024486879cf5bad0242d831afda\",\"dweb:/ipfs/QmRQg6dCgA7z4vQgn3sGZhNtJ4pLTDbvBbkTfw77sr11GE\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"FEE_BANK()": {
+								"notice": "Returns the instance of the FeeBank contract."
+							},
+							"availableCredit(address)": {
+								"notice": "Returns the available credit for a given account."
+							},
+							"decreaseAvailableCredit(address,uint256)": {
+								"notice": "Decreases the available credit of a given account by a specified amount."
+							},
+							"increaseAvailableCredit(address,uint256)": {
+								"notice": "Increases the available credit of a given account by a specified amount."
+							}
+						},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/escrow/IFeeBank.sol": {
+				"id": 0
+			},
+			"contracts/escrow/IFeeBankCharger.sol": {
+				"id": 1
+			}
+		}
+	}
+}

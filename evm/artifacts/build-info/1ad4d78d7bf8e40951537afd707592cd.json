@@ -1,0 +1,80 @@
+{
+	"id": "1ad4d78d7bf8e40951537afd707592cd",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/RevertReasonForwarder.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\n/**\n * @title RevertReasonForwarder\n * @notice Provides utilities for forwarding and retrieving revert reasons from failed external calls.\n */\nlibrary RevertReasonForwarder {\n    /**\n     * @dev Forwards the revert reason from the latest external call.\n     * This method allows propagating the revert reason of a failed external call to the caller.\n     */\n    function reRevert() internal pure {\n        // bubble up revert reason from latest external call\n        assembly (\"memory-safe\") { // solhint-disable-line no-inline-assembly\n            let ptr := mload(0x40)\n            returndatacopy(ptr, 0, returndatasize())\n            revert(ptr, returndatasize())\n        }\n    }\n\n    /**\n     * @dev Retrieves the revert reason from the latest external call.\n     * This method enables capturing the revert reason of a failed external call for inspection or processing.\n     * @return reason The latest external call revert reason.\n     */\n    function reReason() internal pure returns (bytes memory reason) {\n        assembly (\"memory-safe\") { // solhint-disable-line no-inline-assembly\n            reason := mload(0x40)\n            let length := returndatasize()\n            mstore(reason, length)\n            returndatacopy(add(reason, 0x20), 0, length)\n            mstore(0x40, add(reason, add(0x20, length)))\n        }\n    }\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/RevertReasonForwarder.sol": {
+				"RevertReasonForwarder": {
+					"abi": [],
+					"devdoc": {
+						"kind": "dev",
+						"methods": {},
+						"title": "RevertReasonForwarder",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220f231314aa3aea6a5b7c0be07924e2127d4641a8c1c5f097d10db6fadc6c288e064736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 CALLCODE BALANCE BALANCE 0x4A LOG3 0xAE 0xA6 0xA5 0xB7 0xC0 0xBE SMOD SWAP3 0x4E 0x21 0x27 0xD4 PUSH5 0x1A8C1C5F09 PUSH30 0x10DB6FADC6C288E064736F6C634300081700330000000000000000000000 ",
+							"sourceMap": "201:1192:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea2646970667358221220f231314aa3aea6a5b7c0be07924e2127d4641a8c1c5f097d10db6fadc6c288e064736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 CALLCODE BALANCE BALANCE 0x4A LOG3 0xAE 0xA6 0xA5 0xB7 0xC0 0xBE SMOD SWAP3 0x4E 0x21 0x27 0xD4 PUSH5 0x1A8C1C5F09 PUSH30 0x10DB6FADC6C288E064736F6C634300081700330000000000000000000000 ",
+							"sourceMap": "201:1192:0:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"title\":\"RevertReasonForwarder\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"Provides utilities for forwarding and retrieving revert reasons from failed external calls.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/RevertReasonForwarder.sol\":\"RevertReasonForwarder\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/RevertReasonForwarder.sol\":{\"keccak256\":\"0x00dbd12fec0c2696dd0862143457d8a23c998dcabd5d038fc85512ba93467417\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2fa738dc80ff7027762294869f2b181177a5c122fe04ceea08c619c544c820aa\",\"dweb:/ipfs/QmUzrDWe6k6Hhfdd5MxUhnW34B8mGJ5pwx65NM9EBLkLCU\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"notice": "Provides utilities for forwarding and retrieving revert reasons from failed external calls.",
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/RevertReasonForwarder.sol": {
+				"id": 0
+			}
+		}
+	}
+}

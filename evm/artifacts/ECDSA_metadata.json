@@ -1,0 +1,56 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"title": "ECDSA signature operations",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"notice": "Provides functions for recovering addresses from signatures and verifying signatures, including support for EIP-2098 compact signatures.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/ECDSA.sol": "ECDSA"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/ECDSA.sol": {
+			"keccak256": "0xa6e29ba3b3f26b1d82b2f76c349038e314c4bcd7930ec8b2255022d8b684bd78",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f07a89f3ab957b78bab77074d61d0149d3b49ae1f9fa3b9b704cfdda974897ec",
+				"dweb:/ipfs/QmbS9FUMWM1sDVin9R4A8ZG4Z4EukgNmUM59PnvzQ1Bhd3"
+			]
+		},
+		"contracts/IERC1271.sol": {
+			"keccak256": "0xa46ecff1d8a61c56161d3c1ec3cf10b62595bb8dc6bc2bd7ebb2eab2fda06c9b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://443beef6470857f7c919bc98c6dc21bd2031742398e156cf29e8e873099d4f4f",
+				"dweb:/ipfs/QmZfdVdBmJJi1z7mtjHTiaChPxxNHTjJrTwU3c9Br4GM4m"
+			]
+		}
+	},
+	"version": 1
+}

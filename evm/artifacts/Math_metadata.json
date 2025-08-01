@@ -1,0 +1,63 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Standard math utilities missing in the Solidity language.",
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Math.sol": "Math"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/Math.sol": {
+			"keccak256": "0x38c3845ac06436b72e265731c3546e21b2e792a800af0c355f2039ceb85cdbfc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c63508dd9c15bf8155a8c248518310ad06b1d3f8d42082866fc8ecaa37f8dfda",
+				"dweb:/ipfs/QmXiJyT5zGCgPWeLrF1g3fpvbjMkVQBt9MSq3fiA97VsTj"
+			]
+		},
+		"contracts/Panic.sol": {
+			"keccak256": "0xec0c46048fd01751aa22ecddb66df20b702374fd68f3f4b3ae363782f6b31f9f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d32d9af31bc44235f769cf820ec96fd3f0aea9e16a169b244a62e34e482d7d55",
+				"dweb:/ipfs/Qmd4Lw5sSLQtfE2vEy29RHzffinDsHgN1pGaS8Eex1F8ks"
+			]
+		},
+		"contracts/SafeCast.sol": {
+			"keccak256": "0x16949b29739a3a20cf5ffe9ca22830a9f9b6deff16ee925827b19ddb5fbc127a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://768190c98439f96d5cad1900cc96e24f0749172192be8b5de885c426750c6ecd",
+				"dweb:/ipfs/QmWPmxri7eCbAXC7p3qJ14ckPTUDkdE3wuyiMoc1pat5ft"
+			]
+		}
+	},
+	"version": 1
+}

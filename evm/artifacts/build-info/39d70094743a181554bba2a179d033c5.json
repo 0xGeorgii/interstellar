@@ -1,0 +1,144 @@
+{
+	"id": "39d70094743a181554bba2a179d033c5",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/IDaiLikePermit.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\n/**\n * @title IDaiLikePermit\n * @dev Interface for Dai-like permit function allowing token spending via signatures.\n */\ninterface IDaiLikePermit {\n    /**\n     * @notice Approves spending of tokens via off-chain signatures.\n     * @param holder Token holder's address.\n     * @param spender Spender's address.\n     * @param nonce Current nonce of the holder.\n     * @param expiry Time when the permit expires.\n     * @param allowed True to allow, false to disallow spending.\n     * @param v, r, s Signature components.\n     */\n    function permit(\n        address holder,\n        address spender,\n        uint256 nonce,\n        uint256 expiry,\n        bool allowed,\n        uint8 v,\n        bytes32 r,\n        bytes32 s\n    ) external;\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/IDaiLikePermit.sol": {
+				"IDaiLikePermit": {
+					"abi": [
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "holder",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "spender",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "expiry",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bool",
+									"name": "allowed",
+									"type": "bool"
+								},
+								{
+									"internalType": "uint8",
+									"name": "v",
+									"type": "uint8"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "r",
+									"type": "bytes32"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "s",
+									"type": "bytes32"
+								}
+							],
+							"name": "permit",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"details": "Interface for Dai-like permit function allowing token spending via signatures.",
+						"kind": "dev",
+						"methods": {
+							"permit(address,address,uint256,uint256,bool,uint8,bytes32,bytes32)": {
+								"params": {
+									"allowed": "True to allow, false to disallow spending.",
+									"expiry": "Time when the permit expires.",
+									"holder": "Token holder's address.",
+									"nonce": "Current nonce of the holder.",
+									"spender": "Spender's address.",
+									"v": ", r, s Signature components."
+								}
+							}
+						},
+						"title": "IDaiLikePermit",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"holder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"expiry\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"allowed\",\"type\":\"bool\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"}],\"name\":\"permit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for Dai-like permit function allowing token spending via signatures.\",\"kind\":\"dev\",\"methods\":{\"permit(address,address,uint256,uint256,bool,uint8,bytes32,bytes32)\":{\"params\":{\"allowed\":\"True to allow, false to disallow spending.\",\"expiry\":\"Time when the permit expires.\",\"holder\":\"Token holder's address.\",\"nonce\":\"Current nonce of the holder.\",\"spender\":\"Spender's address.\",\"v\":\", r, s Signature components.\"}}},\"title\":\"IDaiLikePermit\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"permit(address,address,uint256,uint256,bool,uint8,bytes32,bytes32)\":{\"notice\":\"Approves spending of tokens via off-chain signatures.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IDaiLikePermit.sol\":\"IDaiLikePermit\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/IDaiLikePermit.sol\":{\"keccak256\":\"0x0bcc9c886acb32f5664e3bfd0640e6fc1de6525b8f6103f25906d040d054ce07\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://551e3b7d18d5e83727491f6749643a9a1e9a2e253a1a9be56eeb44e4c1b13876\",\"dweb:/ipfs/QmSpGRSD3DDP1EbBbXDPqAbSP58roEvCsosMQCDtSDnEBa\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"permit(address,address,uint256,uint256,bool,uint8,bytes32,bytes32)": {
+								"notice": "Approves spending of tokens via off-chain signatures."
+							}
+						},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/IDaiLikePermit.sol": {
+				"id": 0
+			}
+		}
+	}
+}

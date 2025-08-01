@@ -1,0 +1,48 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Library with gas-efficient string operations.",
+			"kind": "dev",
+			"methods": {},
+			"title": "StringUtil",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/StringUtil.sol": "StringUtil"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/escrow/StringUtil.sol": {
+			"keccak256": "0xb05bff1a3a5461b1f16248220067a2bd52e5c7e41c14be0aebb6520985b67ccb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://03495f22f0128969aef7dd46f65e215851cbd52cfa4d87eac0c930c5cd84826d",
+				"dweb:/ipfs/QmekA9rM82XXPKdHpCwAYhirtSCB5AJo16TUvyBYVWhKhZ"
+			]
+		}
+	},
+	"version": 1
+}

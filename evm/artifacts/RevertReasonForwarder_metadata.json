@@ -1,0 +1,48 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"title": "RevertReasonForwarder",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"notice": "Provides utilities for forwarding and retrieving revert reasons from failed external calls.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/RevertReasonForwarder.sol": "RevertReasonForwarder"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/RevertReasonForwarder.sol": {
+			"keccak256": "0x00dbd12fec0c2696dd0862143457d8a23c998dcabd5d038fc85512ba93467417",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2fa738dc80ff7027762294869f2b181177a5c122fe04ceea08c619c544c820aa",
+				"dweb:/ipfs/QmUzrDWe6k6Hhfdd5MxUhnW34B8mGJ5pwx65NM9EBLkLCU"
+			]
+		}
+	},
+	"version": 1
+}

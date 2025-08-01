@@ -1,0 +1,181 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "AdvanceEpochFailed",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "maker",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "series",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newEpoch",
+						"type": "uint256"
+					}
+				],
+				"name": "EpochIncreased",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint96",
+						"name": "series",
+						"type": "uint96"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "advanceEpoch",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "maker",
+						"type": "address"
+					},
+					{
+						"internalType": "uint96",
+						"name": "series",
+						"type": "uint96"
+					}
+				],
+				"name": "epoch",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "maker",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "series",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "makerEpoch",
+						"type": "uint256"
+					}
+				],
+				"name": "epochEquals",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint96",
+						"name": "series",
+						"type": "uint96"
+					}
+				],
+				"name": "increaseEpoch",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"epochEquals(address,uint256,uint256)": {
+					"returns": {
+						"_0": "Result True if `maker` has specified epoch. Otherwise, false"
+					}
+				}
+			},
+			"title": "A helper contract to manage nonce with the series",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"advanceEpoch(uint96,uint256)": {
+					"notice": "Advances nonce by specified amount"
+				},
+				"epoch(address,uint96)": {
+					"notice": "Returns nonce for `maker` and `series`"
+				},
+				"epochEquals(address,uint256,uint256)": {
+					"notice": "Checks if `maker` has specified `makerEpoch` for `series`"
+				},
+				"increaseEpoch(uint96)": {
+					"notice": "Advances nonce by one"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/SeriesEpochManager.sol": "SeriesEpochManager"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/SeriesEpochManager.sol": {
+			"keccak256": "0x9d03f20594ca58ba892ad2e015f3fdade1ed8634073cd2dcc6498a98acc79541",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1eb4af3779131b166d4529c2123b9cb00f9f59e1dbff3814948d37cf193c8184",
+				"dweb:/ipfs/Qme1qvRRPcac4qYQu1nUFyd4Gu4iP6nqvSEr28F8VbJqQ1"
+			]
+		}
+	},
+	"version": 1
+}

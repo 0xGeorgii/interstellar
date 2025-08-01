@@ -1,0 +1,164 @@
+{
+	"id": "cfb597c571d1b466cf4e698802ea9998",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/OnlyWethReceiver.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\nimport \"./EthReceiver.sol\";\n\n/**\n * @title OnlyWethReceiver\n * @dev Abstract contract extending EthReceiver to accept only ETH deposits from a specified WETH contract.\n * This contract ensures that only wrapped ETH (WETH) can be deposited, rejecting all other direct ETH transfers.\n */\nabstract contract OnlyWethReceiver is EthReceiver {\n    /// @notice Address of the WETH contract allowed to deposit ETH.\n    address private immutable _WETH; // solhint-disable-line var-name-mixedcase\n\n    /**\n     * @dev Sets the WETH contract address during construction.\n     * @param weth Address of the WETH contract.\n     */\n    constructor(address weth) {\n        _WETH = address(weth);\n    }\n\n    /**\n     * @dev Overrides _receive to restrict ETH transfers solely to the WETH contract.\n     * Reverts with EthDepositRejected if ETH is sent from any other address.\n     */\n    function _receive() internal virtual override {\n        if (msg.sender != _WETH) revert EthDepositRejected();\n    }\n}"
+			},
+			"contracts/EthReceiver.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\n/**\n * @title EthReceiver\n * @dev Abstract contract for rejecting direct ETH transfers from EOAs.\n * Implements a custom error and logic to reject ETH deposits from non-contract addresses.\n */\nabstract contract EthReceiver {\n    /// @dev Error thrown when an ETH deposit from an EOA is attempted.\n    error EthDepositRejected();\n\n    /// @dev External payable function to receive ETH, automatically rejects deposits from EOAs.\n    receive() external payable {\n        _receive();\n    }\n\n    /**\n     * @dev Internal function containing the logic to reject ETH deposits.\n     * Can be overridden by derived contracts for specific behaviors while maintaining the base rejection mechanism.\n     */\n    function _receive() internal virtual {\n        // solhint-disable-next-line avoid-tx-origin\n        if (msg.sender == tx.origin) revert EthDepositRejected();\n    }\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/EthReceiver.sol": {
+				"EthReceiver": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "EthDepositRejected",
+							"type": "error"
+						},
+						{
+							"stateMutability": "payable",
+							"type": "receive"
+						}
+					],
+					"devdoc": {
+						"details": "Abstract contract for rejecting direct ETH transfers from EOAs. Implements a custom error and logic to reject ETH deposits from non-contract addresses.",
+						"errors": {
+							"EthDepositRejected()": [
+								{
+									"details": "Error thrown when an ETH deposit from an EOA is attempted."
+								}
+							]
+						},
+						"kind": "dev",
+						"methods": {},
+						"title": "EthReceiver",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"EthDepositRejected\",\"type\":\"error\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"details\":\"Abstract contract for rejecting direct ETH transfers from EOAs. Implements a custom error and logic to reject ETH deposits from non-contract addresses.\",\"errors\":{\"EthDepositRejected()\":[{\"details\":\"Error thrown when an ETH deposit from an EOA is attempted.\"}]},\"kind\":\"dev\",\"methods\":{},\"title\":\"EthReceiver\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/EthReceiver.sol\":\"EthReceiver\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/EthReceiver.sol\":{\"keccak256\":\"0x7fbf52c64fd6e03b2f5d977aac7d2b377fc240495d09e47642dc4ef301d173c6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8dfcabf097c3a4e0819d387acc40b135aa9d59320971c2d648e399f77fedd7fc\",\"dweb:/ipfs/QmQreuBPfDUkauL9FTFY9dLe7vGyLsQoDA5DHZrA1u9SZS\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			},
+			"contracts/OnlyWethReceiver.sol": {
+				"OnlyWethReceiver": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "EthDepositRejected",
+							"type": "error"
+						},
+						{
+							"stateMutability": "payable",
+							"type": "receive"
+						}
+					],
+					"devdoc": {
+						"details": "Abstract contract extending EthReceiver to accept only ETH deposits from a specified WETH contract. This contract ensures that only wrapped ETH (WETH) can be deposited, rejecting all other direct ETH transfers.",
+						"errors": {
+							"EthDepositRejected()": [
+								{
+									"details": "Error thrown when an ETH deposit from an EOA is attempted."
+								}
+							]
+						},
+						"kind": "dev",
+						"methods": {
+							"constructor": {
+								"details": "Sets the WETH contract address during construction.",
+								"params": {
+									"weth": "Address of the WETH contract."
+								}
+							}
+						},
+						"title": "OnlyWethReceiver",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"EthDepositRejected\",\"type\":\"error\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"details\":\"Abstract contract extending EthReceiver to accept only ETH deposits from a specified WETH contract. This contract ensures that only wrapped ETH (WETH) can be deposited, rejecting all other direct ETH transfers.\",\"errors\":{\"EthDepositRejected()\":[{\"details\":\"Error thrown when an ETH deposit from an EOA is attempted.\"}]},\"kind\":\"dev\",\"methods\":{\"constructor\":{\"details\":\"Sets the WETH contract address during construction.\",\"params\":{\"weth\":\"Address of the WETH contract.\"}}},\"title\":\"OnlyWethReceiver\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/OnlyWethReceiver.sol\":\"OnlyWethReceiver\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/EthReceiver.sol\":{\"keccak256\":\"0x7fbf52c64fd6e03b2f5d977aac7d2b377fc240495d09e47642dc4ef301d173c6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8dfcabf097c3a4e0819d387acc40b135aa9d59320971c2d648e399f77fedd7fc\",\"dweb:/ipfs/QmQreuBPfDUkauL9FTFY9dLe7vGyLsQoDA5DHZrA1u9SZS\"]},\"contracts/OnlyWethReceiver.sol\":{\"keccak256\":\"0x253e18562bbac1277e92aff67a7c8911067b88b38c4f6edeec2e2f4c5cdb29dc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://cfe07e3be8b962f8b07211e23c2bfeb50a3d46cc0b6e4067f5841ef434f9601f\",\"dweb:/ipfs/Qmed6EpjdafZ1rWYiEXXTRbySBu1GC8oCr6CShadpWYHnL\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/EthReceiver.sol": {
+				"id": 0
+			},
+			"contracts/OnlyWethReceiver.sol": {
+				"id": 1
+			}
+		}
+	}
+}

@@ -1,0 +1,72 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"custom:security-contact": "security@1inch.io",
+			"kind": "dev",
+			"methods": {},
+			"title": "Library for escrow immutables.",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/libraries/ImmutablesLib.sol": "ImmutablesLib"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/AddressLib.sol": {
+			"keccak256": "0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586",
+				"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR"
+			]
+		},
+		"contracts/escrow/interfaces/IBaseEscrow.sol": {
+			"keccak256": "0xe04d997a41e2fb0df08f6eee1519944d7e226d9d816115cc2a6977860c863724",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ef01bf4cb93bc9f2ccb0ada3780ae8aae98c59300e1fa40efd1a1211bf2dabe4",
+				"dweb:/ipfs/QmSY8bq7C9ZVqHmtuC8kQPAMsg3o2bB2y688JPCGoohZhX"
+			]
+		},
+		"contracts/escrow/libraries/ImmutablesLib.sol": {
+			"keccak256": "0x61b4a772ba17cbb1e52d09c71903d694a6f032c7c3bff76ba109a2d2b606fcca",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fdb8ddefa42e86bc8456c01bada27d8d68e52a64c1f117fc939df6052ca9f93b",
+				"dweb:/ipfs/QmciZYyGkJHxsoDQHGnXYCf9R6eKpHz88L161MMiozTvwH"
+			]
+		},
+		"contracts/escrow/libraries/TimelocksLib.sol": {
+			"keccak256": "0xd6ad5f65d792a1bc4c40328afed51281b7855ebf69696125cbbec42b695e9379",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://db449fb7a9bd6d334ed5aeb4e14297a729e2a97fbf20b22821e18446b67bbaf2",
+				"dweb:/ipfs/QmXUUBE2dyAF922kCaxhqDr1yL1s7t44di44ewWzEoKG3d"
+			]
+		}
+	},
+	"version": 1
+}

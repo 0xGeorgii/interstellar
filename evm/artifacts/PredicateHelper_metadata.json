@@ -1,0 +1,283 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "ArbitraryStaticCallFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offsets",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "and",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "target",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "arbitraryStaticCall",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "eq",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "gt",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "lt",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "not",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offsets",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "or",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"and(uint256,bytes)": {
+					"returns": {
+						"_0": "Result True if calls to all targets returned True. Otherwise, false"
+					}
+				},
+				"arbitraryStaticCall(address,bytes)": {
+					"returns": {
+						"_0": "Result Bytes transmuted to uint256"
+					}
+				},
+				"eq(uint256,bytes)": {
+					"params": {
+						"value": "Value to test"
+					},
+					"returns": {
+						"_0": "Result True if call to target returns the same value as `value`. Otherwise, false"
+					}
+				},
+				"gt(uint256,bytes)": {
+					"params": {
+						"value": "Value to test"
+					},
+					"returns": {
+						"_0": "Result True if call to target returns value which is bigger than `value`. Otherwise, false"
+					}
+				},
+				"lt(uint256,bytes)": {
+					"params": {
+						"value": "Value to test"
+					},
+					"returns": {
+						"_0": "Result True if call to target returns value which is lower than `value`. Otherwise, false"
+					}
+				},
+				"not(bytes)": {
+					"returns": {
+						"_0": "Result True if call to target returns 0. Otherwise, false"
+					}
+				},
+				"or(uint256,bytes)": {
+					"returns": {
+						"_0": "Result True if call to any target returned True. Otherwise, false"
+					}
+				}
+			},
+			"title": "A helper contract for executing boolean functions on arbitrary target call results",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"and(uint256,bytes)": {
+					"notice": "Calls every target with corresponding data"
+				},
+				"arbitraryStaticCall(address,bytes)": {
+					"notice": "Performs an arbitrary call to target with data"
+				},
+				"eq(uint256,bytes)": {
+					"notice": "Calls target with specified data and tests if it's equal to the value"
+				},
+				"gt(uint256,bytes)": {
+					"notice": "Calls target with specified data and tests if it's bigger than value"
+				},
+				"lt(uint256,bytes)": {
+					"notice": "Calls target with specified data and tests if it's lower than value"
+				},
+				"not(bytes)": {
+					"notice": "Calls target with specified data and tests if it's equal to 0"
+				},
+				"or(uint256,bytes)": {
+					"notice": "Calls every target with corresponding data"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/PredicateHelper.sol": "PredicateHelper"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/PredicateHelper.sol": {
+			"keccak256": "0x2eabeb6ee0a445ec34dea12a88de427dbdaa69331ef5d7e11fee697c9eb9abdf",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://421ce9422fe2c69966d7991a444017932aee070e933fc0d16b22bc9df01fe15c",
+				"dweb:/ipfs/Qmcpv6v97Mty5rWGK6nUDVH1YF72gUQKkqzNdC62u378Fu"
+			]
+		}
+	},
+	"version": 1
+}

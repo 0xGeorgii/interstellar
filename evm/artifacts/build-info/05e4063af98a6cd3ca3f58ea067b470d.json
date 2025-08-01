@@ -1,0 +1,130 @@
+{
+	"id": "05e4063af98a6cd3ca3f58ea067b470d",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/escrow/interfaces/IMerkleStorageInvalidator.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity 0.8.23;\n\n/**\n * @title Merkle Storage Invalidator interface\n * @notice Interface to invalidate hashed secrets from an order that supports multiple fills.\n * @custom:security-contact security@1inch.io\n */\ninterface IMerkleStorageInvalidator {\n    struct ValidationData {\n        uint256 index;\n        bytes32 leaf;\n    }\n\n    struct TakerData {\n        bytes32[] proof;\n        uint256 idx;\n        bytes32 secretHash;\n    }\n\n    error AccessDenied();\n    error InvalidProof();\n\n    /**\n     * @notice Returns the index of the last validated hashed secret and the hashed secret itself.\n     * @param key Hash of concatenated order hash and 30 bytes of root hash.\n     * @return index Index of the last validated hashed secret.\n     * @return secretHash Last validated hashed secret.\n     */\n    function lastValidated(bytes32 key) external view returns (uint256 index, bytes32 secretHash);\n}\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/escrow/interfaces/IMerkleStorageInvalidator.sol": {
+				"IMerkleStorageInvalidator": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "AccessDenied",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "InvalidProof",
+							"type": "error"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "bytes32",
+									"name": "key",
+									"type": "bytes32"
+								}
+							],
+							"name": "lastValidated",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "index",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes32",
+									"name": "secretHash",
+									"type": "bytes32"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"custom:security-contact": "security@1inch.io",
+						"kind": "dev",
+						"methods": {
+							"lastValidated(bytes32)": {
+								"params": {
+									"key": "Hash of concatenated order hash and 30 bytes of root hash."
+								},
+								"returns": {
+									"index": "Index of the last validated hashed secret.",
+									"secretHash": "Last validated hashed secret."
+								}
+							}
+						},
+						"title": "Merkle Storage Invalidator interface",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"AccessDenied\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidProof\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"lastValidated\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"secretHash\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"custom:security-contact\":\"security@1inch.io\",\"kind\":\"dev\",\"methods\":{\"lastValidated(bytes32)\":{\"params\":{\"key\":\"Hash of concatenated order hash and 30 bytes of root hash.\"},\"returns\":{\"index\":\"Index of the last validated hashed secret.\",\"secretHash\":\"Last validated hashed secret.\"}}},\"title\":\"Merkle Storage Invalidator interface\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"lastValidated(bytes32)\":{\"notice\":\"Returns the index of the last validated hashed secret and the hashed secret itself.\"}},\"notice\":\"Interface to invalidate hashed secrets from an order that supports multiple fills.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/escrow/interfaces/IMerkleStorageInvalidator.sol\":\"IMerkleStorageInvalidator\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/escrow/interfaces/IMerkleStorageInvalidator.sol\":{\"keccak256\":\"0xd17224d668d000818ff16b0546939c025230579122c5ff06ca39c2b11f0d6501\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d335075a4479906c6bd9fe6c86a7fa41b04cf2af7b561a31bee24219341b4ff3\",\"dweb:/ipfs/QmSocpVTFVioeKAGecjETXNzHNCQpHuGY5py47W8kHiHRv\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"lastValidated(bytes32)": {
+								"notice": "Returns the index of the last validated hashed secret and the hashed secret itself."
+							}
+						},
+						"notice": "Interface to invalidate hashed secrets from an order that supports multiple fills.",
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/escrow/interfaces/IMerkleStorageInvalidator.sol": {
+				"id": 0
+			}
+		}
+	}
+}

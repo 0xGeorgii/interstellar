@@ -1,0 +1,630 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "contract IEscrowFactory",
+						"name": "factory",
+						"type": "address"
+					},
+					{
+						"internalType": "contract IOrderMixin",
+						"name": "lop",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "initialOwner",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidLength",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "LengthMismatch",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "NativeTokenSendingFailure",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "OwnableInvalidOwner",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "OwnableUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "targets",
+						"type": "address[]"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "arguments",
+						"type": "bytes[]"
+					}
+				],
+				"name": "arbitraryCalls",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "contract IEscrow",
+						"name": "escrow",
+						"type": "address"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "orderHash",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "hashlock",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "taker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "token",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "safetyDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Timelocks",
+								"name": "timelocks",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IBaseEscrow.Immutables",
+						"name": "immutables",
+						"type": "tuple"
+					}
+				],
+				"name": "cancel",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "orderHash",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "hashlock",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "taker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "token",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "safetyDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Timelocks",
+								"name": "timelocks",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IBaseEscrow.Immutables",
+						"name": "dstImmutables",
+						"type": "tuple"
+					},
+					{
+						"internalType": "uint256",
+						"name": "srcCancellationTimestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "deployDst",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "orderHash",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "hashlock",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "taker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "token",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "safetyDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Timelocks",
+								"name": "timelocks",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IBaseEscrow.Immutables",
+						"name": "immutables",
+						"type": "tuple"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "salt",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "receiver",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "makerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "takerAsset",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "makingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "takingAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "MakerTraits",
+								"name": "makerTraits",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IOrderMixin.Order",
+						"name": "order",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "vs",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "TakerTraits",
+						"name": "takerTraits",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "args",
+						"type": "bytes"
+					}
+				],
+				"name": "deploySrc",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "contract IEscrow",
+						"name": "escrow",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "secret",
+						"type": "bytes32"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "orderHash",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "hashlock",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "Address",
+								"name": "maker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "taker",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Address",
+								"name": "token",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "safetyDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "Timelocks",
+								"name": "timelocks",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct IBaseEscrow.Immutables",
+						"name": "immutables",
+						"type": "tuple"
+					}
+				],
+				"name": "withdraw",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"custom:security-contact": "security@1inch.io",
+			"details": "It is important when deploying an escrow on the source chain to send the safety deposit and deploy the escrow in the same transaction, since the address of the escrow depends on the block.timestamp. You can find sample code for this in the {ResolverExample-deploySrc}.",
+			"errors": {
+				"OwnableInvalidOwner(address)": [
+					{
+						"details": "The owner is not a valid owner account. (eg. `address(0)`)"
+					}
+				],
+				"OwnableUnauthorizedAccount(address)": [
+					{
+						"details": "The caller account is not authorized to perform an operation."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				}
+			},
+			"title": "Sample implementation of a Resolver contract for cross-chain swap.",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"arbitraryCalls(address[],bytes[])": {
+					"notice": "See {IResolverExample-arbitraryCalls}."
+				},
+				"deployDst((bytes32,bytes32,uint256,uint256,uint256,uint256,uint256,uint256),uint256)": {
+					"notice": "See {IResolverExample-deployDst}."
+				},
+				"deploySrc((bytes32,bytes32,uint256,uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),bytes32,bytes32,uint256,uint256,bytes)": {
+					"notice": "See {IResolverExample-deploySrc}."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/resolver/Resolver.sol": "Resolver"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/AddressLib.sol": {
+			"keccak256": "0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586",
+				"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR"
+			]
+		},
+		"contracts/Context.sol": {
+			"keccak256": "0x28ad9de5e26095f685a085591178af7aeac1427af1bf442986b5aee0a5b2a14a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ad3864801aabbcc6f52361a1b86a3d4d342e283cc2036c47a3ef2df7e4a3c51",
+				"dweb:/ipfs/QmezNWJGoPBwtHjsQae7dbqjeZgpbB2cHFE5nFBBzGvJFR"
+			]
+		},
+		"contracts/IOrderMixin.sol": {
+			"keccak256": "0x34ead0b58bd2640652ad6366b4c4ea1370b66d2dd21ffb5d5b831ed54fc9cc71",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://65b82f8298ed8d9cb9eb3604af3c15129cffa009c5b0150f7f42154093d9ce96",
+				"dweb:/ipfs/QmaQoQNVTiJPKB6MVwtemAWrwyKEKR5fLqy7vyfm8oqBEx"
+			]
+		},
+		"contracts/MakerTraitsLib.sol": {
+			"keccak256": "0x2077d7a827c3ba2fa53c92b87bc586385c1310c3fe67edffe09c31a22900cbf9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://49f7294dcb82d3acd8b7e2f95546cc85e24ceb7e3564a21ebf852544887cda3b",
+				"dweb:/ipfs/QmPgzEiFpUHmGYfXF4EEdpCnb9TPnCpoF48bNMGw74vk1b"
+			]
+		},
+		"contracts/Ownable.sol": {
+			"keccak256": "0xa6428484d54bc2cd4eb2a5632305a4b7783365f8c5fa173ad62c4795bf2839f8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1a7d9efbfeef2f5c28979e8a93eeab25f6c2e85e69fe6261c4c17d15c5c3aadf",
+				"dweb:/ipfs/QmQieD54hKvNVXV3RuknW9BnSurgGrEyTnmcKHXg9YHC7E"
+			]
+		},
+		"contracts/RevertReasonForwarder.sol": {
+			"keccak256": "0x00dbd12fec0c2696dd0862143457d8a23c998dcabd5d038fc85512ba93467417",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2fa738dc80ff7027762294869f2b181177a5c122fe04ceea08c619c544c820aa",
+				"dweb:/ipfs/QmUzrDWe6k6Hhfdd5MxUhnW34B8mGJ5pwx65NM9EBLkLCU"
+			]
+		},
+		"contracts/TakerTraitsLib.sol": {
+			"keccak256": "0x25d36a3b3645561fc5b3f35c1e93fe60220bd15f9af896b0c6263a3269710fcc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://45597b42af6b436271ac8e6577255137557ff72d45883ef4bce01198016d4bb5",
+				"dweb:/ipfs/QmamEQ6c5ffZqanpuX52PUf88wPu6Gp4T8LCVVzonAo1uS"
+			]
+		},
+		"contracts/escrow/interfaces/IBaseEscrow.sol": {
+			"keccak256": "0xe04d997a41e2fb0df08f6eee1519944d7e226d9d816115cc2a6977860c863724",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ef01bf4cb93bc9f2ccb0ada3780ae8aae98c59300e1fa40efd1a1211bf2dabe4",
+				"dweb:/ipfs/QmSY8bq7C9ZVqHmtuC8kQPAMsg3o2bB2y688JPCGoohZhX"
+			]
+		},
+		"contracts/escrow/interfaces/IEscrow.sol": {
+			"keccak256": "0x8b0063cd06290dfc5d4bb20a9bdddff356f3100bd63d5a0c3f1b8d30d028fc10",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://78e81dc1ba169a0f328efc4824192f8906189e3cb2ed263543ecd1f9a61b7ac6",
+				"dweb:/ipfs/QmeaB5ymsLYZhUXrt4TFW6qYBPgLgUMEoAhggqAscZ2pNq"
+			]
+		},
+		"contracts/escrow/interfaces/IEscrowFactory.sol": {
+			"keccak256": "0xfb3454f375ee259573cc102d40196fcfeca01b9efe9cda5e0ca70904953098d6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a55845ead5ca7c285655db00d4496d69b5bf827cb5879def98747086928c1f93",
+				"dweb:/ipfs/QmbMCjNg9fVYwjeC9u9jp6JEZVVBaevu2ExraPAHotX6BX"
+			]
+		},
+		"contracts/escrow/libraries/ImmutablesLib.sol": {
+			"keccak256": "0x61b4a772ba17cbb1e52d09c71903d694a6f032c7c3bff76ba109a2d2b606fcca",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fdb8ddefa42e86bc8456c01bada27d8d68e52a64c1f117fc939df6052ca9f93b",
+				"dweb:/ipfs/QmciZYyGkJHxsoDQHGnXYCf9R6eKpHz88L161MMiozTvwH"
+			]
+		},
+		"contracts/escrow/libraries/TimelocksLib.sol": {
+			"keccak256": "0xd6ad5f65d792a1bc4c40328afed51281b7855ebf69696125cbbec42b695e9379",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://db449fb7a9bd6d334ed5aeb4e14297a729e2a97fbf20b22821e18446b67bbaf2",
+				"dweb:/ipfs/QmXUUBE2dyAF922kCaxhqDr1yL1s7t44di44ewWzEoKG3d"
+			]
+		},
+		"contracts/escrow/resolver/IResolver.sol": {
+			"keccak256": "0xa68e7797196bd03bf6ab9a2fdd46c309be362c5b1fe6d4780eda3b2c53fbbace",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0f13b7b595a4c34407051f2cc0e49eb09117f52a381cb8728b6a3d1da0c8773a",
+				"dweb:/ipfs/QmUMUA713shJVsvATYBHjAkSGkHq5jBtBRSemutiw4HQeb"
+			]
+		},
+		"contracts/escrow/resolver/Resolver.sol": {
+			"keccak256": "0xc52c327a225ddd806929885fe7749288d2735eefe7aa010a20ad378d2d3799b4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ee557da73ebd6bd8d3b01e5feb3b94fffbace4ab9f64ba00f69bdb651f2cb235",
+				"dweb:/ipfs/QmQqK9Nww1et3K7oChSuihmHhYiTLnrMFDY2jbn4uBPTfy"
+			]
+		}
+	},
+	"version": 1
+}

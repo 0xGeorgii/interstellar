@@ -1,0 +1,166 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "InvalidExtensionHash",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "MissingOrderExtension",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "UnexpectedOrderExtension",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"details": "The library provides common functionality for processing and manipulating limit orders. It provides functionality to calculate and verify order hashes, calculate trade amounts, and validate extension data associated with orders. The library also contains helper methods to get the receiver of an order and call getter functions.",
+			"errors": {
+				"InvalidExtensionHash()": [
+					{
+						"details": "Error to be thrown when the order extension hash is invalid."
+					}
+				],
+				"MissingOrderExtension()": [
+					{
+						"details": "Error to be thrown when the extension data of an order is missing."
+					}
+				],
+				"UnexpectedOrderExtension()": [
+					{
+						"details": "Error to be thrown when the order has an unexpected extension."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {},
+			"stateVariables": {
+				"_LIMIT_ORDER_TYPEHASH": {
+					"details": "The typehash of the order struct."
+				}
+			},
+			"title": "OrderLib",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/OrderLib.sol": "OrderLib"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/AddressLib.sol": {
+			"keccak256": "0x5dbbd2513216eca9660b83e356b1b50d6dd5f854c0106be6bc7df3fff01821d3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://71c5a3b82d7cb1c060885ed6a11710fe216af832d30b6dd30d051635e6c4e586",
+				"dweb:/ipfs/QmWYnTddAxLhKQq58wwya9NUkhudFoYamGZpcuHc6XdAMR"
+			]
+		},
+		"contracts/AmountCalculatorLib.sol": {
+			"keccak256": "0xb1fbc0d0951abce2e6d07b021ab03af781de5fa6b5002422d183ce81d9f2ef32",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://dc4475dfc44f050aa4ee8b7335aa512a02669055639a0dbf267f81376a54cd89",
+				"dweb:/ipfs/QmSVm5eyL8sPJGxc3oZmmZCeK5aonjr1M7qHUdtpAGHX4G"
+			]
+		},
+		"contracts/ECDSA.sol": {
+			"keccak256": "0xa6e29ba3b3f26b1d82b2f76c349038e314c4bcd7930ec8b2255022d8b684bd78",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f07a89f3ab957b78bab77074d61d0149d3b49ae1f9fa3b9b704cfdda974897ec",
+				"dweb:/ipfs/QmbS9FUMWM1sDVin9R4A8ZG4Z4EukgNmUM59PnvzQ1Bhd3"
+			]
+		},
+		"contracts/ExtensionLib.sol": {
+			"keccak256": "0x054ca2ebc73bc4dd62816bd9a3d384b89454e5e65d9d83c66637c578789d96ca",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9dc6a0163be726abd9732ac63c31f2b99a8f9505ae6280e9d2fa13150990d113",
+				"dweb:/ipfs/Qmd6CCRPTWE13WPEMTZZqisDkMQXdWm99P5N66CcT4uGaj"
+			]
+		},
+		"contracts/IAmountGetter.sol": {
+			"keccak256": "0x877aa31c7903e60289a1ba750e583113b1f317a9dfaeefcbf7fd19b4c62dbd98",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d7bbeceff66893fba29928459f2afa4546d19aaacdc3e6450ca51fb216874a86",
+				"dweb:/ipfs/QmYny4mRyuGRoRGNmoqYnpU6um3KhoTmfWs1xvLnLLEs3f"
+			]
+		},
+		"contracts/IERC1271.sol": {
+			"keccak256": "0xa46ecff1d8a61c56161d3c1ec3cf10b62595bb8dc6bc2bd7ebb2eab2fda06c9b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://443beef6470857f7c919bc98c6dc21bd2031742398e156cf29e8e873099d4f4f",
+				"dweb:/ipfs/QmZfdVdBmJJi1z7mtjHTiaChPxxNHTjJrTwU3c9Br4GM4m"
+			]
+		},
+		"contracts/IOrderMixin.sol": {
+			"keccak256": "0x34ead0b58bd2640652ad6366b4c4ea1370b66d2dd21ffb5d5b831ed54fc9cc71",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://65b82f8298ed8d9cb9eb3604af3c15129cffa009c5b0150f7f42154093d9ce96",
+				"dweb:/ipfs/QmaQoQNVTiJPKB6MVwtemAWrwyKEKR5fLqy7vyfm8oqBEx"
+			]
+		},
+		"contracts/MakerTraitsLib.sol": {
+			"keccak256": "0x2077d7a827c3ba2fa53c92b87bc586385c1310c3fe67edffe09c31a22900cbf9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://49f7294dcb82d3acd8b7e2f95546cc85e24ceb7e3564a21ebf852544887cda3b",
+				"dweb:/ipfs/QmPgzEiFpUHmGYfXF4EEdpCnb9TPnCpoF48bNMGw74vk1b"
+			]
+		},
+		"contracts/OffsetsLib.sol": {
+			"keccak256": "0xd8218c3b9241501b41fc0f0b579dce00a0b81603582e11f3da28881ed00801a1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://039b36fea4d1d12fe0d02ac26bdefd959c6fe447bd73ea0599a49e08f1712999",
+				"dweb:/ipfs/QmcyPNSDc2RjksmwYPY3jGAjD9bEhBAWi3qKYWNvtHHZT6"
+			]
+		},
+		"contracts/OrderLib.sol": {
+			"keccak256": "0x237317b4a2bec36853fabe0dc2647d211730ea0548c28cf166fec824bb5dc24d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8b4906e36c77ba5c37d0d47afd3fa55b511f6a52afbab6470c435d44f872f22d",
+				"dweb:/ipfs/QmTAAEzZjuAqo5PNNpM64acaN8yTzv8jzxaUZNXtP2yS8f"
+			]
+		},
+		"contracts/TakerTraitsLib.sol": {
+			"keccak256": "0x25d36a3b3645561fc5b3f35c1e93fe60220bd15f9af896b0c6263a3269710fcc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://45597b42af6b436271ac8e6577255137557ff72d45883ef4bce01198016d4bb5",
+				"dweb:/ipfs/QmamEQ6c5ffZqanpuX52PUf88wPu6Gp4T8LCVVzonAo1uS"
+			]
+		}
+	},
+	"version": 1
+}

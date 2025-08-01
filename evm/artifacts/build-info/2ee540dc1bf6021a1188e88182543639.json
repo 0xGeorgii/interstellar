@@ -1,0 +1,352 @@
+{
+	"id": "2ee540dc1bf6021a1188e88182543639",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/PredicateHelper.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity 0.8.23;\n\n/// @title A helper contract for executing boolean functions on arbitrary target call results\ncontract PredicateHelper {\n    error ArbitraryStaticCallFailed();\n\n    /// @notice Calls every target with corresponding data\n    /// @return Result True if call to any target returned True. Otherwise, false\n    function or(uint256 offsets, bytes calldata data) public view returns(bool) {\n        uint256 previous;\n        for (uint256 current; (current = uint32(offsets)) != 0; offsets >>= 32) {\n            (bool success, uint256 res) = _staticcallForUint(address(this), data[previous:current]);\n            if (success && res == 1) {\n                return true;\n            }\n            previous = current;\n        }\n        return false;\n    }\n\n    /// @notice Calls every target with corresponding data\n    /// @return Result True if calls to all targets returned True. Otherwise, false\n    function and(uint256 offsets, bytes calldata data) public view returns(bool) {\n        uint256 previous;\n        for (uint256 current; (current = uint32(offsets)) != 0; offsets >>= 32) {\n            (bool success, uint256 res) = _staticcallForUint(address(this), data[previous:current]);\n            if (!success || res != 1) {\n                return false;\n            }\n            previous = current;\n        }\n        return true;\n    }\n\n    /// @notice Calls target with specified data and tests if it's equal to 0\n    /// @return Result True if call to target returns 0. Otherwise, false\n    function not(bytes calldata data) public view returns(bool) {\n        (bool success, uint256 res) = _staticcallForUint(address(this), data);\n        return success && res == 0;\n    }\n\n    /// @notice Calls target with specified data and tests if it's equal to the value\n    /// @param value Value to test\n    /// @return Result True if call to target returns the same value as `value`. Otherwise, false\n    function eq(uint256 value, bytes calldata data) public view returns(bool) {\n        (bool success, uint256 res) = _staticcallForUint(address(this), data);\n        return success && res == value;\n    }\n\n    /// @notice Calls target with specified data and tests if it's lower than value\n    /// @param value Value to test\n    /// @return Result True if call to target returns value which is lower than `value`. Otherwise, false\n    function lt(uint256 value, bytes calldata data) public view returns(bool) {\n        (bool success, uint256 res) = _staticcallForUint(address(this), data);\n        return success && res < value;\n    }\n\n    /// @notice Calls target with specified data and tests if it's bigger than value\n    /// @param value Value to test\n    /// @return Result True if call to target returns value which is bigger than `value`. Otherwise, false\n    function gt(uint256 value, bytes calldata data) public view returns(bool) {\n        (bool success, uint256 res) = _staticcallForUint(address(this), data);\n        return success && res > value;\n    }\n\n    /// @notice Performs an arbitrary call to target with data\n    /// @return Result Bytes transmuted to uint256\n    function arbitraryStaticCall(address target, bytes calldata data) public view returns(uint256) {\n        (bool success, uint256 res) = _staticcallForUint(target, data);\n        if (!success) revert ArbitraryStaticCallFailed();\n        return res;\n    }\n\n    function _staticcallForUint(address target, bytes calldata data) internal view returns(bool success, uint256 res) {\n        assembly (\"memory-safe\") { // solhint-disable-line no-inline-assembly\n            let ptr := mload(0x40)\n\n            calldatacopy(ptr, data.offset, data.length)\n            success := staticcall(gas(), target, ptr, data.length, 0x0, 0x20)\n            success := and(success, eq(returndatasize(), 32))\n            if success {\n                res := mload(0)\n            }\n        }\n    }\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/PredicateHelper.sol": {
+				"PredicateHelper": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "ArbitraryStaticCallFailed",
+							"type": "error"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "offsets",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"name": "and",
+							"outputs": [
+								{
+									"internalType": "bool",
+									"name": "",
+									"type": "bool"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "target",
+									"type": "address"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"name": "arbitraryStaticCall",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"name": "eq",
+							"outputs": [
+								{
+									"internalType": "bool",
+									"name": "",
+									"type": "bool"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"name": "gt",
+							"outputs": [
+								{
+									"internalType": "bool",
+									"name": "",
+									"type": "bool"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"name": "lt",
+							"outputs": [
+								{
+									"internalType": "bool",
+									"name": "",
+									"type": "bool"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"name": "not",
+							"outputs": [
+								{
+									"internalType": "bool",
+									"name": "",
+									"type": "bool"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "offsets",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"name": "or",
+							"outputs": [
+								{
+									"internalType": "bool",
+									"name": "",
+									"type": "bool"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"kind": "dev",
+						"methods": {
+							"and(uint256,bytes)": {
+								"returns": {
+									"_0": "Result True if calls to all targets returned True. Otherwise, false"
+								}
+							},
+							"arbitraryStaticCall(address,bytes)": {
+								"returns": {
+									"_0": "Result Bytes transmuted to uint256"
+								}
+							},
+							"eq(uint256,bytes)": {
+								"params": {
+									"value": "Value to test"
+								},
+								"returns": {
+									"_0": "Result True if call to target returns the same value as `value`. Otherwise, false"
+								}
+							},
+							"gt(uint256,bytes)": {
+								"params": {
+									"value": "Value to test"
+								},
+								"returns": {
+									"_0": "Result True if call to target returns value which is bigger than `value`. Otherwise, false"
+								}
+							},
+							"lt(uint256,bytes)": {
+								"params": {
+									"value": "Value to test"
+								},
+								"returns": {
+									"_0": "Result True if call to target returns value which is lower than `value`. Otherwise, false"
+								}
+							},
+							"not(bytes)": {
+								"returns": {
+									"_0": "Result True if call to target returns 0. Otherwise, false"
+								}
+							},
+							"or(uint256,bytes)": {
+								"returns": {
+									"_0": "Result True if call to any target returned True. Otherwise, false"
+								}
+							}
+						},
+						"title": "A helper contract for executing boolean functions on arbitrary target call results",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523461001657610395908161001b8239f35b5f80fdfe604060808152600480361015610013575f80fd5b5f3560e01c9081634f38e2b8146101dd5781636fe7b0ba146101ac5781637426114514610191578163bf15fcd814610125578163bf797959146100cd57508063bfa75143146100a95763ca4ece221461006a575f80fd5b346100a55761008860209161007e3661023c565b909391933061033b565b8193919361009b575b5050519015158152f35b1091505f80610091565b5f80fd5b50346100a5576020906100c46100be3661023c565b916102df565b90519015158152f35b82346100a55760203660031901126100a55781359167ffffffffffffffff83116100a55761010361010a9160209436910161020e565b903061033b565b8192919261011c575b50519015158152f35b15915083610113565b82346100a557806003193601126100a55781356001600160a01b03811681036100a5576024359067ffffffffffffffff82116100a55761016b610171923690860161020e565b9161033b565b919015610182576020925051908152f35b51631f1b8f6160e01b81529050fd5b82346100a5576020906100c46101a63661023c565b91610288565b82346100a5576101c160209161007e3661023c565b819391936101d3575050519015158152f35b1491508380610091565b82346100a5576101f260209161007e3661023c565b81939193610204575050519015158152f35b1191508380610091565b9181601f840112156100a55782359167ffffffffffffffff83116100a557602083818601950101116100a557565b9060406003198301126100a557600435916024359067ffffffffffffffff82116100a55761026c9160040161020e565b9091565b909392938483116100a55784116100a5578101920390565b929091925f5b63ffffffff82169081156102d557610103826102ab928888610270565b816102ca575b506102c0579060201c9061028e565b5050915050600190565b60019150145f6102b1565b5050509150505f90565b929091925f5b63ffffffff82169081156103305761010382610302928888610270565b9015908115610324575b5061031b579060201c906102e5565b50509150505f90565b6001915014155f61030c565b505050915050600190565b915f906020928294826040519283375afa60203d1416918261035957565b5f51915056fea2646970667358221220c8f3dbb4fd98bcf13642c83fa0d516d3b89171558d6d824f217e2250ea3df65364736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH2 0x16 JUMPI PUSH2 0x395 SWAP1 DUP2 PUSH2 0x1B DUP3 CODECOPY RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH1 0x40 PUSH1 0x80 DUP2 MSTORE PUSH1 0x4 DUP1 CALLDATASIZE LT ISZERO PUSH2 0x13 JUMPI PUSH0 DUP1 REVERT JUMPDEST PUSH0 CALLDATALOAD PUSH1 0xE0 SHR SWAP1 DUP2 PUSH4 0x4F38E2B8 EQ PUSH2 0x1DD JUMPI DUP2 PUSH4 0x6FE7B0BA EQ PUSH2 0x1AC JUMPI DUP2 PUSH4 0x74261145 EQ PUSH2 0x191 JUMPI DUP2 PUSH4 0xBF15FCD8 EQ PUSH2 0x125 JUMPI DUP2 PUSH4 0xBF797959 EQ PUSH2 0xCD JUMPI POP DUP1 PUSH4 0xBFA75143 EQ PUSH2 0xA9 JUMPI PUSH4 0xCA4ECE22 EQ PUSH2 0x6A JUMPI PUSH0 DUP1 REVERT JUMPDEST CALLVALUE PUSH2 0xA5 JUMPI PUSH2 0x88 PUSH1 0x20 SWAP2 PUSH2 0x7E CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST SWAP1 SWAP4 SWAP2 SWAP4 ADDRESS PUSH2 0x33B JUMP JUMPDEST DUP2 SWAP4 SWAP2 SWAP4 PUSH2 0x9B JUMPI JUMPDEST POP POP MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST LT SWAP2 POP PUSH0 DUP1 PUSH2 0x91 JUMP JUMPDEST PUSH0 DUP1 REVERT JUMPDEST POP CALLVALUE PUSH2 0xA5 JUMPI PUSH1 0x20 SWAP1 PUSH2 0xC4 PUSH2 0xBE CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST SWAP2 PUSH2 0x2DF JUMP JUMPDEST SWAP1 MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI PUSH1 0x20 CALLDATASIZE PUSH1 0x3 NOT ADD SLT PUSH2 0xA5 JUMPI DUP2 CALLDATALOAD SWAP2 PUSH8 0xFFFFFFFFFFFFFFFF DUP4 GT PUSH2 0xA5 JUMPI PUSH2 0x103 PUSH2 0x10A SWAP2 PUSH1 0x20 SWAP5 CALLDATASIZE SWAP2 ADD PUSH2 0x20E JUMP JUMPDEST SWAP1 ADDRESS PUSH2 0x33B JUMP JUMPDEST DUP2 SWAP3 SWAP2 SWAP3 PUSH2 0x11C JUMPI JUMPDEST POP MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST ISZERO SWAP2 POP DUP4 PUSH2 0x113 JUMP JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI DUP1 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0xA5 JUMPI DUP2 CALLDATALOAD PUSH1 0x1 PUSH1 0x1 PUSH1 0xA0 SHL SUB DUP2 AND DUP2 SUB PUSH2 0xA5 JUMPI PUSH1 0x24 CALLDATALOAD SWAP1 PUSH8 0xFFFFFFFFFFFFFFFF DUP3 GT PUSH2 0xA5 JUMPI PUSH2 0x16B PUSH2 0x171 SWAP3 CALLDATASIZE SWAP1 DUP7 ADD PUSH2 0x20E JUMP JUMPDEST SWAP2 PUSH2 0x33B JUMP JUMPDEST SWAP2 SWAP1 ISZERO PUSH2 0x182 JUMPI PUSH1 0x20 SWAP3 POP MLOAD SWAP1 DUP2 MSTORE RETURN JUMPDEST MLOAD PUSH4 0x1F1B8F61 PUSH1 0xE0 SHL DUP2 MSTORE SWAP1 POP REVERT JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI PUSH1 0x20 SWAP1 PUSH2 0xC4 PUSH2 0x1A6 CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST SWAP2 PUSH2 0x288 JUMP JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI PUSH2 0x1C1 PUSH1 0x20 SWAP2 PUSH2 0x7E CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST DUP2 SWAP4 SWAP2 SWAP4 PUSH2 0x1D3 JUMPI POP POP MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST EQ SWAP2 POP DUP4 DUP1 PUSH2 0x91 JUMP JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI PUSH2 0x1F2 PUSH1 0x20 SWAP2 PUSH2 0x7E CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST DUP2 SWAP4 SWAP2 SWAP4 PUSH2 0x204 JUMPI POP POP MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST GT SWAP2 POP DUP4 DUP1 PUSH2 0x91 JUMP JUMPDEST SWAP2 DUP2 PUSH1 0x1F DUP5 ADD SLT ISZERO PUSH2 0xA5 JUMPI DUP3 CALLDATALOAD SWAP2 PUSH8 0xFFFFFFFFFFFFFFFF DUP4 GT PUSH2 0xA5 JUMPI PUSH1 0x20 DUP4 DUP2 DUP7 ADD SWAP6 ADD ADD GT PUSH2 0xA5 JUMPI JUMP JUMPDEST SWAP1 PUSH1 0x40 PUSH1 0x3 NOT DUP4 ADD SLT PUSH2 0xA5 JUMPI PUSH1 0x4 CALLDATALOAD SWAP2 PUSH1 0x24 CALLDATALOAD SWAP1 PUSH8 0xFFFFFFFFFFFFFFFF DUP3 GT PUSH2 0xA5 JUMPI PUSH2 0x26C SWAP2 PUSH1 0x4 ADD PUSH2 0x20E JUMP JUMPDEST SWAP1 SWAP2 JUMP JUMPDEST SWAP1 SWAP4 SWAP3 SWAP4 DUP5 DUP4 GT PUSH2 0xA5 JUMPI DUP5 GT PUSH2 0xA5 JUMPI DUP2 ADD SWAP3 SUB SWAP1 JUMP JUMPDEST SWAP3 SWAP1 SWAP2 SWAP3 PUSH0 JUMPDEST PUSH4 0xFFFFFFFF DUP3 AND SWAP1 DUP2 ISZERO PUSH2 0x2D5 JUMPI PUSH2 0x103 DUP3 PUSH2 0x2AB SWAP3 DUP9 DUP9 PUSH2 0x270 JUMP JUMPDEST DUP2 PUSH2 0x2CA JUMPI JUMPDEST POP PUSH2 0x2C0 JUMPI SWAP1 PUSH1 0x20 SHR SWAP1 PUSH2 0x28E JUMP JUMPDEST POP POP SWAP2 POP POP PUSH1 0x1 SWAP1 JUMP JUMPDEST PUSH1 0x1 SWAP2 POP EQ PUSH0 PUSH2 0x2B1 JUMP JUMPDEST POP POP POP SWAP2 POP POP PUSH0 SWAP1 JUMP JUMPDEST SWAP3 SWAP1 SWAP2 SWAP3 PUSH0 JUMPDEST PUSH4 0xFFFFFFFF DUP3 AND SWAP1 DUP2 ISZERO PUSH2 0x330 JUMPI PUSH2 0x103 DUP3 PUSH2 0x302 SWAP3 DUP9 DUP9 PUSH2 0x270 JUMP JUMPDEST SWAP1 ISZERO SWAP1 DUP2 ISZERO PUSH2 0x324 JUMPI JUMPDEST POP PUSH2 0x31B JUMPI SWAP1 PUSH1 0x20 SHR SWAP1 PUSH2 0x2E5 JUMP JUMPDEST POP POP SWAP2 POP POP PUSH0 SWAP1 JUMP JUMPDEST PUSH1 0x1 SWAP2 POP EQ ISZERO PUSH0 PUSH2 0x30C JUMP JUMPDEST POP POP POP SWAP2 POP POP PUSH1 0x1 SWAP1 JUMP JUMPDEST SWAP2 PUSH0 SWAP1 PUSH1 0x20 SWAP3 DUP3 SWAP5 DUP3 PUSH1 0x40 MLOAD SWAP3 DUP4 CALLDATACOPY GAS STATICCALL PUSH1 0x20 RETURNDATASIZE EQ AND SWAP2 DUP3 PUSH2 0x359 JUMPI JUMP JUMPDEST PUSH0 MLOAD SWAP2 POP JUMP INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xC8 RETURN 0xDB 0xB4 REVERT SWAP9 0xBC CALL CALLDATASIZE TIMESTAMP 0xC8 EXTCODEHASH LOG0 0xD5 AND 0xD3 0xB8 SWAP2 PUSH18 0x558D6D824F217E2250EA3DF65364736F6C63 NUMBER STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "152:3758:0:-:0;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {
+								"abi_decode_bytes_calldata": {
+									"entryPoint": 526,
+									"id": null,
+									"parameterSlots": 2,
+									"returnSlots": 2
+								},
+								"abi_decode_uint256t_bytes_calldata": {
+									"entryPoint": 572,
+									"id": null,
+									"parameterSlots": 1,
+									"returnSlots": 3
+								},
+								"calldata_array_index_range_access_bytes_calldata": {
+									"entryPoint": 624,
+									"id": null,
+									"parameterSlots": 4,
+									"returnSlots": 2
+								},
+								"fun_and": {
+									"entryPoint": 735,
+									"id": 129,
+									"parameterSlots": 3,
+									"returnSlots": 1
+								},
+								"fun_or": {
+									"entryPoint": 648,
+									"id": 66,
+									"parameterSlots": 3,
+									"returnSlots": 1
+								},
+								"fun_staticcallForUint": {
+									"entryPoint": 827,
+									"id": 284,
+									"parameterSlots": 3,
+									"returnSlots": 2
+								}
+							},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "604060808152600480361015610013575f80fd5b5f3560e01c9081634f38e2b8146101dd5781636fe7b0ba146101ac5781637426114514610191578163bf15fcd814610125578163bf797959146100cd57508063bfa75143146100a95763ca4ece221461006a575f80fd5b346100a55761008860209161007e3661023c565b909391933061033b565b8193919361009b575b5050519015158152f35b1091505f80610091565b5f80fd5b50346100a5576020906100c46100be3661023c565b916102df565b90519015158152f35b82346100a55760203660031901126100a55781359167ffffffffffffffff83116100a55761010361010a9160209436910161020e565b903061033b565b8192919261011c575b50519015158152f35b15915083610113565b82346100a557806003193601126100a55781356001600160a01b03811681036100a5576024359067ffffffffffffffff82116100a55761016b610171923690860161020e565b9161033b565b919015610182576020925051908152f35b51631f1b8f6160e01b81529050fd5b82346100a5576020906100c46101a63661023c565b91610288565b82346100a5576101c160209161007e3661023c565b819391936101d3575050519015158152f35b1491508380610091565b82346100a5576101f260209161007e3661023c565b81939193610204575050519015158152f35b1191508380610091565b9181601f840112156100a55782359167ffffffffffffffff83116100a557602083818601950101116100a557565b9060406003198301126100a557600435916024359067ffffffffffffffff82116100a55761026c9160040161020e565b9091565b909392938483116100a55784116100a5578101920390565b929091925f5b63ffffffff82169081156102d557610103826102ab928888610270565b816102ca575b506102c0579060201c9061028e565b5050915050600190565b60019150145f6102b1565b5050509150505f90565b929091925f5b63ffffffff82169081156103305761010382610302928888610270565b9015908115610324575b5061031b579060201c906102e5565b50509150505f90565b6001915014155f61030c565b505050915050600190565b915f906020928294826040519283375afa60203d1416918261035957565b5f51915056fea2646970667358221220c8f3dbb4fd98bcf13642c83fa0d516d3b89171558d6d824f217e2250ea3df65364736f6c63430008170033",
+							"opcodes": "PUSH1 0x40 PUSH1 0x80 DUP2 MSTORE PUSH1 0x4 DUP1 CALLDATASIZE LT ISZERO PUSH2 0x13 JUMPI PUSH0 DUP1 REVERT JUMPDEST PUSH0 CALLDATALOAD PUSH1 0xE0 SHR SWAP1 DUP2 PUSH4 0x4F38E2B8 EQ PUSH2 0x1DD JUMPI DUP2 PUSH4 0x6FE7B0BA EQ PUSH2 0x1AC JUMPI DUP2 PUSH4 0x74261145 EQ PUSH2 0x191 JUMPI DUP2 PUSH4 0xBF15FCD8 EQ PUSH2 0x125 JUMPI DUP2 PUSH4 0xBF797959 EQ PUSH2 0xCD JUMPI POP DUP1 PUSH4 0xBFA75143 EQ PUSH2 0xA9 JUMPI PUSH4 0xCA4ECE22 EQ PUSH2 0x6A JUMPI PUSH0 DUP1 REVERT JUMPDEST CALLVALUE PUSH2 0xA5 JUMPI PUSH2 0x88 PUSH1 0x20 SWAP2 PUSH2 0x7E CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST SWAP1 SWAP4 SWAP2 SWAP4 ADDRESS PUSH2 0x33B JUMP JUMPDEST DUP2 SWAP4 SWAP2 SWAP4 PUSH2 0x9B JUMPI JUMPDEST POP POP MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST LT SWAP2 POP PUSH0 DUP1 PUSH2 0x91 JUMP JUMPDEST PUSH0 DUP1 REVERT JUMPDEST POP CALLVALUE PUSH2 0xA5 JUMPI PUSH1 0x20 SWAP1 PUSH2 0xC4 PUSH2 0xBE CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST SWAP2 PUSH2 0x2DF JUMP JUMPDEST SWAP1 MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI PUSH1 0x20 CALLDATASIZE PUSH1 0x3 NOT ADD SLT PUSH2 0xA5 JUMPI DUP2 CALLDATALOAD SWAP2 PUSH8 0xFFFFFFFFFFFFFFFF DUP4 GT PUSH2 0xA5 JUMPI PUSH2 0x103 PUSH2 0x10A SWAP2 PUSH1 0x20 SWAP5 CALLDATASIZE SWAP2 ADD PUSH2 0x20E JUMP JUMPDEST SWAP1 ADDRESS PUSH2 0x33B JUMP JUMPDEST DUP2 SWAP3 SWAP2 SWAP3 PUSH2 0x11C JUMPI JUMPDEST POP MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST ISZERO SWAP2 POP DUP4 PUSH2 0x113 JUMP JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI DUP1 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0xA5 JUMPI DUP2 CALLDATALOAD PUSH1 0x1 PUSH1 0x1 PUSH1 0xA0 SHL SUB DUP2 AND DUP2 SUB PUSH2 0xA5 JUMPI PUSH1 0x24 CALLDATALOAD SWAP1 PUSH8 0xFFFFFFFFFFFFFFFF DUP3 GT PUSH2 0xA5 JUMPI PUSH2 0x16B PUSH2 0x171 SWAP3 CALLDATASIZE SWAP1 DUP7 ADD PUSH2 0x20E JUMP JUMPDEST SWAP2 PUSH2 0x33B JUMP JUMPDEST SWAP2 SWAP1 ISZERO PUSH2 0x182 JUMPI PUSH1 0x20 SWAP3 POP MLOAD SWAP1 DUP2 MSTORE RETURN JUMPDEST MLOAD PUSH4 0x1F1B8F61 PUSH1 0xE0 SHL DUP2 MSTORE SWAP1 POP REVERT JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI PUSH1 0x20 SWAP1 PUSH2 0xC4 PUSH2 0x1A6 CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST SWAP2 PUSH2 0x288 JUMP JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI PUSH2 0x1C1 PUSH1 0x20 SWAP2 PUSH2 0x7E CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST DUP2 SWAP4 SWAP2 SWAP4 PUSH2 0x1D3 JUMPI POP POP MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST EQ SWAP2 POP DUP4 DUP1 PUSH2 0x91 JUMP JUMPDEST DUP3 CALLVALUE PUSH2 0xA5 JUMPI PUSH2 0x1F2 PUSH1 0x20 SWAP2 PUSH2 0x7E CALLDATASIZE PUSH2 0x23C JUMP JUMPDEST DUP2 SWAP4 SWAP2 SWAP4 PUSH2 0x204 JUMPI POP POP MLOAD SWAP1 ISZERO ISZERO DUP2 MSTORE RETURN JUMPDEST GT SWAP2 POP DUP4 DUP1 PUSH2 0x91 JUMP JUMPDEST SWAP2 DUP2 PUSH1 0x1F DUP5 ADD SLT ISZERO PUSH2 0xA5 JUMPI DUP3 CALLDATALOAD SWAP2 PUSH8 0xFFFFFFFFFFFFFFFF DUP4 GT PUSH2 0xA5 JUMPI PUSH1 0x20 DUP4 DUP2 DUP7 ADD SWAP6 ADD ADD GT PUSH2 0xA5 JUMPI JUMP JUMPDEST SWAP1 PUSH1 0x40 PUSH1 0x3 NOT DUP4 ADD SLT PUSH2 0xA5 JUMPI PUSH1 0x4 CALLDATALOAD SWAP2 PUSH1 0x24 CALLDATALOAD SWAP1 PUSH8 0xFFFFFFFFFFFFFFFF DUP3 GT PUSH2 0xA5 JUMPI PUSH2 0x26C SWAP2 PUSH1 0x4 ADD PUSH2 0x20E JUMP JUMPDEST SWAP1 SWAP2 JUMP JUMPDEST SWAP1 SWAP4 SWAP3 SWAP4 DUP5 DUP4 GT PUSH2 0xA5 JUMPI DUP5 GT PUSH2 0xA5 JUMPI DUP2 ADD SWAP3 SUB SWAP1 JUMP JUMPDEST SWAP3 SWAP1 SWAP2 SWAP3 PUSH0 JUMPDEST PUSH4 0xFFFFFFFF DUP3 AND SWAP1 DUP2 ISZERO PUSH2 0x2D5 JUMPI PUSH2 0x103 DUP3 PUSH2 0x2AB SWAP3 DUP9 DUP9 PUSH2 0x270 JUMP JUMPDEST DUP2 PUSH2 0x2CA JUMPI JUMPDEST POP PUSH2 0x2C0 JUMPI SWAP1 PUSH1 0x20 SHR SWAP1 PUSH2 0x28E JUMP JUMPDEST POP POP SWAP2 POP POP PUSH1 0x1 SWAP1 JUMP JUMPDEST PUSH1 0x1 SWAP2 POP EQ PUSH0 PUSH2 0x2B1 JUMP JUMPDEST POP POP POP SWAP2 POP POP PUSH0 SWAP1 JUMP JUMPDEST SWAP3 SWAP1 SWAP2 SWAP3 PUSH0 JUMPDEST PUSH4 0xFFFFFFFF DUP3 AND SWAP1 DUP2 ISZERO PUSH2 0x330 JUMPI PUSH2 0x103 DUP3 PUSH2 0x302 SWAP3 DUP9 DUP9 PUSH2 0x270 JUMP JUMPDEST SWAP1 ISZERO SWAP1 DUP2 ISZERO PUSH2 0x324 JUMPI JUMPDEST POP PUSH2 0x31B JUMPI SWAP1 PUSH1 0x20 SHR SWAP1 PUSH2 0x2E5 JUMP JUMPDEST POP POP SWAP2 POP POP PUSH0 SWAP1 JUMP JUMPDEST PUSH1 0x1 SWAP2 POP EQ ISZERO PUSH0 PUSH2 0x30C JUMP JUMPDEST POP POP POP SWAP2 POP POP PUSH1 0x1 SWAP1 JUMP JUMPDEST SWAP2 PUSH0 SWAP1 PUSH1 0x20 SWAP3 DUP3 SWAP5 DUP3 PUSH1 0x40 MLOAD SWAP3 DUP4 CALLDATACOPY GAS STATICCALL PUSH1 0x20 RETURNDATASIZE EQ AND SWAP2 DUP3 PUSH2 0x359 JUMPI JUMP JUMPDEST PUSH0 MLOAD SWAP2 POP JUMP INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xC8 RETURN 0xDB 0xB4 REVERT SWAP9 0xBC CALL CALLDATASIZE TIMESTAMP 0xC8 EXTCODEHASH LOG0 0xD5 AND 0xD3 0xB8 SWAP2 PUSH18 0x558D6D824F217E2250EA3DF65364736F6C63 NUMBER STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "152:3758:0:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2501:39;152:3758;;;;;:::i;:::-;2528:4;;;;;2501:39;:::i;:::-;2557:22;;;;;;152:3758;;;;;;;;;;2557:22;2568:11;;-1:-1:-1;2557:22:0;;;;152:3758;;;;;;;;;;;;;;;:::i;:::-;;;:::i;:::-;;;;;;;;;;;;;;;;-1:-1:-1;;152:3758:0;;;;;;;;;;;;;1649:39;152:3758;;;;;;;:::i;:::-;1676:4;;1649:39;:::i;:::-;1705:19;;;;;;152:3758;;;;;;;;;1705:19;1716:8;;-1:-1:-1;1705:19:0;;;152:3758;;;;;;;;;;;;;;;-1:-1:-1;;;;;152:3758:0;;;;;;;;;;;;;;;3273:32;152:3758;;;;;;:::i;:::-;3273:32;;:::i;:::-;3319:8;;;3315:48;;152:3758;;;;;;;;3315:48;152:3758;-1:-1:-1;;;3336:27:0;;152:3758;-1:-1:-1;3336:27:0;152:3758;;;;;;;;;;;:::i;:::-;;;:::i;:::-;;;;;2070:39;152:3758;;;;;:::i;2070:39::-;2126:23;;;;;;152:3758;;;;;;;;;2126:23;2137:12;;-1:-1:-1;2126:23:0;;;;152:3758;;;;;2933:39;152:3758;;;;;:::i;2933:39::-;2989:22;;;;;;152:3758;;;;;;;;;2989:22;3000:11;;-1:-1:-1;2989:22:0;;;;152:3758;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;-1:-1:-1;;152:3758:0;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;:::o;364:438::-;;;;;152:3758;532:14;152:3758;;;498:32;;;;;626:22;;592:57;626:22;;;;:::i;592:57::-;667:19;;;532:14;663:69;;;532:14;544:2;152:3758;481:15;;;663:69;706:11;;;;;713:4;706:11;:::o;667:19::-;685:1;678:8;;;667:19;;;498:32;;;;;;;152:3758;364:438;:::o;951:440::-;;;;;152:3758;1120:14;152:3758;;;1086:32;;;;;1214:22;;1180:57;1214:22;;;;:::i;1180:57::-;1255:8;;152:3758;;;1255:20;;1120:14;1251:71;;;1120:14;1132:2;152:3758;1069:15;;;1251:71;1295:12;;;;;152:3758;1295:12;:::o;1255:20::-;1274:1;1267:8;;;;1255:20;;;1086:32;;;;;;;1380:4;951:440;:::o;3396:512::-;;152:3758;3396:512;3520:382;3396:512;3497:11;3520:382;;;;;;;;;;;;;;;;;3396:512::o;3520:382::-;152:3758;3520:382;;-1:-1:-1;3396:512:0:o"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"ArbitraryStaticCallFailed\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offsets\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"and\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"target\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"arbitraryStaticCall\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"eq\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"gt\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"lt\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"not\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offsets\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"or\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"and(uint256,bytes)\":{\"returns\":{\"_0\":\"Result True if calls to all targets returned True. Otherwise, false\"}},\"arbitraryStaticCall(address,bytes)\":{\"returns\":{\"_0\":\"Result Bytes transmuted to uint256\"}},\"eq(uint256,bytes)\":{\"params\":{\"value\":\"Value to test\"},\"returns\":{\"_0\":\"Result True if call to target returns the same value as `value`. Otherwise, false\"}},\"gt(uint256,bytes)\":{\"params\":{\"value\":\"Value to test\"},\"returns\":{\"_0\":\"Result True if call to target returns value which is bigger than `value`. Otherwise, false\"}},\"lt(uint256,bytes)\":{\"params\":{\"value\":\"Value to test\"},\"returns\":{\"_0\":\"Result True if call to target returns value which is lower than `value`. Otherwise, false\"}},\"not(bytes)\":{\"returns\":{\"_0\":\"Result True if call to target returns 0. Otherwise, false\"}},\"or(uint256,bytes)\":{\"returns\":{\"_0\":\"Result True if call to any target returned True. Otherwise, false\"}}},\"title\":\"A helper contract for executing boolean functions on arbitrary target call results\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"and(uint256,bytes)\":{\"notice\":\"Calls every target with corresponding data\"},\"arbitraryStaticCall(address,bytes)\":{\"notice\":\"Performs an arbitrary call to target with data\"},\"eq(uint256,bytes)\":{\"notice\":\"Calls target with specified data and tests if it's equal to the value\"},\"gt(uint256,bytes)\":{\"notice\":\"Calls target with specified data and tests if it's bigger than value\"},\"lt(uint256,bytes)\":{\"notice\":\"Calls target with specified data and tests if it's lower than value\"},\"not(bytes)\":{\"notice\":\"Calls target with specified data and tests if it's equal to 0\"},\"or(uint256,bytes)\":{\"notice\":\"Calls every target with corresponding data\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/PredicateHelper.sol\":\"PredicateHelper\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/PredicateHelper.sol\":{\"keccak256\":\"0x2eabeb6ee0a445ec34dea12a88de427dbdaa69331ef5d7e11fee697c9eb9abdf\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://421ce9422fe2c69966d7991a444017932aee070e933fc0d16b22bc9df01fe15c\",\"dweb:/ipfs/Qmcpv6v97Mty5rWGK6nUDVH1YF72gUQKkqzNdC62u378Fu\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"and(uint256,bytes)": {
+								"notice": "Calls every target with corresponding data"
+							},
+							"arbitraryStaticCall(address,bytes)": {
+								"notice": "Performs an arbitrary call to target with data"
+							},
+							"eq(uint256,bytes)": {
+								"notice": "Calls target with specified data and tests if it's equal to the value"
+							},
+							"gt(uint256,bytes)": {
+								"notice": "Calls target with specified data and tests if it's bigger than value"
+							},
+							"lt(uint256,bytes)": {
+								"notice": "Calls target with specified data and tests if it's lower than value"
+							},
+							"not(bytes)": {
+								"notice": "Calls target with specified data and tests if it's equal to 0"
+							},
+							"or(uint256,bytes)": {
+								"notice": "Calls every target with corresponding data"
+							}
+						},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/PredicateHelper.sol": {
+				"id": 0
+			}
+		}
+	}
+}

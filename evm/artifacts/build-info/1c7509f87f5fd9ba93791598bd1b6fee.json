@@ -1,0 +1,129 @@
+{
+	"id": "1c7509f87f5fd9ba93791598bd1b6fee",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/IERC7597Permit.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\n/**\n * @title IERC7597Permit\n * @dev A new extension for ERC-2612 permit, which has already been added to USDC v2.2.\n */\ninterface IERC7597Permit {\n    /**\n     * @notice Update allowance with a signed permit.\n     * @dev Signature bytes can be used for both EOA wallets and contract wallets.\n     * @param owner Token owner's address (Authorizer).\n     * @param spender Spender's address.\n     * @param value Amount of allowance.\n     * @param deadline The time at which the signature expires (unixtime).\n     * @param signature Unstructured bytes signature signed by an EOA wallet or a contract wallet.\n     */\n    function permit(\n        address owner,\n        address spender,\n        uint256 value,\n        uint256 deadline,\n        bytes memory signature\n    ) external;\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/IERC7597Permit.sol": {
+				"IERC7597Permit": {
+					"abi": [
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "owner",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "spender",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "deadline",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "signature",
+									"type": "bytes"
+								}
+							],
+							"name": "permit",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"details": "A new extension for ERC-2612 permit, which has already been added to USDC v2.2.",
+						"kind": "dev",
+						"methods": {
+							"permit(address,address,uint256,uint256,bytes)": {
+								"details": "Signature bytes can be used for both EOA wallets and contract wallets.",
+								"params": {
+									"deadline": "The time at which the signature expires (unixtime).",
+									"owner": "Token owner's address (Authorizer).",
+									"signature": "Unstructured bytes signature signed by an EOA wallet or a contract wallet.",
+									"spender": "Spender's address.",
+									"value": "Amount of allowance."
+								}
+							}
+						},
+						"title": "IERC7597Permit",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"permit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"A new extension for ERC-2612 permit, which has already been added to USDC v2.2.\",\"kind\":\"dev\",\"methods\":{\"permit(address,address,uint256,uint256,bytes)\":{\"details\":\"Signature bytes can be used for both EOA wallets and contract wallets.\",\"params\":{\"deadline\":\"The time at which the signature expires (unixtime).\",\"owner\":\"Token owner's address (Authorizer).\",\"signature\":\"Unstructured bytes signature signed by an EOA wallet or a contract wallet.\",\"spender\":\"Spender's address.\",\"value\":\"Amount of allowance.\"}}},\"title\":\"IERC7597Permit\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"permit(address,address,uint256,uint256,bytes)\":{\"notice\":\"Update allowance with a signed permit.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IERC7597Permit.sol\":\"IERC7597Permit\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/IERC7597Permit.sol\":{\"keccak256\":\"0x550ff037524afe9ef46d2c54ed59f4048c4216122e80da3b17872e05c163a74e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://40df00df81d4a4d2a78105bf5b86694037d885abf30e1e47e286b6e3310bdf48\",\"dweb:/ipfs/QmVqmS8BpSMV8PeiUme1tNDq48zfn71XYxWhb6fLtxCT6f\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"permit(address,address,uint256,uint256,bytes)": {
+								"notice": "Update allowance with a signed permit."
+							}
+						},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/IERC7597Permit.sol": {
+				"id": 0
+			}
+		}
+	}
+}

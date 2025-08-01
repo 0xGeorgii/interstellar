@@ -1,0 +1,80 @@
+{
+	"id": "5bba988ed98bfdf688a3f213498c4b04",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/escrow/libraries/ProxyHashLib.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.20;\n\n/**\n * @title Library to compute the hash of the proxy bytecode.\n * @custom:security-contact security@1inch.io\n */\nlibrary ProxyHashLib {\n    /**\n     * @notice Returns the hash of the proxy bytecode concatenated with the implementation address.\n     * @param implementation The address of the contract to clone.\n     * @return bytecodeHash The hash of the resulting bytecode.\n     */\n    function computeProxyBytecodeHash(address implementation) internal pure returns (bytes32 bytecodeHash) {\n        assembly (\"memory-safe\") {\n            // Stores the bytecode after address\n            mstore(0x20, 0x5af43d82803e903d91602b57fd5bf3)\n            // implementation address\n            mstore(0x11, implementation)\n            // Packs the first 3 bytes of the `implementation` address with the bytecode before the address.\n            mstore(0x00, or(shr(0x88, implementation), 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000))\n            bytecodeHash := keccak256(0x09, 0x37)\n        }\n    }\n}\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/escrow/libraries/ProxyHashLib.sol": {
+				"ProxyHashLib": {
+					"abi": [],
+					"devdoc": {
+						"custom:security-contact": "security@1inch.io",
+						"kind": "dev",
+						"methods": {},
+						"title": "Library to compute the hash of the proxy bytecode.",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220f8da26aebaa4ccf2246a28429c55e72d2c537f76bc3c401221475701e295e1f864736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xF8 0xDA 0x26 0xAE 0xBA LOG4 0xCC CALLCODE 0x24 PUSH11 0x28429C55E72D2C537F76BC EXTCODECOPY BLOCKHASH SLT 0x21 SELFBALANCE JUMPI ADD 0xE2 SWAP6 0xE1 0xF8 PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "174:883:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea2646970667358221220f8da26aebaa4ccf2246a28429c55e72d2c537f76bc3c401221475701e295e1f864736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xF8 0xDA 0x26 0xAE 0xBA LOG4 0xCC CALLCODE 0x24 PUSH11 0x28429C55E72D2C537F76BC EXTCODECOPY BLOCKHASH SLT 0x21 SELFBALANCE JUMPI ADD 0xE2 SWAP6 0xE1 0xF8 PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "174:883:0:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"custom:security-contact\":\"security@1inch.io\",\"kind\":\"dev\",\"methods\":{},\"title\":\"Library to compute the hash of the proxy bytecode.\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/escrow/libraries/ProxyHashLib.sol\":\"ProxyHashLib\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/escrow/libraries/ProxyHashLib.sol\":{\"keccak256\":\"0x9e899d11aa1548e1f30a61ad87668b0dfd2b3464fbc1abef8ec95352c8c34c0d\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://69ec0c4598b490cb0146872af15dd06e490db823efb3e60c6d500e62deb49689\",\"dweb:/ipfs/QmdfEwW8nzfHN9HpDRh8DKR2LrVWLXpJrig28aHhFkNUp3\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/escrow/libraries/ProxyHashLib.sol": {
+				"id": 0
+			}
+		}
+	}
+}

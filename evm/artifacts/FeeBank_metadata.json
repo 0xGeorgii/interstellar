@@ -1,0 +1,557 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "contract IFeeBankCharger",
+						"name": "charger",
+						"type": "address"
+					},
+					{
+						"internalType": "contract IERC20",
+						"name": "feeToken",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "ETHTransferFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InsufficientBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "OwnableInvalidOwner",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "OwnableUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "SafeTransferFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "SafeTransferFromFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ZeroAddress",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "availableCredit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "deposit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "depositFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "permit",
+						"type": "bytes"
+					}
+				],
+				"name": "depositForWithPermit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "permit",
+						"type": "bytes"
+					}
+				],
+				"name": "depositWithPermit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "accounts",
+						"type": "address[]"
+					}
+				],
+				"name": "gatherFees",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "totalAccountFees",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "rescueFunds",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdraw",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawTo",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "FeeBank is coupled with FeeBankCharger to actually charge fees.",
+			"errors": {
+				"OwnableInvalidOwner(address)": [
+					{
+						"details": "The owner is not a valid owner account. (eg. `address(0)`)"
+					}
+				],
+				"OwnableUnauthorizedAccount(address)": [
+					{
+						"details": "The caller account is not authorized to perform an operation."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {
+				"gatherFees(address[])": {
+					"params": {
+						"accounts": "Accounts whose commissions are being withdrawn."
+					},
+					"returns": {
+						"totalAccountFees": "The total amount of accounts commissions."
+					}
+				},
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+				},
+				"rescueFunds(address,uint256)": {
+					"params": {
+						"amount": "amount to retrieve",
+						"token": "ERC20 token to retrieve"
+					}
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				}
+			},
+			"title": "FeeBank",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"availableCredit(address)": {
+					"notice": "See {IFeeBank-availableCredit}."
+				},
+				"deposit(uint256)": {
+					"notice": "See {IFeeBank-deposit}."
+				},
+				"depositFor(address,uint256)": {
+					"notice": "See {IFeeBank-depositFor}."
+				},
+				"depositForWithPermit(address,uint256,bytes)": {
+					"notice": "See {IFeeBank-depositForWithPermit}."
+				},
+				"depositWithPermit(uint256,bytes)": {
+					"notice": "See {IFeeBank-depositWithPermit}."
+				},
+				"gatherFees(address[])": {
+					"notice": "Admin method returns commissions spent by users."
+				},
+				"rescueFunds(address,uint256)": {
+					"notice": "Retrieves funds accidently sent directly to the contract address"
+				},
+				"withdraw(uint256)": {
+					"notice": "See {IFeeBank-withdraw}."
+				},
+				"withdrawTo(address,uint256)": {
+					"notice": "See {IFeeBank-withdrawTo}."
+				}
+			},
+			"notice": "FeeBank contract introduces a credit system for paying fees. A user can deposit tokens to the FeeBank contract, obtain credits and then use them to pay fees.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/FeeBank.sol": "FeeBank"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/Context.sol": {
+			"keccak256": "0x28ad9de5e26095f685a085591178af7aeac1427af1bf442986b5aee0a5b2a14a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ad3864801aabbcc6f52361a1b86a3d4d342e283cc2036c47a3ef2df7e4a3c51",
+				"dweb:/ipfs/QmezNWJGoPBwtHjsQae7dbqjeZgpbB2cHFE5nFBBzGvJFR"
+			]
+		},
+		"contracts/IDaiLikePermit.sol": {
+			"keccak256": "0x0bcc9c886acb32f5664e3bfd0640e6fc1de6525b8f6103f25906d040d054ce07",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://551e3b7d18d5e83727491f6749643a9a1e9a2e253a1a9be56eeb44e4c1b13876",
+				"dweb:/ipfs/QmSpGRSD3DDP1EbBbXDPqAbSP58roEvCsosMQCDtSDnEBa"
+			]
+		},
+		"contracts/IERC20.sol": {
+			"keccak256": "0x91104f4bcc877f2506e4485b871efe0a6beb5c1ef7de9c374d99d75289905905",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://57a7ecbec5ff542c117d36c7487386b5653ad21d0a83414e859d4202e069b36f",
+				"dweb:/ipfs/QmaPocSUaysdjd1Ksa5kttxRHxhA7XWd6HrQ9teLFRyR6W"
+			]
+		},
+		"contracts/IERC20Permit.sol": {
+			"keccak256": "0x08d82b52e80c1a83f792c519388ca1ae86ae441bdfbd7d84addc82ef9c499a9e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a5449dde3b5541f3f653b352bfa0aa4f3e91ab24a110106319baa83940f540a5",
+				"dweb:/ipfs/QmUuadcLdSPtqMuuhBgkdAZHrE3tx5rdQ7HCXCsa8RDaTU"
+			]
+		},
+		"contracts/IERC7597Permit.sol": {
+			"keccak256": "0x550ff037524afe9ef46d2c54ed59f4048c4216122e80da3b17872e05c163a74e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://40df00df81d4a4d2a78105bf5b86694037d885abf30e1e47e286b6e3310bdf48",
+				"dweb:/ipfs/QmVqmS8BpSMV8PeiUme1tNDq48zfn71XYxWhb6fLtxCT6f"
+			]
+		},
+		"contracts/IPermit2.sol": {
+			"keccak256": "0x79e985eddaf616078cde10431fb615b577ba83b96ca5f4161cb82939a787a195",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a1d3243656736b7e4422a6eb7bbac982760f99674b9d80286e5bf45f1fe04376",
+				"dweb:/ipfs/QmacX52RVqLnUgWxji9FkfFSZeGnV6qdxkkX5kMxakYRyW"
+			]
+		},
+		"contracts/IWETH.sol": {
+			"keccak256": "0x2dc6d61d66f1881a6c273b5f30f9a82e6eda4988c7aeaf0b26549a5e10c9fcb9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1695d9fd49960e732d2228a304fe9bc221439293e940fdcb9c17419ccafdcfc1",
+				"dweb:/ipfs/QmPZrdz4icyWQeR5Yf1zDQnpH8MmYiHyKofVcwvwNADjRh"
+			]
+		},
+		"contracts/Ownable.sol": {
+			"keccak256": "0xa6428484d54bc2cd4eb2a5632305a4b7783365f8c5fa173ad62c4795bf2839f8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1a7d9efbfeef2f5c28979e8a93eeab25f6c2e85e69fe6261c4c17d15c5c3aadf",
+				"dweb:/ipfs/QmQieD54hKvNVXV3RuknW9BnSurgGrEyTnmcKHXg9YHC7E"
+			]
+		},
+		"contracts/RevertReasonForwarder.sol": {
+			"keccak256": "0x00dbd12fec0c2696dd0862143457d8a23c998dcabd5d038fc85512ba93467417",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2fa738dc80ff7027762294869f2b181177a5c122fe04ceea08c619c544c820aa",
+				"dweb:/ipfs/QmUzrDWe6k6Hhfdd5MxUhnW34B8mGJ5pwx65NM9EBLkLCU"
+			]
+		},
+		"contracts/SafeERC20.sol": {
+			"keccak256": "0x2cdc46994aa3302bf2026f5a2ba0650398aaf41278354075544bf42350ee947e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a65e24d410030f7b192d59a0096213bee88b963822052502572cdb9ee55e9d9",
+				"dweb:/ipfs/QmcQH7uVFhTLGxTuqUsiEsc7qH9HE7xGgSQTXijoVUcKUn"
+			]
+		},
+		"contracts/escrow/FeeBank.sol": {
+			"keccak256": "0x75bcef06df42a8009c48bf4104c70175b412009e0600e4555ff214377635e7cb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9e869a94d441fb9501149d589be320cd84e3370cc8400a9e6955fd941dacc18b",
+				"dweb:/ipfs/QmbcvkryfEWBe75ZV6C9Y8ipgHe5zNqGb8ZY7sTBsrt1Kf"
+			]
+		},
+		"contracts/escrow/IERC20Metadata.sol": {
+			"keccak256": "0x88f7b6f070ad1de2bf899da6978ed74b5038eac78c01b7359b92b60c3d965c28",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c436edb6733a036607c6f17cc590e8ee351363a8cb4c564a98d9a66392c89323",
+				"dweb:/ipfs/QmcJvJR2K3EtYcKEXVpQ1WqT6TvAbVem5HR1FirAsqEXFR"
+			]
+		},
+		"contracts/escrow/IERC20MetadataUppercase.sol": {
+			"keccak256": "0x7d97ae2903bd1ee8f24ab7bbf099d075f2bbd451b0f755366479d249780d0c68",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://dc9fa6bc781aa748e35b1c45d3072e6c49eb6d61b954327ef135f67093d75339",
+				"dweb:/ipfs/Qmc8e1g1c18b7J4m1DqFYvgpeuA7Pabk2Sz59mJgCBwSRB"
+			]
+		},
+		"contracts/escrow/IFeeBank.sol": {
+			"keccak256": "0x2d03d415bbaac2c6b26bd33899adc942a3d59ef50e46f035b89eab2bddb98d58",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5c7b806a040a59a41cdd50f60a0d74325a4610da64444ae0e51a7481649016f0",
+				"dweb:/ipfs/QmQ3aWgMc74QGPT8aYMtTaMM32qcRwVcwTU5M2kcpaCQYK"
+			]
+		},
+		"contracts/escrow/IFeeBankCharger.sol": {
+			"keccak256": "0xef4750e40bf2488873716b2e2f9315e69ac9e9c65bb5de2a16e39be6f3b483ea",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://640bcc74edee9d439ef412e782cd0ea889efd024486879cf5bad0242d831afda",
+				"dweb:/ipfs/QmRQg6dCgA7z4vQgn3sGZhNtJ4pLTDbvBbkTfw77sr11GE"
+			]
+		},
+		"contracts/escrow/StringUtil.sol": {
+			"keccak256": "0xb05bff1a3a5461b1f16248220067a2bd52e5c7e41c14be0aebb6520985b67ccb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://03495f22f0128969aef7dd46f65e215851cbd52cfa4d87eac0c930c5cd84826d",
+				"dweb:/ipfs/QmekA9rM82XXPKdHpCwAYhirtSCB5AJo16TUvyBYVWhKhZ"
+			]
+		},
+		"contracts/escrow/UniERC20.sol": {
+			"keccak256": "0x509b388a006916c896a6163a8e471140c0673e8c74b14943d175613d9bdd7569",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://05778d9f9f5e71bccab128648c34d41c24e2b3b27aba84dbaab572e70427e471",
+				"dweb:/ipfs/QmRVXiF6UdtfFtpRuLVuuBBsPpRphtLcuAXfMJgZLgMTUU"
+			]
+		}
+	},
+	"version": 1
+}

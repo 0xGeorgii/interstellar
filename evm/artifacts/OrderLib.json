@@ -1,0 +1,68 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220b39cb2088bbefc1581df5d730592c8e1c14c4c6dd7e74ec10caff23b582f465064736f6c63430008170033",
+			"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xB3 SWAP13 0xB2 ADDMOD DUP12 0xBE 0xFC ISZERO DUP2 0xDF 0x5D PUSH20 0x592C8E1C14C4C6DD7E74EC10CAFF23B582F4650 PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+			"sourceMap": "637:6228:9:-:0;;;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "5f80fdfea2646970667358221220b39cb2088bbefc1581df5d730592c8e1c14c4c6dd7e74ec10caff23b582f465064736f6c63430008170033",
+			"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xB3 SWAP13 0xB2 ADDMOD DUP12 0xBE 0xFC ISZERO DUP2 0xDF 0x5D PUSH20 0x592C8E1C14C4C6DD7E74EC10CAFF23B582F4650 PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+			"sourceMap": "637:6228:9:-:0;;"
+		}
+	},
+	"abi": [
+		{
+			"inputs": [],
+			"name": "InvalidExtensionHash",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "MissingOrderExtension",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "UnexpectedOrderExtension",
+			"type": "error"
+		}
+	]
+}

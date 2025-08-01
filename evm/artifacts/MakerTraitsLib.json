@@ -1,0 +1,52 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220df039d439fa51d7fb3cbf231eea12e0c9166e9563171631375156b69b4b2a12064736f6c63430008170033",
+			"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xDF SUB SWAP14 NUMBER SWAP16 0xA5 SAR PUSH32 0xB3CBF231EEA12E0C9166E9563171631375156B69B4B2A12064736F6C63430008 OR STOP CALLER ",
+			"sourceMap": "1403:7334:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "5f80fdfea2646970667358221220df039d439fa51d7fb3cbf231eea12e0c9166e9563171631375156b69b4b2a12064736f6c63430008170033",
+			"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xDF SUB SWAP14 NUMBER SWAP16 0xA5 SAR PUSH32 0xB3CBF231EEA12E0C9166E9563171631375156B69B4B2A12064736F6C63430008 OR STOP CALLER ",
+			"sourceMap": "1403:7334:0:-:0;;"
+		}
+	},
+	"abi": []
+}

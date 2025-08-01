@@ -1,0 +1,93 @@
+{
+	"id": "293f0cad1f26beb5d5fd0b01cee17668",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/BitInvalidatorLib.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\n/**\n * @title BitInvalidatorLib\n * @dev The library provides a mechanism to invalidate objects based on a bit invalidator.\n * The bit invalidator holds a mapping where each key represents a slot number and each value contains an integer.\n * Each bit of the integer represents whether the object with corresponding index is valid or has been invalidated (0 - valid, 1 - invalidated).\n * The nonce given to access or invalidate an entity's state follows this structure:\n * - bits [0..7] represent the object state index in the slot.\n * - bits [8..255] represent the slot number (mapping key).\n */\nlibrary BitInvalidatorLib {\n    /// @dev The error is thrown when an attempt is made to invalidate an already invalidated entity.\n    error BitInvalidatedOrder();\n\n    struct Data {\n        mapping(uint256 slotIndex => uint256 slotData) _raw;\n    }\n\n    /**\n     * @notice Retrieves the validity status of entities in a specific slot.\n     * @dev Each bit in the returned value corresponds to the validity of an entity. 0 for valid, 1 for invalidated.\n     * @param self The data structure.\n     * @param nonce The nonce identifying the slot.\n     * @return result The validity status of entities in the slot as a uint256.\n     */\n    function checkSlot(Data storage self, uint256 nonce) internal view returns(uint256) {\n        uint256 invalidatorSlot = nonce >> 8;\n        return self._raw[invalidatorSlot];\n    }\n\n    /**\n     * @notice Checks the validity of a specific entity and invalidates it if valid.\n     * @dev Throws an error if the entity has already been invalidated.\n     * @param self The data structure.\n     * @param nonce The nonce identifying the slot and the entity.\n     */\n    function checkAndInvalidate(Data storage self, uint256 nonce) internal {\n        uint256 invalidatorSlot = nonce >> 8;\n        uint256 invalidatorBit = 1 << (nonce & 0xff);\n        uint256 invalidator = self._raw[invalidatorSlot];\n        if (invalidator & invalidatorBit == invalidatorBit) revert BitInvalidatedOrder();\n        self._raw[invalidatorSlot] = invalidator | invalidatorBit;\n    }\n\n    /**\n     * @notice Invalidates multiple entities in a single slot.\n     * @dev The entities to be invalidated are identified by setting their corresponding bits to 1 in a mask.\n     * @param self The data structure.\n     * @param nonce The nonce identifying the slot.\n     * @param additionalMask A mask of bits to be invalidated.\n     * @return result Resulting validity status of entities in the slot as a uint256.\n     */\n    function massInvalidate(Data storage self, uint256 nonce, uint256 additionalMask) internal returns(uint256 result) {\n        uint256 invalidatorSlot = nonce >> 8;\n        uint256 invalidatorBits = (1 << (nonce & 0xff)) | additionalMask;\n        result = self._raw[invalidatorSlot] | invalidatorBits;\n        self._raw[invalidatorSlot] = result;\n    }\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/BitInvalidatorLib.sol": {
+				"BitInvalidatorLib": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "BitInvalidatedOrder",
+							"type": "error"
+						}
+					],
+					"devdoc": {
+						"details": "The library provides a mechanism to invalidate objects based on a bit invalidator. The bit invalidator holds a mapping where each key represents a slot number and each value contains an integer. Each bit of the integer represents whether the object with corresponding index is valid or has been invalidated (0 - valid, 1 - invalidated). The nonce given to access or invalidate an entity's state follows this structure: - bits [0..7] represent the object state index in the slot. - bits [8..255] represent the slot number (mapping key).",
+						"errors": {
+							"BitInvalidatedOrder()": [
+								{
+									"details": "The error is thrown when an attempt is made to invalidate an already invalidated entity."
+								}
+							]
+						},
+						"kind": "dev",
+						"methods": {},
+						"title": "BitInvalidatorLib",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220144097009b5ae7291613256388b3b51ee1442fff6a8e6b2ab759dc535687201b64736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 EQ BLOCKHASH SWAP8 STOP SWAP12 GAS 0xE7 0x29 AND SGT 0x25 PUSH4 0x88B3B51E 0xE1 PREVRANDAO 0x2F SELFDESTRUCT PUSH11 0x8E6B2AB759DC535687201B PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "653:2280:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea2646970667358221220144097009b5ae7291613256388b3b51ee1442fff6a8e6b2ab759dc535687201b64736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 EQ BLOCKHASH SWAP8 STOP SWAP12 GAS 0xE7 0x29 AND SGT 0x25 PUSH4 0x88B3B51E 0xE1 PREVRANDAO 0x2F SELFDESTRUCT PUSH11 0x8E6B2AB759DC535687201B PUSH5 0x736F6C6343 STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "653:2280:0:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"BitInvalidatedOrder\",\"type\":\"error\"}],\"devdoc\":{\"details\":\"The library provides a mechanism to invalidate objects based on a bit invalidator. The bit invalidator holds a mapping where each key represents a slot number and each value contains an integer. Each bit of the integer represents whether the object with corresponding index is valid or has been invalidated (0 - valid, 1 - invalidated). The nonce given to access or invalidate an entity's state follows this structure: - bits [0..7] represent the object state index in the slot. - bits [8..255] represent the slot number (mapping key).\",\"errors\":{\"BitInvalidatedOrder()\":[{\"details\":\"The error is thrown when an attempt is made to invalidate an already invalidated entity.\"}]},\"kind\":\"dev\",\"methods\":{},\"title\":\"BitInvalidatorLib\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/BitInvalidatorLib.sol\":\"BitInvalidatorLib\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/BitInvalidatorLib.sol\":{\"keccak256\":\"0xd82e4b69af3f9883f6ac9560965a763a04f79e583b31b2f37982e24f44e25bcc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ccf59b63d1721e65dcd41283a634874824689b2f7a02fd3f98d2fde03f07c2e4\",\"dweb:/ipfs/QmfA5ZSffvaaYCw5T8G11Bj3tGWcupx2ZBSJNZD6cDKrCq\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/BitInvalidatorLib.sol": {
+				"id": 0
+			}
+		}
+	}
+}

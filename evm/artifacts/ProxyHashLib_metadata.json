@@ -1,0 +1,48 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"custom:security-contact": "security@1inch.io",
+			"kind": "dev",
+			"methods": {},
+			"title": "Library to compute the hash of the proxy bytecode.",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/libraries/ProxyHashLib.sol": "ProxyHashLib"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/escrow/libraries/ProxyHashLib.sol": {
+			"keccak256": "0x9e899d11aa1548e1f30a61ad87668b0dfd2b3464fbc1abef8ec95352c8c34c0d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://69ec0c4598b490cb0146872af15dd06e490db823efb3e60c6d500e62deb49689",
+				"dweb:/ipfs/QmdfEwW8nzfHN9HpDRh8DKR2LrVWLXpJrig28aHhFkNUp3"
+			]
+		}
+	},
+	"version": 1
+}

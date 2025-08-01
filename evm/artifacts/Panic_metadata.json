@@ -1,0 +1,79 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Helper library for emitting standardized panic codes. ```solidity contract Example {      using Panic for uint256;      // Use any of the declared internal constants      function foo() { Panic.GENERIC.panic(); }      // Alternatively      function foo() { Panic.panic(Panic.GENERIC); } } ``` Follows the list from https://github.com/ethereum/solidity/blob/v0.8.24/libsolutil/ErrorCodes.h[libsolutil]. _Available since v5.1._",
+			"kind": "dev",
+			"methods": {},
+			"stateVariables": {
+				"ARRAY_OUT_OF_BOUNDS": {
+					"details": "array out of bounds access"
+				},
+				"ASSERT": {
+					"details": "used by the assert() builtin"
+				},
+				"DIVISION_BY_ZERO": {
+					"details": "division or modulo by zero"
+				},
+				"EMPTY_ARRAY_POP": {
+					"details": "empty array pop"
+				},
+				"ENUM_CONVERSION_ERROR": {
+					"details": "enum conversion error"
+				},
+				"GENERIC": {
+					"details": "generic / unspecified error"
+				},
+				"INVALID_INTERNAL_FUNCTION": {
+					"details": "calling invalid internal function"
+				},
+				"RESOURCE_ERROR": {
+					"details": "resource error (too large allocation or too large array)"
+				},
+				"STORAGE_ENCODING_ERROR": {
+					"details": "invalid encoding in storage"
+				},
+				"UNDER_OVERFLOW": {
+					"details": "arithmetic underflow or overflow"
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Panic.sol": "Panic"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/Panic.sol": {
+			"keccak256": "0xec0c46048fd01751aa22ecddb66df20b702374fd68f3f4b3ae363782f6b31f9f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d32d9af31bc44235f769cf820ec96fd3f0aea9e16a169b244a62e34e482d7d55",
+				"dweb:/ipfs/Qmd4Lw5sSLQtfE2vEy29RHzffinDsHgN1pGaS8Eex1F8ks"
+			]
+		}
+	},
+	"version": 1
+}

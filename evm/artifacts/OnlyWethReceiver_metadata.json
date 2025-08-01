@@ -1,0 +1,80 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "EthDepositRejected",
+				"type": "error"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"details": "Abstract contract extending EthReceiver to accept only ETH deposits from a specified WETH contract. This contract ensures that only wrapped ETH (WETH) can be deposited, rejecting all other direct ETH transfers.",
+			"errors": {
+				"EthDepositRejected()": [
+					{
+						"details": "Error thrown when an ETH deposit from an EOA is attempted."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {
+				"constructor": {
+					"details": "Sets the WETH contract address during construction.",
+					"params": {
+						"weth": "Address of the WETH contract."
+					}
+				}
+			},
+			"title": "OnlyWethReceiver",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/OnlyWethReceiver.sol": "OnlyWethReceiver"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/EthReceiver.sol": {
+			"keccak256": "0x7fbf52c64fd6e03b2f5d977aac7d2b377fc240495d09e47642dc4ef301d173c6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8dfcabf097c3a4e0819d387acc40b135aa9d59320971c2d648e399f77fedd7fc",
+				"dweb:/ipfs/QmQreuBPfDUkauL9FTFY9dLe7vGyLsQoDA5DHZrA1u9SZS"
+			]
+		},
+		"contracts/OnlyWethReceiver.sol": {
+			"keccak256": "0x253e18562bbac1277e92aff67a7c8911067b88b38c4f6edeec2e2f4c5cdb29dc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cfe07e3be8b962f8b07211e23c2bfeb50a3d46cc0b6e4067f5841ef434f9601f",
+				"dweb:/ipfs/Qmed6EpjdafZ1rWYiEXXTRbySBu1GC8oCr6CShadpWYHnL"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,97 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "deadline",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "signature",
+						"type": "bytes"
+					}
+				],
+				"name": "permit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "A new extension for ERC-2612 permit, which has already been added to USDC v2.2.",
+			"kind": "dev",
+			"methods": {
+				"permit(address,address,uint256,uint256,bytes)": {
+					"details": "Signature bytes can be used for both EOA wallets and contract wallets.",
+					"params": {
+						"deadline": "The time at which the signature expires (unixtime).",
+						"owner": "Token owner's address (Authorizer).",
+						"signature": "Unstructured bytes signature signed by an EOA wallet or a contract wallet.",
+						"spender": "Spender's address.",
+						"value": "Amount of allowance."
+					}
+				}
+			},
+			"title": "IERC7597Permit",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"permit(address,address,uint256,uint256,bytes)": {
+					"notice": "Update allowance with a signed permit."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/IERC7597Permit.sol": "IERC7597Permit"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/IERC7597Permit.sol": {
+			"keccak256": "0x550ff037524afe9ef46d2c54ed59f4048c4216122e80da3b17872e05c163a74e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://40df00df81d4a4d2a78105bf5b86694037d885abf30e1e47e286b6e3310bdf48",
+				"dweb:/ipfs/QmVqmS8BpSMV8PeiUme1tNDq48zfn71XYxWhb6fLtxCT6f"
+			]
+		}
+	},
+	"version": 1
+}

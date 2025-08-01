@@ -1,0 +1,47 @@
+{
+	"compiler": {
+		"version": "0.8.23+commit.f704f362"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Library of standard hash functions.",
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/escrow/Hashes.sol": "Hashes"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/escrow/Hashes.sol": {
+			"keccak256": "0x89c4d3509df3e1387752bf07f04bdf967ddb424d8917808bc9e6e4bc7995db0e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2909c1aa5cc0ef4288e88c361fc114838aeb2c9396f83886ab9c52b39baf602f",
+				"dweb:/ipfs/QmS246CQ6JN1dH3khhZvURLFEgfJ1DiV7J1VYxisfqLVnm"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,165 @@
+{
+	"id": "e8dda1b48077e6174b5bd74ff4c22bd3",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/escrow/Clones.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts (last updated v5.0.0) (proxy/Clones.sol)\n\npragma solidity ^0.8.20;\n\nimport {Errors} from \"../Errors.sol\";\n\n/**\n * @dev https://eips.ethereum.org/EIPS/eip-1167[ERC-1167] is a standard for\n * deploying minimal proxy contracts, also known as \"clones\".\n *\n * > To simply and cheaply clone contract functionality in an immutable way, this standard specifies\n * > a minimal bytecode implementation that delegates all calls to a known, fixed address.\n *\n * The library includes functions to deploy a proxy using either `create` (traditional deployment) or `create2`\n * (salted deterministic deployment). It also includes functions to predict the addresses of clones deployed using the\n * deterministic method.\n */\nlibrary Clones {\n    /**\n     * @dev Deploys and returns the address of a clone that mimics the behaviour of `implementation`.\n     *\n     * This function uses the create opcode, which should never revert.\n     */\n    function clone(address implementation) internal returns (address instance) {\n        return clone(implementation, 0);\n    }\n\n    /**\n     * @dev Same as {xref-Clones-clone-address-}[clone], but with a `value` parameter to send native currency\n     * to the new contract.\n     *\n     * NOTE: Using a non-zero value at creation will require the contract using this function (e.g. a factory)\n     * to always have enough balance for new deployments. Consider exposing this function under a payable method.\n     */\n    function clone(address implementation, uint256 value) internal returns (address instance) {\n        if (address(this).balance < value) {\n            revert Errors.InsufficientBalance(address(this).balance, value);\n        }\n        /// @solidity memory-safe-assembly\n        assembly {\n            // Stores the bytecode after address\n            mstore(0x20, 0x5af43d82803e903d91602b57fd5bf3)\n            // implementation address\n            mstore(0x11, implementation)\n            // Packs the first 3 bytes of the `implementation` address with the bytecode before the address.\n            mstore(0x00, or(shr(0x88, implementation), 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000))\n            instance := create(value, 0x09, 0x37)\n        }\n        if (instance == address(0)) {\n            revert Errors.FailedDeployment();\n        }\n    }\n\n    /**\n     * @dev Deploys and returns the address of a clone that mimics the behaviour of `implementation`.\n     *\n     * This function uses the create2 opcode and a `salt` to deterministically deploy\n     * the clone. Using the same `implementation` and `salt` multiple time will revert, since\n     * the clones cannot be deployed twice at the same address.\n     */\n    function cloneDeterministic(address implementation, bytes32 salt) internal returns (address instance) {\n        return cloneDeterministic(implementation, salt, 0);\n    }\n\n    /**\n     * @dev Same as {xref-Clones-cloneDeterministic-address-bytes32-}[cloneDeterministic], but with\n     * a `value` parameter to send native currency to the new contract.\n     *\n     * NOTE: Using a non-zero value at creation will require the contract using this function (e.g. a factory)\n     * to always have enough balance for new deployments. Consider exposing this function under a payable method.\n     */\n    function cloneDeterministic(\n        address implementation,\n        bytes32 salt,\n        uint256 value\n    ) internal returns (address instance) {\n        if (address(this).balance < value) {\n            revert Errors.InsufficientBalance(address(this).balance, value);\n        }\n        /// @solidity memory-safe-assembly\n        assembly {\n            // Stores the bytecode after address\n            mstore(0x20, 0x5af43d82803e903d91602b57fd5bf3)\n            // implementation address\n            mstore(0x11, implementation)\n            // Packs the first 3 bytes of the `implementation` address with the bytecode before the address.\n            mstore(0x00, or(shr(0x88, implementation), 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000))\n            instance := create2(value, 0x09, 0x37, salt)\n        }\n        if (instance == address(0)) {\n            revert Errors.FailedDeployment();\n        }\n    }\n\n    /**\n     * @dev Computes the address of a clone deployed using {Clones-cloneDeterministic}.\n     */\n    function predictDeterministicAddress(\n        address implementation,\n        bytes32 salt,\n        address deployer\n    ) internal pure returns (address predicted) {\n        /// @solidity memory-safe-assembly\n        assembly {\n            let ptr := mload(0x40)\n            mstore(add(ptr, 0x38), deployer)\n            mstore(add(ptr, 0x24), 0x5af43d82803e903d91602b57fd5bf3ff)\n            mstore(add(ptr, 0x14), implementation)\n            mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73)\n            mstore(add(ptr, 0x58), salt)\n            mstore(add(ptr, 0x78), keccak256(add(ptr, 0x0c), 0x37))\n            predicted := and(keccak256(add(ptr, 0x43), 0x55), 0xffffffffffffffffffffffffffffffffffffffff)\n        }\n    }\n\n    /**\n     * @dev Computes the address of a clone deployed using {Clones-cloneDeterministic}.\n     */\n    function predictDeterministicAddress(\n        address implementation,\n        bytes32 salt\n    ) internal view returns (address predicted) {\n        return predictDeterministicAddress(implementation, salt, address(this));\n    }\n}\n"
+			},
+			"contracts/Errors.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.20;\n\n/**\n * @dev Collection of common custom errors used in multiple contracts\n *\n * IMPORTANT: Backwards compatibility is not guaranteed in future versions of the library.\n * It is recommended to avoid relying on the error API for critical functionality.\n */\nlibrary Errors {\n    /**\n     * @dev The ETH balance of the account is not enough to perform the operation.\n     */\n    error InsufficientBalance(uint256 balance, uint256 needed);\n\n    /**\n     * @dev A call to an address target failed. The target may have reverted.\n     */\n    error FailedCall();\n\n    /**\n     * @dev The deployment failed.\n     */\n    error FailedDeployment();\n}\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/Errors.sol": {
+				"Errors": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "FailedCall",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "FailedDeployment",
+							"type": "error"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "balance",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "needed",
+									"type": "uint256"
+								}
+							],
+							"name": "InsufficientBalance",
+							"type": "error"
+						}
+					],
+					"devdoc": {
+						"details": "Collection of common custom errors used in multiple contracts IMPORTANT: Backwards compatibility is not guaranteed in future versions of the library. It is recommended to avoid relying on the error API for critical functionality.",
+						"errors": {
+							"FailedCall()": [
+								{
+									"details": "A call to an address target failed. The target may have reverted."
+								}
+							],
+							"FailedDeployment()": [
+								{
+									"details": "The deployment failed."
+								}
+							],
+							"InsufficientBalance(uint256,uint256)": [
+								{
+									"details": "The ETH balance of the account is not enough to perform the operation."
+								}
+							]
+						},
+						"kind": "dev",
+						"methods": {},
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea26469706673582212200a90f8c8f150996695e139ea9852e6941b17714b90f1e86eb936cbd2464ded8264736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 EXP SWAP1 0xF8 0xC8 CALL POP SWAP10 PUSH7 0x95E139EA9852E6 SWAP5 SHL OR PUSH18 0x4B90F1E86EB936CBD2464DED8264736F6C63 NUMBER STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "314:382:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea26469706673582212200a90f8c8f150996695e139ea9852e6941b17714b90f1e86eb936cbd2464ded8264736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 EXP SWAP1 0xF8 0xC8 CALL POP SWAP10 PUSH7 0x95E139EA9852E6 SWAP5 SHL OR PUSH18 0x4B90F1E86EB936CBD2464DED8264736F6C63 NUMBER STOP ADDMOD OR STOP CALLER ",
+							"sourceMap": "314:382:0:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"FailedCall\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FailedDeployment\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"InsufficientBalance\",\"type\":\"error\"}],\"devdoc\":{\"details\":\"Collection of common custom errors used in multiple contracts IMPORTANT: Backwards compatibility is not guaranteed in future versions of the library. It is recommended to avoid relying on the error API for critical functionality.\",\"errors\":{\"FailedCall()\":[{\"details\":\"A call to an address target failed. The target may have reverted.\"}],\"FailedDeployment()\":[{\"details\":\"The deployment failed.\"}],\"InsufficientBalance(uint256,uint256)\":[{\"details\":\"The ETH balance of the account is not enough to perform the operation.\"}]},\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Errors.sol\":\"Errors\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/Errors.sol\":{\"keccak256\":\"0x1b0625096e82d06abdcf1844172ef78ef54a5e878761f4d905fda07eaf098424\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5cd99f1a4836c07461cb3ea023ae2f6d1d01e80694b764a87623aa7252754756\",\"dweb:/ipfs/QmNPNDuiNU6TJatZcdBcrwixBoo5MSXNDq4kaXhpJLWGpB\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			},
+			"contracts/escrow/Clones.sol": {
+				"Clones": {
+					"abi": [],
+					"devdoc": {
+						"details": "https://eips.ethereum.org/EIPS/eip-1167[ERC-1167] is a standard for deploying minimal proxy contracts, also known as \"clones\". > To simply and cheaply clone contract functionality in an immutable way, this standard specifies > a minimal bytecode implementation that delegates all calls to a known, fixed address. The library includes functions to deploy a proxy using either `create` (traditional deployment) or `create2` (salted deterministic deployment). It also includes functions to predict the addresses of clones deployed using the deterministic method.",
+						"kind": "dev",
+						"methods": {},
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea264697066735822122032b7776a74dbaf4848d1aa2a6b2975b6911b7ff4e4f38356a0d10ca072ff227464736f6c63430008170033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 ORIGIN 0xB7 PUSH24 0x6A74DBAF4848D1AA2A6B2975B6911B7FF4E4F38356A0D10C LOG0 PUSH19 0xFF227464736F6C634300081700330000000000 ",
+							"sourceMap": "765:4639:1:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "5f80fdfea264697066735822122032b7776a74dbaf4848d1aa2a6b2975b6911b7ff4e4f38356a0d10ca072ff227464736f6c63430008170033",
+							"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 ORIGIN 0xB7 PUSH24 0x6A74DBAF4848D1AA2A6B2975B6911B7FF4E4F38356A0D10C LOG0 PUSH19 0xFF227464736F6C634300081700330000000000 ",
+							"sourceMap": "765:4639:1:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"https://eips.ethereum.org/EIPS/eip-1167[ERC-1167] is a standard for deploying minimal proxy contracts, also known as \\\"clones\\\". > To simply and cheaply clone contract functionality in an immutable way, this standard specifies > a minimal bytecode implementation that delegates all calls to a known, fixed address. The library includes functions to deploy a proxy using either `create` (traditional deployment) or `create2` (salted deterministic deployment). It also includes functions to predict the addresses of clones deployed using the deterministic method.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/escrow/Clones.sol\":\"Clones\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/Errors.sol\":{\"keccak256\":\"0x1b0625096e82d06abdcf1844172ef78ef54a5e878761f4d905fda07eaf098424\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5cd99f1a4836c07461cb3ea023ae2f6d1d01e80694b764a87623aa7252754756\",\"dweb:/ipfs/QmNPNDuiNU6TJatZcdBcrwixBoo5MSXNDq4kaXhpJLWGpB\"]},\"contracts/escrow/Clones.sol\":{\"keccak256\":\"0x292f98372ed1499f748023937cc260128bf869e3bdde944c9f1eaf562d5cb762\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8ec44ff487165f4b987dc1582f14ceaae083dc6477803a6c387f21a5834323b9\",\"dweb:/ipfs/QmXHsyE2CAU4wffqWkKTwJG6k83TkW3zCxPWEAtdADcQFu\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/Errors.sol": {
+				"id": 0
+			},
+			"contracts/escrow/Clones.sol": {
+				"id": 1
+			}
+		}
+	}
+}

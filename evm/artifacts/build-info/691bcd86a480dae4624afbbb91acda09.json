@@ -1,0 +1,293 @@
+{
+	"id": "691bcd86a480dae4624afbbb91acda09",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.23",
+	"solcLongVersion": "0.8.23+commit.f704f362",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/IPermit2.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\n/**\n * @title IPermit2\n * @dev Interface for a flexible permit system that extends ERC20 tokens to support permits in tokens lacking native permit functionality.\n */\ninterface IPermit2 {\n    /**\n     * @dev Struct for holding permit details.\n     * @param token ERC20 token address for which the permit is issued.\n     * @param amount The maximum amount allowed to spend.\n     * @param expiration Timestamp until which the permit is valid.\n     * @param nonce An incrementing value for each signature, unique per owner, token, and spender.\n     */\n    struct PermitDetails {\n        address token;\n        uint160 amount;\n        uint48 expiration;\n        uint48 nonce;\n    }\n\n    /**\n     * @dev Struct for a single token allowance permit.\n     * @param details Permit details including token, amount, expiration, and nonce.\n     * @param spender Address authorized to spend the tokens.\n     * @param sigDeadline Deadline for the permit signature, ensuring timeliness of the permit.\n     */\n    struct PermitSingle {\n        PermitDetails details;\n        address spender;\n        uint256 sigDeadline;\n    }\n\n    /**\n     * @dev Struct for packed allowance data to optimize storage.\n     * @param amount Amount allowed.\n     * @param expiration Permission expiry timestamp.\n     * @param nonce Unique incrementing value for tracking allowances.\n     */\n    struct PackedAllowance {\n        uint160 amount;\n        uint48 expiration;\n        uint48 nonce;\n    }\n\n    /**\n     * @notice Executes a token transfer from one address to another.\n     * @param user The token owner's address.\n     * @param spender The address authorized to spend the tokens.\n     * @param amount The amount of tokens to transfer.\n     * @param token The address of the token being transferred.\n     */\n    function transferFrom(address user, address spender, uint160 amount, address token) external;\n\n    /**\n     * @notice Issues a permit for spending tokens via a signed authorization.\n     * @param owner The token owner's address.\n     * @param permitSingle Struct containing the permit details.\n     * @param signature The signature proving the owner authorized the permit.\n     */\n    function permit(address owner, PermitSingle memory permitSingle, bytes calldata signature) external;\n\n    /**\n     * @notice Retrieves the allowance details between a token owner and spender.\n     * @param user The token owner's address.\n     * @param token The token address.\n     * @param spender The spender's address.\n     * @return The packed allowance details.\n     */\n    function allowance(address user, address token, address spender) external view returns (PackedAllowance memory);\n\n    /**\n     * @notice Approves the spender to use up to amount of the specified token up until the expiration\n     * @param token The token to approve\n     * @param spender The spender address to approve\n     * @param amount The approved amount of the token\n     * @param expiration The timestamp at which the approval is no longer valid\n     * @dev The packed allowance also holds a nonce, which will stay unchanged in approve\n     * @dev Setting amount to type(uint160).max sets an unlimited approval\n     */\n    function approve(address token, address spender, uint160 amount, uint48 expiration) external;\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/IPermit2.sol": {
+				"IPermit2": {
+					"abi": [
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "user",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "token",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "spender",
+									"type": "address"
+								}
+							],
+							"name": "allowance",
+							"outputs": [
+								{
+									"components": [
+										{
+											"internalType": "uint160",
+											"name": "amount",
+											"type": "uint160"
+										},
+										{
+											"internalType": "uint48",
+											"name": "expiration",
+											"type": "uint48"
+										},
+										{
+											"internalType": "uint48",
+											"name": "nonce",
+											"type": "uint48"
+										}
+									],
+									"internalType": "struct IPermit2.PackedAllowance",
+									"name": "",
+									"type": "tuple"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "token",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "spender",
+									"type": "address"
+								},
+								{
+									"internalType": "uint160",
+									"name": "amount",
+									"type": "uint160"
+								},
+								{
+									"internalType": "uint48",
+									"name": "expiration",
+									"type": "uint48"
+								}
+							],
+							"name": "approve",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "owner",
+									"type": "address"
+								},
+								{
+									"components": [
+										{
+											"components": [
+												{
+													"internalType": "address",
+													"name": "token",
+													"type": "address"
+												},
+												{
+													"internalType": "uint160",
+													"name": "amount",
+													"type": "uint160"
+												},
+												{
+													"internalType": "uint48",
+													"name": "expiration",
+													"type": "uint48"
+												},
+												{
+													"internalType": "uint48",
+													"name": "nonce",
+													"type": "uint48"
+												}
+											],
+											"internalType": "struct IPermit2.PermitDetails",
+											"name": "details",
+											"type": "tuple"
+										},
+										{
+											"internalType": "address",
+											"name": "spender",
+											"type": "address"
+										},
+										{
+											"internalType": "uint256",
+											"name": "sigDeadline",
+											"type": "uint256"
+										}
+									],
+									"internalType": "struct IPermit2.PermitSingle",
+									"name": "permitSingle",
+									"type": "tuple"
+								},
+								{
+									"internalType": "bytes",
+									"name": "signature",
+									"type": "bytes"
+								}
+							],
+							"name": "permit",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "user",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "spender",
+									"type": "address"
+								},
+								{
+									"internalType": "uint160",
+									"name": "amount",
+									"type": "uint160"
+								},
+								{
+									"internalType": "address",
+									"name": "token",
+									"type": "address"
+								}
+							],
+							"name": "transferFrom",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"details": "Interface for a flexible permit system that extends ERC20 tokens to support permits in tokens lacking native permit functionality.",
+						"kind": "dev",
+						"methods": {
+							"allowance(address,address,address)": {
+								"params": {
+									"spender": "The spender's address.",
+									"token": "The token address.",
+									"user": "The token owner's address."
+								},
+								"returns": {
+									"_0": "The packed allowance details."
+								}
+							},
+							"approve(address,address,uint160,uint48)": {
+								"details": "The packed allowance also holds a nonce, which will stay unchanged in approveSetting amount to type(uint160).max sets an unlimited approval",
+								"params": {
+									"amount": "The approved amount of the token",
+									"expiration": "The timestamp at which the approval is no longer valid",
+									"spender": "The spender address to approve",
+									"token": "The token to approve"
+								}
+							},
+							"permit(address,((address,uint160,uint48,uint48),address,uint256),bytes)": {
+								"params": {
+									"owner": "The token owner's address.",
+									"permitSingle": "Struct containing the permit details.",
+									"signature": "The signature proving the owner authorized the permit."
+								}
+							},
+							"transferFrom(address,address,uint160,address)": {
+								"params": {
+									"amount": "The amount of tokens to transfer.",
+									"spender": "The address authorized to spend the tokens.",
+									"token": "The address of the token being transferred.",
+									"user": "The token owner's address."
+								}
+							}
+						},
+						"title": "IPermit2",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"components\":[{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\"},{\"internalType\":\"uint48\",\"name\":\"expiration\",\"type\":\"uint48\"},{\"internalType\":\"uint48\",\"name\":\"nonce\",\"type\":\"uint48\"}],\"internalType\":\"struct IPermit2.PackedAllowance\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\"},{\"internalType\":\"uint48\",\"name\":\"expiration\",\"type\":\"uint48\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\"},{\"internalType\":\"uint48\",\"name\":\"expiration\",\"type\":\"uint48\"},{\"internalType\":\"uint48\",\"name\":\"nonce\",\"type\":\"uint48\"}],\"internalType\":\"struct IPermit2.PermitDetails\",\"name\":\"details\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"sigDeadline\",\"type\":\"uint256\"}],\"internalType\":\"struct IPermit2.PermitSingle\",\"name\":\"permitSingle\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"permit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for a flexible permit system that extends ERC20 tokens to support permits in tokens lacking native permit functionality.\",\"kind\":\"dev\",\"methods\":{\"allowance(address,address,address)\":{\"params\":{\"spender\":\"The spender's address.\",\"token\":\"The token address.\",\"user\":\"The token owner's address.\"},\"returns\":{\"_0\":\"The packed allowance details.\"}},\"approve(address,address,uint160,uint48)\":{\"details\":\"The packed allowance also holds a nonce, which will stay unchanged in approveSetting amount to type(uint160).max sets an unlimited approval\",\"params\":{\"amount\":\"The approved amount of the token\",\"expiration\":\"The timestamp at which the approval is no longer valid\",\"spender\":\"The spender address to approve\",\"token\":\"The token to approve\"}},\"permit(address,((address,uint160,uint48,uint48),address,uint256),bytes)\":{\"params\":{\"owner\":\"The token owner's address.\",\"permitSingle\":\"Struct containing the permit details.\",\"signature\":\"The signature proving the owner authorized the permit.\"}},\"transferFrom(address,address,uint160,address)\":{\"params\":{\"amount\":\"The amount of tokens to transfer.\",\"spender\":\"The address authorized to spend the tokens.\",\"token\":\"The address of the token being transferred.\",\"user\":\"The token owner's address.\"}}},\"title\":\"IPermit2\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"allowance(address,address,address)\":{\"notice\":\"Retrieves the allowance details between a token owner and spender.\"},\"approve(address,address,uint160,uint48)\":{\"notice\":\"Approves the spender to use up to amount of the specified token up until the expiration\"},\"permit(address,((address,uint160,uint48,uint48),address,uint256),bytes)\":{\"notice\":\"Issues a permit for spending tokens via a signed authorization.\"},\"transferFrom(address,address,uint160,address)\":{\"notice\":\"Executes a token transfer from one address to another.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IPermit2.sol\":\"IPermit2\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/IPermit2.sol\":{\"keccak256\":\"0x79e985eddaf616078cde10431fb615b577ba83b96ca5f4161cb82939a787a195\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a1d3243656736b7e4422a6eb7bbac982760f99674b9d80286e5bf45f1fe04376\",\"dweb:/ipfs/QmacX52RVqLnUgWxji9FkfFSZeGnV6qdxkkX5kMxakYRyW\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"allowance(address,address,address)": {
+								"notice": "Retrieves the allowance details between a token owner and spender."
+							},
+							"approve(address,address,uint160,uint48)": {
+								"notice": "Approves the spender to use up to amount of the specified token up until the expiration"
+							},
+							"permit(address,((address,uint160,uint48,uint48),address,uint256),bytes)": {
+								"notice": "Issues a permit for spending tokens via a signed authorization."
+							},
+							"transferFrom(address,address,uint160,address)": {
+								"notice": "Executes a token transfer from one address to another."
+							}
+						},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/IPermit2.sol": {
+				"id": 0
+			}
+		}
+	}
+}

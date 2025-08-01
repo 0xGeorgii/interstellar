@@ -1,0 +1,101 @@
+{
+	"id": "859e7f1fb08df08aac7f4e007c07813e",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.19",
+	"solcLongVersion": "0.8.19+commit.7dd6d404",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"viaIR": true,
+			"outputSelection": {
+				"*": {
+					"*": [
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"devdoc",
+						"userdoc",
+						"metadata",
+						"abi"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/deployer/Create3.sol": {
+				"content": "//SPDX-License-Identifier: Unlicense\npragma solidity 0.8.19;\n\n/**\n  @title A library for deploying contracts EIP-3171 style.\n  @author Agustin Aguilar <aa@horizon.io>\n*/\nlibrary Create3 {\n  error ErrorCreatingProxy();\n  error ErrorCreatingContract();\n  error TargetAlreadyExists();\n\n  /**\n    @notice The bytecode for a contract that proxies the creation of another contract\n    @dev If this code is deployed using CREATE2 it can be used to decouple `creationCode` from the child contract address\n\n  0x67363d3d37363d34f0ff3d5260086017f3:\n      0x00  0x68  0x68XXXXXXXXXXXXXXXXXX  PUSH9 bytecode  0x363d3d37363d34f0ff\n      0x01  0x3d  0x3d                    RETURNDATASIZE  0 0x363d3d37363d34f0ff\n      0x02  0x52  0x52                    MSTORE\n      0x03  0x60  0x6009                  PUSH1 09        9\n      0x04  0x60  0x6017                  PUSH1 17        23 9\n      0x05  0xf3  0xf3                    RETURN\n\n  0x363d3d37363d34f0:\n      0x00  0x36  0x36                    CALLDATASIZE    cds\n      0x01  0x3d  0x3d                    RETURNDATASIZE  0 cds\n      0x02  0x3d  0x3d                    RETURNDATASIZE  0 0 cds\n      0x03  0x37  0x37                    CALLDATACOPY\n      0x04  0x36  0x36                    CALLDATASIZE    cds\n      0x05  0x3d  0x3d                    RETURNDATASIZE  0 cds\n      0x06  0x34  0x34                    CALLVALUE       val 0 cds\n      0x07  0xf0  0xf0                    CREATE          addr\n      0x08  0xff  0xff                    SELFDESTRUCT\n  */\n\n  bytes private constant _PROXY_CHILD_BYTECODE = hex\"68_36_3d_3d_37_36_3d_34_f0_ff_3d_52_60_09_60_17_f3\";\n\n  //                        KECCAK256_PROXY_CHILD_BYTECODE = keccak256(PROXY_CHILD_BYTECODE);\n  bytes32 private constant _KECCAK256_PROXY_CHILD_BYTECODE = keccak256(_PROXY_CHILD_BYTECODE); // 0x21c35dbe1b344a2488cf3321d6ce542f8e9f305544ff09e4993a62319a497c1f;\n\n  /**\n    @notice Creates a new contract with given `_creationCode` and `_salt`\n    @param _salt Salt of the contract creation, resulting address will be derivated from this value only\n    @param _creationCode Creation code (constructor) of the contract to be deployed, this value doesn't affect the resulting address\n    @return addr of the deployed contract, reverts on error\n  */\n  function create3(bytes32 _salt, bytes memory _creationCode) internal returns (address addr) {\n    // Creation code\n    bytes memory creationCode = _PROXY_CHILD_BYTECODE;\n\n    // Get target final address\n    addr = addressOf(_salt);\n    if (addr.code.length != 0) revert TargetAlreadyExists();\n\n    // Create CREATE2 proxy\n    // solhint-disable-next-line no-inline-assembly\n    address proxy; assembly { proxy := create2(0, add(creationCode, 32), mload(creationCode), _salt)}\n    if (proxy == address(0)) revert ErrorCreatingProxy();\n\n    // Call proxy with final init code\n    // solhint-disable-next-line avoid-low-level-calls\n    (bool success,) = proxy.call(_creationCode);\n    if (!success || addr.code.length == 0) revert ErrorCreatingContract();\n  }\n\n  /**\n    @notice Computes the resulting address of a contract deployed using address(this) and the given `_salt`\n    @param _salt Salt of the contract creation, resulting address will be derivated from this value only\n    @return addr of the deployed contract, reverts on error\n\n    @dev The address creation formula is: keccak256(rlp([keccak256(0xff ++ address(this) ++ _salt ++ keccak256(childBytecode))[12:], 0x01]))\n  */\n  function addressOf(bytes32 _salt) internal view returns (address) {\n    address proxy = address(\n      uint160(\n        uint256(\n          keccak256(\n            abi.encodePacked(\n              hex'ff',\n              address(this),\n              _salt,\n              _KECCAK256_PROXY_CHILD_BYTECODE\n            )\n          )\n        )\n      )\n    );\n\n    return address(\n      uint160(\n        uint256(\n          keccak256(\n            abi.encodePacked(\n              hex\"d6_94\",\n              proxy,\n              hex\"01\"\n            )\n          )\n        )\n      )\n    );\n  }\n}"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/deployer/Create3.sol": {
+				"Create3": {
+					"abi": [
+						{
+							"inputs": [],
+							"name": "ErrorCreatingContract",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "ErrorCreatingProxy",
+							"type": "error"
+						},
+						{
+							"inputs": [],
+							"name": "TargetAlreadyExists",
+							"type": "error"
+						}
+					],
+					"devdoc": {
+						"author": "Agustin Aguilar <aa@horizon.io>",
+						"kind": "dev",
+						"methods": {},
+						"stateVariables": {
+							"_PROXY_CHILD_BYTECODE": {
+								"details": "If this code is deployed using CREATE2 it can be used to decouple `creationCode` from the child contract address 0x67363d3d37363d34f0ff3d5260086017f3: 0x00  0x68  0x68XXXXXXXXXXXXXXXXXX  PUSH9 bytecode  0x363d3d37363d34f0ff 0x01  0x3d  0x3d                    RETURNDATASIZE  0 0x363d3d37363d34f0ff 0x02  0x52  0x52                    MSTORE 0x03  0x60  0x6009                  PUSH1 09        9 0x04  0x60  0x6017                  PUSH1 17        23 9 0x05  0xf3  0xf3                    RETURN 0x363d3d37363d34f0: 0x00  0x36  0x36                    CALLDATASIZE    cds 0x01  0x3d  0x3d                    RETURNDATASIZE  0 cds 0x02  0x3d  0x3d                    RETURNDATASIZE  0 0 cds 0x03  0x37  0x37                    CALLDATACOPY 0x04  0x36  0x36                    CALLDATASIZE    cds 0x05  0x3d  0x3d                    RETURNDATASIZE  0 cds 0x06  0x34  0x34                    CALLVALUE       val 0 cds 0x07  0xf0  0xf0                    CREATE          addr 0x08  0xff  0xff                    SELFDESTRUCT"
+							}
+						},
+						"title": "A library for deploying contracts EIP-3171 style.",
+						"version": 1
+					},
+					"evm": {
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea2646970667358221220ffe34feb6480748c2aa6c9da6766703c3447c19c8f8d4c87354f3176adf90dae64736f6c63430008130033",
+							"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x3A SWAP1 DUP2 PUSH1 0x1D DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH1 0x0 DUP1 REVERT INVALID PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 SELFDESTRUCT 0xE3 0x4F 0xEB PUSH5 0x80748C2AA6 0xC9 0xDA PUSH8 0x66703C3447C19C8F DUP14 0x4C DUP8 CALLDATALOAD 0x4F BALANCE PUSH23 0xADF90DAE64736F6C634300081300330000000000000000 ",
+							"sourceMap": "170:3855:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "600080fdfea2646970667358221220ffe34feb6480748c2aa6c9da6766703c3447c19c8f8d4c87354f3176adf90dae64736f6c63430008130033",
+							"opcodes": "PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 SELFDESTRUCT 0xE3 0x4F 0xEB PUSH5 0x80748C2AA6 0xC9 0xDA PUSH8 0x66703C3447C19C8F DUP14 0x4C DUP8 CALLDATALOAD 0x4F BALANCE PUSH23 0xADF90DAE64736F6C634300081300330000000000000000 ",
+							"sourceMap": "170:3855:0:-:0;;"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"ErrorCreatingContract\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ErrorCreatingProxy\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"TargetAlreadyExists\",\"type\":\"error\"}],\"devdoc\":{\"author\":\"Agustin Aguilar <aa@horizon.io>\",\"kind\":\"dev\",\"methods\":{},\"stateVariables\":{\"_PROXY_CHILD_BYTECODE\":{\"details\":\"If this code is deployed using CREATE2 it can be used to decouple `creationCode` from the child contract address 0x67363d3d37363d34f0ff3d5260086017f3: 0x00  0x68  0x68XXXXXXXXXXXXXXXXXX  PUSH9 bytecode  0x363d3d37363d34f0ff 0x01  0x3d  0x3d                    RETURNDATASIZE  0 0x363d3d37363d34f0ff 0x02  0x52  0x52                    MSTORE 0x03  0x60  0x6009                  PUSH1 09        9 0x04  0x60  0x6017                  PUSH1 17        23 9 0x05  0xf3  0xf3                    RETURN 0x363d3d37363d34f0: 0x00  0x36  0x36                    CALLDATASIZE    cds 0x01  0x3d  0x3d                    RETURNDATASIZE  0 cds 0x02  0x3d  0x3d                    RETURNDATASIZE  0 0 cds 0x03  0x37  0x37                    CALLDATACOPY 0x04  0x36  0x36                    CALLDATASIZE    cds 0x05  0x3d  0x3d                    RETURNDATASIZE  0 cds 0x06  0x34  0x34                    CALLVALUE       val 0 cds 0x07  0xf0  0xf0                    CREATE          addr 0x08  0xff  0xff                    SELFDESTRUCT\"}},\"title\":\"A library for deploying contracts EIP-3171 style.\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/deployer/Create3.sol\":\"Create3\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/deployer/Create3.sol\":{\"keccak256\":\"0x2d0a8dde0d541e759a1ab99f583a949d996953e425cfdd9e99f36df09d46243f\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://ae5338ff822239fc3a9165750ae429d874201d2d086a082746d440481a86fd70\",\"dweb:/ipfs/QmcU2PY89hh9VZ8egihXhbq7s93DXAyQeayWceRRBZZyKF\"]}},\"version\":1}",
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/deployer/Create3.sol": {
+				"id": 0
+			}
+		}
+	}
+}

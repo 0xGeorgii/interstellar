@@ -112,7 +112,7 @@ export const Swap: React.FC = () => {
             make_amount: fromAmount,
             take_amount: (parseFloat(fromAmount) * 0.95).toString(),
         };
-        let signature: Signature;
+        let signature: Signature = { signed_message: '', signer_address: '' };
 
         if (tokensPair === 'ETHXLM') {
             if (!window.ethereum) {

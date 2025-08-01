@@ -1,0 +1,68 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea2646970667358221220ffe34feb6480748c2aa6c9da6766703c3447c19c8f8d4c87354f3176adf90dae64736f6c63430008130033",
+			"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x3A SWAP1 DUP2 PUSH1 0x1D DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH1 0x0 DUP1 REVERT INVALID PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 SELFDESTRUCT 0xE3 0x4F 0xEB PUSH5 0x80748C2AA6 0xC9 0xDA PUSH8 0x66703C3447C19C8F DUP14 0x4C DUP8 CALLDATALOAD 0x4F BALANCE PUSH23 0xADF90DAE64736F6C634300081300330000000000000000 ",
+			"sourceMap": "170:3855:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "600080fdfea2646970667358221220ffe34feb6480748c2aa6c9da6766703c3447c19c8f8d4c87354f3176adf90dae64736f6c63430008130033",
+			"opcodes": "PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 SELFDESTRUCT 0xE3 0x4F 0xEB PUSH5 0x80748C2AA6 0xC9 0xDA PUSH8 0x66703C3447C19C8F DUP14 0x4C DUP8 CALLDATALOAD 0x4F BALANCE PUSH23 0xADF90DAE64736F6C634300081300330000000000000000 ",
+			"sourceMap": "170:3855:0:-:0;;"
+		}
+	},
+	"abi": [
+		{
+			"inputs": [],
+			"name": "ErrorCreatingContract",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ErrorCreatingProxy",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "TargetAlreadyExists",
+			"type": "error"
+		}
+	]
+}
