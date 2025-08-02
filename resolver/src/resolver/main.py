@@ -6,6 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rich.logging import RichHandler
 import uvicorn
+from typing import List, Optional
+from .soroban import SorobanAuthExecutor
+from decimal import *
 
 
 @asynccontextmanager
@@ -18,6 +21,13 @@ async def lifespan(app: FastAPI):
         )
         dotenv.load_dotenv()
         log = logging.getLogger("resolver")
+
+        # Initialize the executor
+        soroban_executor = SorobanAuthExecutor(
+            server_secret_key=os.getenv("STELLAR_SECRET"),
+            network=os.getenv("STELLAR_NETWORK", "TESTNET")
+        )
+
         try:
             pass
         except Exception as _:
@@ -34,25 +44,98 @@ origins = [
     "*",
 ]
 
+class SorobanTransactionRequest(BaseModel):
+    prepared_transaction_xdr: str
+    user_public_key: str
+
+class SorobanContractCallRequest(BaseModel):
+    user_public_key: str
+    contract_id: str
+    method: str
+    args: List
+    auth_signatures: Optional[List] = None
+
+@app.post("/execute-authorized-soroban-transaction")
+async def execute_authorized_soroban_transaction(request: SorobanTransactionRequest):
+    """
+    Execute a pre-authorized transaction prepared on the client side
+    """
+    try:
+        result = await soroban_executor.execute_with_authorization(
+            request.prepared_transaction_xdr,
+            request.user_public_key
+        )
+        
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["error"])
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/execute-soroban-contract-call")
+async def execute_soroban_contract_call(request: SorobanContractCallRequest):
+    """
+    Execute contract call with pre-signed authorization
+    """
+    try:
+        result = await soroban_executor.execute_contract_call_with_auth(
+            request.user_public_key,
+            request.contract_id,
+            request.method,
+            request.args,
+            request.auth_signatures or []
+        )
+        
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["error"])
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
 
-class OrderData(BaseModel):
-    maker_pk: str
-    salt: str
-    src_chain: int
-    dst_chain: int
-    make_amount: str
-    take_amount: str
+class Wallet(BaseModel):
+    network: str
+    address: str
+    token: str
+
+class DutchAuction(BaseModel):
+    start_time: int
+    start_multiplier: Decimal
+    stop_time: int
+    stop_multiplier: Decimal
 
 class Order(BaseModel):
-    order_data: OrderData
-    signature: str
+    hashlock: str
+    src_wallet: Wallet
+    src_amount: Decimal
+    dst_wallet: Wallet
+    dst_amount: Decimal
+    auction: Optional[DutchAuction]
+
+class MakingAuth(BaseModel):
+    pass
 
 @app.post("/order")
 async def available_order(order: Order):
     # Handle order creation
+    match (order.src_wallet.network, order.dst_wallet.network):
+        case ("Ethereum", "Stellar"):
+            # Solidity maker-to-taker
+            # Soroban taker-to-maker
+            pass
+        case ("Stellar", "Ethereum"):
+            # Solidity taker-to-maker
+            # Soroban maker-to-taker
+            pass
+        case _:
+            return {"status": "failure", "cause": "Unsupported exchange direction"}
     return {"status": "success", "order": order}
 
 class Secret(BaseModel):

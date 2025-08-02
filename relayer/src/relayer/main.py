@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 import asyncio, logging, os
+import aiohttp
 import dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,6 +8,8 @@ from rich.logging import RichHandler
 import uvicorn
 from pydantic import BaseModel
 import requests
+
+from .db import InterstellarDb, Order
 
 from .ethereum_watcher import EthereumWatcher
 from .stellar_watcher import StellarWatcher
@@ -23,8 +26,7 @@ async def lifespan(app: FastAPI):
             handlers=[RichHandler(rich_tracebacks=True)],
         )
         dotenv.load_dotenv()
-
-        # Discover and ping resolvers from environment
+        InterstellarDb()
         resolvers_env = os.getenv("RESOLVERS", "")
         healthy = []
         for addr in resolvers_env.split(","):
@@ -123,27 +125,27 @@ origins = [
     "*",
 ]
 
-class OrderData(BaseModel):
-    salt: str
-    src_chain: int
-    dst_chain: int
-    make_amount: str
-    take_amount: str
-
-class Signature(BaseModel):
-    signed_message: str
-    signer_address: str
-
-class Order(BaseModel):
-    order_data: OrderData
-    signature: Signature
-
 @app.post("/order")
 async def create_order(order: Order):
-    # Handle order creation
-    return {"status": "success", "order": order}
+    interstellar_order = InterstellarDb().create_order(order)
+    for resolver in app.state.resolvers:
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{resolver}/order", json=interstellar_order) as response:
+                    if response.status != 200:
+                        logging.error(f"Failed to notify resolver {resolver}: {await response.text()}")
+        except Exception as e:
+            logging.error(f"Error notifying resolver {resolver}: {e}")
+    logging.info(f"Order created with ID: {interstellar_order.order_id}")
+    return {"status": "success", "order_id": interstellar_order.order_id}
+
+@app.get("/order_status")
+async def get_order_status(order_id: str):
+    status = "pending" if order_id else "escrow_id"
+    return {"status": status}
 
 class Secret(BaseModel):
+    maker_address: str
     value: str
 
 @app.post("/secret")
