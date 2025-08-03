@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     Box, Grid, Paper, styled,
     Typography, Select, MenuItem, InputLabel,
@@ -9,7 +9,7 @@ import {
     ListItemIcon,
     ListItemText,
 } from '@mui/material';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { Horizon } from '@stellar/stellar-sdk';
 import {
@@ -19,8 +19,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { postOrder, postSecret } from '../../../api/interstellar/interstellar-api';
 import { OrderData, Order, Signature } from '../../../api/interstellar/models/order';
-import { ethers } from 'ethers';
-
+import { ethers, parseEther, randomBytes } from 'ethers';
 // Extend the Window interface to include the ethereum property
 declare global {
     interface Window {
@@ -50,9 +49,78 @@ export const Swap: React.FC = () => {
     const [evmAddress, setEvmAddress] = useState<string | null>(null);
     const [xlmBalance, setXlmBalance] = useState<number | null>(null);
     const [ethBalance, setEthBalance] = useState<number | null>(null);
-    const [ethNetwork, setEthNetwork] = useState('Linea');
     const [fromAmount, setFromAmount] = useState<string>('');
     const [advancedOpen, setAdvancedOpen] = useState(false);
+    const [resolverAddress, setResolverAddress] = useState<string>('');
+
+    const updateEvmAccount = useCallback(async (address: string | null) => {
+        if (!address) {
+            setMetamaskConnected(false);
+            setEvmAddress(null);
+            setEthBalance(null);
+            return;
+        }
+        setEvmAddress(address);
+        setMetamaskConnected(true);
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const bal = await provider.getBalance(address);
+        setEthBalance(parseFloat(ethers.formatEther(bal)));
+    }, []);
+
+    // Effect to handle account changes from the MetaMask extension
+    useEffect(() => {
+        if (!window.ethereum) return;
+
+        const handleAccountsChanged = (accounts: string[]) => {
+            if (accounts.length > 0) {
+                // An account is connected or has been changed.
+                updateEvmAccount(accounts[0]);
+            } else {
+                // User has disconnected all accounts in MetaMask.
+                updateEvmAccount(null);
+            }
+        };
+
+        window.ethereum.on('accountsChanged', handleAccountsChanged);
+
+        // Cleanup function to remove the event listener when the component unmounts.
+        return () => {
+            window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        };
+    }, [updateEvmAccount]);
+
+    // Updated MetaMask connector using the helper function
+    const connectMetamask = async () => {
+        if (!window.ethereum) {
+            alert('MetaMask not installed');
+            return;
+        }
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            if (accounts.length > 0) {
+                await updateEvmAccount(accounts[0]);
+            }
+        } catch (error) {
+            console.error("Error connecting to MetaMask:", error);
+        }
+    };
+
+    // New function to trigger the account switching prompt
+    const switchMetamaskAccount = async () => {
+        if (window.ethereum) {
+            try {
+                // This re-opens the MetaMask account selection prompt.
+                // The `accountsChanged` event listener will handle the state update.
+                await window.ethereum.request({
+                    method: 'wallet_requestPermissions',
+                    params: [{ eth_accounts: {} }],
+                });
+            } catch (error) {
+                console.error('Error requesting permissions:', error);
+            }
+        }
+    };
+    // ✅ END: Updated MetaMask Logic
 
     // Freighter connector
     const connectFreighter = async () => {
@@ -68,20 +136,6 @@ export const Swap: React.FC = () => {
                 ));
             }
         });
-    };
-
-    // MetaMask connector
-    const connectMetamask = async () => {
-        if (!window.ethereum) {
-            alert('MetaMask not installed');
-            return;
-        }
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        const signer = await provider.getSigner();
-        setEvmAddress(signer.address);
-        setMetamaskConnected(true);
-        const bal = await provider.getBalance(signer.address);
-        setEthBalance(parseFloat(ethers.formatEther(bal)));
     };
 
     // Reset wallets on pair change
@@ -156,8 +210,8 @@ export const Swap: React.FC = () => {
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 2 }}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Typography variant="h4" gutterBottom>Swap</Typography>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Typography variant="h4" gutterBottom>Swap</Typography>
                 <Grid container spacing={2} style={{ display: 'flex', flexDirection: 'column', width: '30%' }}>
                     <Grid spacing={12}>
                         <Select
@@ -206,135 +260,114 @@ export const Swap: React.FC = () => {
                         </Select>
                     </Grid>
 
-                    {/* XLM → ETH */}
-                    {tokensPair === 'XLMETH' && (
-                        <>
-                            <Grid spacing={6}>
-                                <Item>
-                                    {freighterConnected ? (
-                                        <Stack direction="row" spacing={1}>
-                                            <Button
-                                                variant="outlined"
-                                                onClick={() => setFreighterConnected(false)}
-                                            >
-                                                Disconnect
-                                            </Button>
-                                            <Chip label={stellarAddress} color="primary" />
-                                            <Chip label={`${xlmBalance} XLM`} color="success" />
-                                        </Stack>
-                                    ) : (
-                                        <Button variant="outlined" onClick={connectFreighter}>
-                                            Connect Freighter
-                                        </Button>
-                                    )}
-
-                                    <Stack spacing={2} sx={{ mt: 2 }}>
-                                        <TextField
-                                            label="Amount (XLM)"
-                                            type="number"
-                                            fullWidth
-                                            value={fromAmount}
-                                            onChange={e => setFromAmount(e.target.value)}
-                                            slotProps={{
-                                                input: {
-                                                    endAdornment: freighterConnected && xlmBalance != null
-                                                        ? (
-                                                            <InputAdornment position="end">
-                                                                <Button size="small" onClick={handleUseMax}>
-                                                                    Max
-                                                                </Button>
-                                                            </InputAdornment>
-                                                        )
-                                                        : undefined
-                                                }
-                                            }}
-                                        />
-
+                    <Grid spacing={6}>
+                        <Item>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start', gap: 2 }}>
+                                {freighterConnected ? (
+                                    <Stack direction="row" spacing={1}>
                                         <Button
-                                            variant="contained"
-                                            fullWidth
-                                            disabled={!freighterConnected && fromAmount !== ''}
-                                            onClick={submitOrder}
+                                            variant="outlined"
+                                            onClick={() => setFreighterConnected(false)}
                                         >
-                                            Submit Swap
+                                            Disconnect
                                         </Button>
+                                        <Chip label={stellarAddress} color="primary" />
+                                        <Chip label={`${xlmBalance} XLM`} color="success" />
                                     </Stack>
-                                </Item>
-                            </Grid>
-                            <Grid spacing={6}>
-                                <Item>
-                                    <InputLabel id="dest-network-label">Destination Network</InputLabel>
-                                    <Select
-                                        labelId="dest-network-label"
-                                        fullWidth
-                                        value={ethNetwork}
-                                        onChange={e => setEthNetwork(e.target.value)}
-                                    >
-                                        <MenuItem value="Mainnet">Ethereum Mainnet</MenuItem>
-                                        <MenuItem value="Linea">Linea</MenuItem>
-                                    </Select>
-                                </Item>
-                            </Grid>
-                        </>
-                    )}
-
-                    {/* ETH → XLM */}
-                    {tokensPair === 'ETHXLM' && (
-                        <Grid spacing={6}>
-                            <Item>
+                                ) : (
+                                    <Button variant="outlined" onClick={connectFreighter}>
+                                        Connect Freighter
+                                    </Button>
+                                )}
                                 {metamaskConnected ? (
                                     <Stack direction="row" spacing={1}>
                                         <Button
                                             variant="outlined"
-                                            onClick={() => setMetamaskConnected(false)}
+                                            onClick={switchMetamaskAccount}
                                         >
-                                            Disconnect
+                                            Switch Account
                                         </Button>
                                         <Chip label={evmAddress} color="primary" />
-                                        <Chip label={`${ethBalance} ETH`} color="success" />
+                                        <Chip label={`${ethBalance?.toFixed(4)} ETH`} color="success" />
                                     </Stack>
                                 ) : (
                                     <Button variant="outlined" onClick={connectMetamask}>
                                         Connect MetaMask
                                     </Button>
                                 )}
+                            </Box>
+                            <Stack spacing={2} sx={{ mt: 2 }}>
+                                <TextField
+                                    label="Amount (XLM)"
+                                    type="number"
+                                    fullWidth
+                                    value={fromAmount}
+                                    onChange={e => setFromAmount(e.target.value)}
+                                    slotProps={{
+                                        input: {
+                                            endAdornment: freighterConnected && xlmBalance != null
+                                                ? (
+                                                    <InputAdornment position="end">
+                                                        <Button size="small" onClick={handleUseMax}>
+                                                            Max
+                                                        </Button>
+                                                    </InputAdornment>
+                                                )
+                                                : undefined
+                                        }
+                                    }}
+                                />
 
-                                <Stack spacing={2} sx={{ mt: 2 }}>
-                                    <TextField
-                                        label="Amount (ETH)"
-                                        type="number"
-                                        fullWidth
-                                        value={fromAmount}
-                                        onChange={e => setFromAmount(e.target.value)}
-                                        slotProps={{
-                                            input: {
-                                                endAdornment: metamaskConnected && ethBalance != null
-                                                    ? (
-                                                        <InputAdornment position="end">
-                                                            <Button size="small" onClick={handleUseMax}>
-                                                                Max
-                                                            </Button>
-                                                        </InputAdornment>
-                                                    )
-                                                    : undefined
-                                            }
-                                        }}
-                                    />
-                                    <Button
-                                        variant="contained"
-                                        fullWidth
-                                        disabled={!metamaskConnected && fromAmount !== ''}
-                                        onClick={submitOrder}
-                                    >
-                                        Submit Swap
-                                    </Button>
-                                </Stack>
-                            </Item>
-                        </Grid>
-                    )}
-
+                                <Button
+                                    variant="contained"
+                                    fullWidth
+                                    disabled={!metamaskConnected && !freighterConnected && fromAmount !== ''}
+                                    onClick={submitOrder}
+                                >
+                                    Submit Swap
+                                </Button>
+                            </Stack>
+                        </Item>
+                    </Grid>
+                    <Grid spacing={6}>
+                        <Item>
+                            <Stack spacing={2} sx={{ mt: 2 }}>
+                                <TextField
+                                    label="Amount (ETH)"
+                                    type="number"
+                                    fullWidth
+                                    value={fromAmount}
+                                    onChange={e => setFromAmount(e.target.value)}
+                                    slotProps={{
+                                        input: {
+                                            endAdornment: metamaskConnected && ethBalance != null
+                                                ? (
+                                                    <InputAdornment position="end">
+                                                        <Button size="small" onClick={handleUseMax}>
+                                                            Max
+                                                        </Button>
+                                                    </InputAdornment>
+                                                )
+                                                : undefined
+                                        }
+                                    }}
+                                />
+                            </Stack>
+                        </Item>
+                    </Grid>
+                    <Grid spacing={6}>
+                        <Item>
+                            <TextField
+                                label="Resolver Address"
+                                type="text"
+                                fullWidth
+                                value={resolverAddress}
+                                onChange={e => setResolverAddress(e.target.value)}
+                            />
+                        </Item>
+                    </Grid>
                     <Accordion
-                        sx={{visibility: freighterConnected || metamaskConnected ? 'visible' : 'hidden'}}
+                        sx={{ visibility: freighterConnected || metamaskConnected ? 'visible' : 'hidden' }}
                         expanded={advancedOpen}
                         onChange={(_, isOpen) => setAdvancedOpen(isOpen)}
                     >
@@ -346,8 +379,8 @@ export const Swap: React.FC = () => {
                         </AccordionDetails>
                     </Accordion>
                 </Grid>
-                
-        </LocalizationProvider>
+
+            </LocalizationProvider>
         </Box>
     );
 };

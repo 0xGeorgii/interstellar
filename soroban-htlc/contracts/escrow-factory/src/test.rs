@@ -114,9 +114,9 @@ fn test_create_escrow_taker_to_maker_linear_amount() {
     let current_time = e.ledger().timestamp();
     let dutch_auction = DutchAuction {
         start_time: current_time,
-        end_time: current_time + 1000,
+        stop_time: current_time + 1000,
         start_amount: 500,
-        end_amount: 300,
+        stop_amount: 300,
     };
 
     let immutables = EscrowImmutables {
@@ -508,9 +508,9 @@ fn test_dutch_auction_amount_calculation() {
     let end_time = 2000;
     let dutch_auction = DutchAuction {
         start_time,
-        end_time,
+        stop_time: end_time,
         start_amount: 1000,
-        end_amount: 500,
+        stop_amount: 500,
     };
 
     let calc = AmountCalc::Linear(dutch_auction);

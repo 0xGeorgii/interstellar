@@ -71,9 +71,9 @@ async def initialize_watchers(log: logging.Logger):
 
     if mode in ["E", "D"]:
         log.info(f"{mode} mode, initializing Ethereum watcher...")
-        ETHEREUM_RPC = os.getenv("ETHEREUM_RPC") or ""
-        if not ETHEREUM_RPC:
-            log.error("ETHEREUM_RPC not set, using default")
+        EVM_RPC = os.getenv("EVM_RPC") or ""
+        if not EVM_RPC:
+            log.error("EVM_RPC not set, using default")
             exit(1)
 
         ETHEREUM_ESCROW_ABI = os.getenv("ETHEREUM_ESCROW_ABI") or ""
@@ -87,7 +87,7 @@ async def initialize_watchers(log: logging.Logger):
             exit(1)
 
         ethereum_watcher = EthereumWatcher(
-            ETHEREUM_RPC, ETHEREUM_ESCROW_ABI, ETHEREUM_ESCROW_ADDRESS
+            EVM_RPC, ETHEREUM_ESCROW_ABI, ETHEREUM_ESCROW_ADDRESS
         )
 
     if mode in ["S", "D"]:
@@ -162,4 +162,6 @@ app.add_middleware(
 )
 
 if __name__ == "__main__":
-    uvicorn.run("src.relayer.main:app", host="0.0.0.0", port=8000, reload=True)
+    from .evm_relayer import test
+    test()
+    # uvicorn.run("src.relayer.main:app", host="0.0.0.0", port=8000, reload=True)
